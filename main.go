@@ -232,18 +232,12 @@ func (s *SVGStacker) buildStackedSVG() string {
      xmlns:xlink="http://www.w3.org/1999/xlink"
      width="100%" 
      height="100%" 
-     viewBox="0 0 `)
-	sb.WriteString(fmt.Sprintf("%d %d", s.svgWidth, s.svgHeight))
-	sb.WriteString(`"
-     preserveAspectRatio="xMidYMid meet"
      style="background: #f8f9fa; display: block; min-height: 100vh;">
      
   <title>Stacked C4 Architecture Diagrams</title>
   
   <!-- Navigation Header -->
-  <rect x="0" y="0" width="`)
-	sb.WriteString(strconv.Itoa(s.svgWidth))
-	sb.WriteString(`" height="60" fill="#2c3e50"/>
+  <rect x="0" y="0" width="100%" height="60" fill="#2c3e50"/>
   <text x="20" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">
     🏗️ Stacked C4 Architecture
   </text>
@@ -269,6 +263,19 @@ func (s *SVGStacker) buildStackedSVG() string {
 `, x, level, level, x+10, level, strings.Title(level)))
 	}
 	
+	// Add fit-to-width toggle button
+	sb.WriteString(`
+  <!-- Fit to Width Toggle -->
+  <rect x="400" y="70" width="100" height="25" rx="3" 
+        fill="#27ae60" stroke="#229954" stroke-width="1" 
+        style="cursor:pointer" onclick="toggleFitMode()" 
+        id="fit-toggle"/>
+  <text x="410" y="86" font-family="Arial, sans-serif" font-size="11" 
+        fill="white" style="cursor:pointer; user-select: none" 
+        onclick="toggleFitMode()" id="fit-text">
+    Auto Scale
+  </text>`)
+	
 	sb.WriteString(`
   <!-- Diagram Layers -->
 `)
@@ -283,13 +290,28 @@ func (s *SVGStacker) buildStackedSVG() string {
   <!-- Navigation Script -->
   <script type="text/ecmascript"><![CDATA[
     `)
+	// Inject actual diagram dimensions
+	sb.WriteString("const diagramData = {\n")
+	for i, level := range levels {
+		if diagram, exists := s.diagrams[level]; exists {
+			sb.WriteString(fmt.Sprintf("  '%s': { width: %.0f, height: %.0f, ratio: %.2f }", 
+				level, diagram.width, diagram.height, diagram.aspectRatio))
+			if i < len(levels)-1 {
+				sb.WriteString(",\n")
+			} else {
+				sb.WriteString("\n")
+			}
+		}
+	}
+	sb.WriteString("};\n\n")
+	
 	sb.Write(jsContent)
 	sb.WriteString(`
   ]]></script>
   
   <!-- Instructions -->
-  <text x="450" y="86" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">
-    Click buttons or diagram elements to navigate • Self-contained SVG
+  <text x="520" y="86" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">
+    Click buttons or diagram elements to navigate • Toggle fit mode for readability
   </text>
   
 </svg>`)
@@ -313,8 +335,8 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
 	return fmt.Sprintf(`
   <!-- %s layer -->
   <g id="layer-%s" style="display:none">
-    <rect x="20" y="110" width="760" height="470" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
-    <svg x="30" y="120" width="740" height="450" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
+    <rect x="5" y="110" width="calc(100%% - 10px)" height="calc(100vh - 130px)" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
+    <svg x="10" y="115" width="calc(100%% - 20px)" height="calc(100vh - 140px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
       %s
     </svg>
   </g>`, level, level, level, diagram.viewBox, level, diagram.content)
