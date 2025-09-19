@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -12,6 +13,8 @@ type SVGStacker struct {
 	diagrams map[string]DiagramInfo
 	svgWidth int
 	svgHeight int
+	inputDir string
+	outputFile string
 }
 
 type DiagramInfo struct {
@@ -23,18 +26,31 @@ type DiagramInfo struct {
 }
 
 func main() {
-	stacker := NewSVGStacker()
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: svg-stacker <directory>")
+		fmt.Println("")
+		fmt.Println("Automatically discovers C4 SVG files in the directory and creates a stacked SVG.")
+		fmt.Println("Looks for files matching patterns: *context*.svg, *container*.svg, *component*.svg, *code*.svg")
+		os.Exit(1)
+	}
+	
+	inputDir := os.Args[1]
+	outputFile := filepath.Join(inputDir, "stacked-c4.svg")
+	
+	stacker := NewSVGStacker(inputDir, outputFile)
 	if err := stacker.CreateStackedSVG(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating stacked SVG: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func NewSVGStacker() *SVGStacker {
+func NewSVGStacker(inputDir, outputFile string) *SVGStacker {
 	return &SVGStacker{
-		diagrams:  make(map[string]DiagramInfo),
-		svgWidth:  800,
-		svgHeight: 600,
+		diagrams:   make(map[string]DiagramInfo),
+		svgWidth:   800,
+		svgHeight:  600,
+		inputDir:   inputDir,
+		outputFile: outputFile,
 	}
 }
 
@@ -50,34 +66,33 @@ func (s *SVGStacker) CreateStackedSVG() error {
 	stackedSVG := s.buildStackedSVG()
 	
 	// Write the result
-	if err := os.WriteFile("output/stacked-c4.svg", []byte(stackedSVG), 0644); err != nil {
+	if err := os.WriteFile(s.outputFile, []byte(stackedSVG), 0644); err != nil {
 		return fmt.Errorf("failed to write stacked SVG: %w", err)
 	}
 	
-	fmt.Println("✅ Created output/stacked-c4.svg")
+	fmt.Printf("✅ Created %s\n", s.outputFile)
 	fmt.Println("📖 Open this file directly in any SVG viewer or browser")
 	return nil
 }
 
 func (s *SVGStacker) loadDiagrams() error {
-	svgFiles := []string{
-		"output/01-context.svg",
-		"output/02-container.svg", 
-		"output/03-component.svg",
-		"output/04-code.svg",
+	// Find all SVG files in the input directory
+	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.svg"))
+	if err != nil {
+		return fmt.Errorf("failed to glob SVG files: %w", err)
 	}
 
-	for _, file := range svgFiles {
-		if _, err := os.Stat(file); err != nil {
-			continue // Skip missing files
-		}
-		
+	for _, file := range files {
 		content, err := os.ReadFile(file)
 		if err != nil {
 			return fmt.Errorf("failed to read %s: %w", file, err)
 		}
 		
-		level := s.extractLevel(file)
+		level := s.extractLevel(filepath.Base(file))
+		if level == "unknown" {
+			continue // Skip files that don't match C4 patterns
+		}
+		
 		info, err := s.parseSVG(string(content))
 		if err != nil {
 			return fmt.Errorf("failed to parse %s: %w", file, err)
@@ -88,20 +103,25 @@ func (s *SVGStacker) loadDiagrams() error {
 			level, info.width, info.height, info.aspectRatio)
 	}
 	
+	if len(s.diagrams) == 0 {
+		return fmt.Errorf("no C4 SVG files found in %s (looking for *context*, *container*, *component*, *code* patterns)", s.inputDir)
+	}
+	
 	return nil
 }
 
 func (s *SVGStacker) extractLevel(filename string) string {
-	if strings.Contains(filename, "01-context") {
+	lower := strings.ToLower(filename)
+	if strings.Contains(lower, "context") {
 		return "context"
 	}
-	if strings.Contains(filename, "02-container") {
+	if strings.Contains(lower, "container") {
 		return "container"
 	}
-	if strings.Contains(filename, "03-component") {
+	if strings.Contains(lower, "component") {
 		return "component"
 	}
-	if strings.Contains(filename, "04-code") {
+	if strings.Contains(lower, "code") {
 		return "code"
 	}
 	return "unknown"
