@@ -1,0 +1,26 @@
+@startuml 02-container
+!include <C4/C4_Container>
+
+title Container Diagram for Internet Banking System
+
+Person(customer, "Customer", "A bank customer")
+
+System_Boundary(c1, "Internet Banking System") {
+    Container(web_app, "Web Application", "React", "Main web interface", $link="01-context.svg")
+    Container(api, "API Application", "Node.js", "REST API", $link="03-component.svg")  
+    Container(database, "Database", "PostgreSQL", "Stores account data")
+}
+
+System_Ext(mainframe, "Mainframe", "Core banking system")
+System_Ext(email, "Email System", "Sends notifications")
+
+Rel(customer, web_app, "Uses", "HTTPS")
+Rel(web_app, api, "Makes API calls", "JSON/HTTPS")
+Rel(api, database, "Reads/writes", "SQL")
+Rel(api, mainframe, "Gets data", "API")
+Rel(api, email, "Sends emails", "SMTP")
+
+note top of web_app : Click to go back to context
+note bottom of api : Click to see components
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml 03-component
+!include <C4/C4_Component>
+
+title Component Diagram for API Application
+
+Container(web_app, "Web Application", "React", "Main web interface")
+Container(database, "Database", "PostgreSQL", "Stores account data")
+
+Container_Boundary(api, "API Application") {
+    Component(auth_controller, "Auth Controller", "Express.js", "Handles authentication", $link="02-container.svg")
+    Component(account_controller, "Account Controller", "Express.js", "Manages accounts", $link="04-code.svg")
+    Component(auth_service, "Auth Service", "Node.js", "Authentication logic")
+    Component(account_service, "Account Service", "Node.js", "Business logic")
+    Component(database_access, "Database Access", "Sequelize ORM", "Data access layer")
+}
+
+System_Ext(mainframe, "Mainframe", "Core banking system")
+
+Rel(web_app, auth_controller, "POST /login", "JSON/HTTPS")
+Rel(web_app, account_controller, "GET /accounts", "JSON/HTTPS")
+
+Rel(auth_controller, auth_service, "Uses")
+Rel(account_controller, account_service, "Uses")
+Rel(auth_service, database_access, "Uses")
+Rel(account_service, database_access, "Uses")
+
+Rel(database_access, database, "SQL queries")
+Rel(account_service, mainframe, "API calls")
+
+note top of auth_controller : Click to go back to containers
+note bottom of account_controller : Click to see code details
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml 04-code
+!include <C4/C4_Component>
+
+title Code Diagram for Account Controller
+
+Component(account_controller, "Account Controller", "Express.js", "Entry point", $link="03-component.svg")
+
+System_Boundary(impl, "Implementation Details") {
+    Component(get_accounts, "getAccounts()", "Method", "GET /accounts endpoint")
+    Component(get_balance, "getBalance()", "Method", "GET /accounts/:id/balance")
+    Component(transfer_funds, "transferFunds()", "Method", "POST /accounts/transfer")
+    Component(validator, "RequestValidator", "Middleware", "Validates requests")
+    Component(error_handler, "ErrorHandler", "Middleware", "Handles errors")
+}
+
+Rel(account_controller, get_accounts, "implements")
+Rel(account_controller, get_balance, "implements") 
+Rel(account_controller, transfer_funds, "implements")
+Rel(account_controller, validator, "uses")
+Rel(account_controller, error_handler, "uses")
+
+Rel(get_accounts, validator, "validated by")
+Rel(get_balance, validator, "validated by")
+Rel(transfer_funds, validator, "validated by")
+
+note top of account_controller : Click to go back to components
+
+@enduml
