@@ -12,37 +12,48 @@ Generate self-contained, navigable C4 architecture diagrams from PlantUML with e
 
 ## Quick Start
 
-1. **Install dependencies**:
+1. **Build the generator**:
    ```bash
-   npm install
+   go build -o svg-stacker
    ```
 
 2. **Add your PlantUML C4 diagrams** to `examples/` directory
 
-3. **Generate the stacked SVG**:
+3. **Generate individual SVGs** (using PlantUML):
    ```bash
-   node src/svg-stacker.js
+   /home/user/bin/plantuml -tsvg -o output examples/*.puml
    ```
 
-4. **View the result**: Open `output/stacked-c4.svg` in your browser
+4. **Generate the stacked SVG**:
+   ```bash
+   ./svg-stacker
+   ```
+
+5. **View the result**: Open `output/stacked-c4.svg` in your browser
 
 ## Requirements
 
+- Go compiler for building the generator
 - PlantUML installed (configured in `/home/user/bin/plantuml`)
-- Node.js with `cheerio` and `fs-extra` packages
 - PlantUML C4 library for diagram generation
+
+## No Runtime Dependencies
+
+The generator is a single Go binary with no external dependencies. The generated SVG file is completely self-contained with embedded JavaScript navigation.
 
 ## Project Structure
 
 - `examples/` - PlantUML source files (.puml)
-- `src/svg-stacker.js` - Main generator script
-- `output/` - Generated SVG files and demo viewers
+- `main.go` - Go generator source code
+- `navigation.js` - JavaScript navigation logic (embedded into final SVG)
+- `svg-stacker` - Compiled Go binary (gitignored)
+- `output/` - Generated SVG files (individual diagrams + final stacked SVG)
 - `CLAUDE.md` - Development guidance for Claude Code
 
 ## How It Works
 
-1. Extracts content from PlantUML-generated SVG files
-2. Creates layered SVG structure with embedded JavaScript
+1. Go program extracts content from PlantUML-generated SVG files (using regex, no dependencies)
+2. Creates layered SVG structure with embedded JavaScript from `navigation.js`
 3. Adds responsive navigation controls and scaling logic
 4. Produces single self-contained file for easy sharing
 

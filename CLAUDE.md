@@ -8,15 +8,18 @@ This project creates navigable C4 (Context, Containers, Components, Code) archit
 
 ## Commands
 
-- **Generate diagrams**: `/home/user/bin/plantuml -tsvg examples/*.puml`
-- **View demo**: Open `output/index.html` in a browser
+- **Build generator**: `go build -o svg-stacker`
+- **Generate individual SVGs**: `/home/user/bin/plantuml -tsvg -o output examples/*.puml`
+- **Create stacked SVG**: `./svg-stacker`
 - **Test PlantUML**: `/home/user/bin/plantuml -version`
 
 ## Project Structure
 
 - `examples/`: PlantUML source files (.puml) with C4 diagrams
-- `output/`: Generated SVG files and HTML viewer
-- `test.puml`: Simple test file for PlantUML verification
+- `main.go`: Go generator source code  
+- `navigation.js`: JavaScript navigation logic (embedded into final SVG)
+- `svg-stacker`: Compiled Go binary (gitignored)
+- `output/`: Generated SVG files (individual diagrams + final stacked SVG)
 
 ## PlantUML C4 Navigation
 
@@ -53,4 +56,5 @@ System(banking_system, "Internet Banking System", "Main banking system", $link="
 
 ## Dependencies
 
-- Node.js with `cheerio` and `fs-extra` for SVG processing
+- Go compiler for building the generator
+- No runtime dependencies - the generator is a self-contained binary
