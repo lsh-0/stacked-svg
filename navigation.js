@@ -1,21 +1,28 @@
 // Embedded navigation JavaScript for stacked C4 diagrams
 let currentLevel = 'context';
 let fitToWidth = false; // false = native size (free zoom), true = auto-scale (constrained)
+let notesVisible = true; // true = show notes, false = hide notes
 
 function positionRightAlignedElements() {
   const viewBoxWidth = window.innerWidth;
-  const toggleButton = document.getElementById('fit-toggle');
-  const toggleText = document.getElementById('fit-text');
-  const instructions = document.getElementById('instructions');
+  const fitToggleButton = document.getElementById('fit-toggle');
+  const fitToggleText = document.getElementById('fit-text');
+  const notesToggleButton = document.getElementById('notes-toggle');
+  const notesToggleText = document.getElementById('notes-text');
 
-  if (toggleButton && toggleText && instructions) {
-    const toggleX = viewBoxWidth - 156; // 130px width + 26px margin
-    const textX = toggleX + 13; // offset for text inside button
-    const instructionsX = toggleX - 26; // 26px gap before button
+  if (fitToggleButton && fitToggleText && notesToggleButton && notesToggleText) {
+    // Position fit toggle on far right
+    const fitToggleX = viewBoxWidth - 156; // 130px width + 26px margin
+    const fitTextX = fitToggleX + 13;
 
-    toggleButton.setAttribute('x', toggleX);
-    toggleText.setAttribute('x', textX);
-    instructions.setAttribute('x', instructionsX);
+    // Position notes toggle to the left of fit toggle
+    const notesToggleX = fitToggleX - 143; // 130px button width + 13px gap
+    const notesTextX = notesToggleX + 13;
+
+    fitToggleButton.setAttribute('x', fitToggleX);
+    fitToggleText.setAttribute('x', fitTextX);
+    notesToggleButton.setAttribute('x', notesToggleX);
+    notesToggleText.setAttribute('x', notesTextX);
   }
 }
 
@@ -178,4 +185,28 @@ function toggleFitMode() {
 
   // Reapply scaling with new mode
   resizeContainers();
+}
+
+function toggleNotes() {
+  notesVisible = !notesVisible;
+
+  // Update button text
+  const notesText = document.getElementById('notes-text');
+  notesText.textContent = notesVisible ? 'Hide Notes' : 'Show Notes';
+
+  // Find all note elements (PlantUML generates notes with the distinctive yellow fill)
+  // Notes are <g> elements with class="entity" containing paths with fill="#FEFFDD"
+  availableLevels.forEach(level => {
+    const layer = document.getElementById('layer-' + level);
+    if (layer) {
+      const noteElements = layer.querySelectorAll('g.entity');
+      noteElements.forEach(g => {
+        // Check if this group contains a note (yellow fill path)
+        const notePath = g.querySelector('path[fill="#FEFFDD"]');
+        if (notePath) {
+          g.style.display = notesVisible ? 'block' : 'none';
+        }
+      });
+    }
+  });
 }

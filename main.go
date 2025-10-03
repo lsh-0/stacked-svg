@@ -449,9 +449,19 @@ func (s *SVGStacker) buildStackedSVG() string {
 `, x, level, level, x+13, level, strings.Title(level)))
 	}
 
-	// Add fit-to-width toggle button
-	// Positioned far right, will be adjusted by JavaScript on load/resize
+	// Add toggle buttons (positioned via JavaScript on load/resize)
 	sb.WriteString(`
+  <!-- Notes Toggle (right-aligned via JavaScript) -->
+  <rect x="364" y="91" width="130" height="33" rx="4"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="toggleNotes()"
+        id="notes-toggle"/>
+  <text x="377" y="113" font-family="Arial, sans-serif" font-size="14"
+        fill="white" style="cursor:pointer; user-select: none"
+        onclick="toggleNotes()" id="notes-text">
+    Hide Notes
+  </text>
+
   <!-- Fit to Width Toggle (right-aligned via JavaScript) -->
   <rect x="520" y="91" width="130" height="33" rx="4"
         fill="#3498db" stroke="#2980b9" stroke-width="1"
@@ -461,11 +471,6 @@ func (s *SVGStacker) buildStackedSVG() string {
         fill="white" style="cursor:pointer; user-select: none"
         onclick="toggleFitMode()" id="fit-text">
     Native Size
-  </text>
-
-  <!-- Instructions -->
-  <text x="390" y="113" font-family="Arial, sans-serif" font-size="13" fill="#7f8c8d" text-anchor="end" id="instructions">
-    Click buttons or diagram elements to navigate
   </text>
 `)
 
