@@ -2,6 +2,23 @@
 let currentLevel = 'context';
 let fitToWidth = false; // false = native size (free zoom), true = auto-scale (constrained)
 
+function positionRightAlignedElements() {
+  const viewBoxWidth = window.innerWidth;
+  const toggleButton = document.getElementById('fit-toggle');
+  const toggleText = document.getElementById('fit-text');
+  const instructions = document.getElementById('instructions');
+
+  if (toggleButton && toggleText && instructions) {
+    const toggleX = viewBoxWidth - 156; // 130px width + 26px margin
+    const textX = toggleX + 13; // offset for text inside button
+    const instructionsX = toggleX - 26; // 26px gap before button
+
+    toggleButton.setAttribute('x', toggleX);
+    toggleText.setAttribute('x', textX);
+    instructions.setAttribute('x', instructionsX);
+  }
+}
+
 function resizeContainers() {
   // Get the actual browser viewport dimensions
   const viewBoxWidth = window.innerWidth;
@@ -12,11 +29,10 @@ function resizeContainers() {
   const containerHeight = viewBoxHeight - 160; // header + nav + padding
   
   // Diagram dimensions are provided by the Go program
-  // diagramData will be injected before this script
-  
+  // diagramData and availableLevels will be injected before this script
+
   // Update all container rectangles and diagrams
-  const levels = ['context', 'container', 'component', 'code'];
-  levels.forEach(level => {
+  availableLevels.forEach(level => {
     const container = document.getElementById('container-' + level);
     const diagram = document.getElementById('diagram-' + level);
     const data = diagramData[level];
@@ -97,8 +113,7 @@ function resizeContainers() {
 
 function showLevel(level) {
   // Hide all layers
-  const layers = ['context', 'container', 'component', 'code'];
-  layers.forEach(l => {
+  availableLevels.forEach(l => {
     const layer = document.getElementById('layer-' + l);
     if (layer) {
       layer.style.display = 'none';
@@ -131,25 +146,27 @@ function showLevel(level) {
 
 // Initialize - show context level and setup resize
 showLevel('context');
+positionRightAlignedElements();
 resizeContainers();
 
 // Resize on window resize
-window.addEventListener('resize', resizeContainers);
+window.addEventListener('resize', function() {
+  positionRightAlignedElements();
+  resizeContainers();
+});
 
 // Add click handlers for diagram elements to navigate between levels
 function navigateDown() {
-  const levelOrder = ['context', 'container', 'component', 'code'];
-  const currentIndex = levelOrder.indexOf(currentLevel);
-  if (currentIndex < levelOrder.length - 1) {
-    showLevel(levelOrder[currentIndex + 1]);
+  const currentIndex = availableLevels.indexOf(currentLevel);
+  if (currentIndex < availableLevels.length - 1) {
+    showLevel(availableLevels[currentIndex + 1]);
   }
 }
 
 function navigateUp() {
-  const levelOrder = ['context', 'container', 'component', 'code'];
-  const currentIndex = levelOrder.indexOf(currentLevel);
+  const currentIndex = availableLevels.indexOf(currentLevel);
   if (currentIndex > 0) {
-    showLevel(levelOrder[currentIndex - 1]);
+    showLevel(availableLevels[currentIndex - 1]);
   }
 }
 

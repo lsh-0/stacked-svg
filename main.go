@@ -144,8 +144,8 @@ func (s *SVGStacker) generateSVGsFromPuml() error {
 		return err
 	}
 
-	if len(pumlFiles) != 4 {
-		return fmt.Errorf("expected 4 numbered .puml files (01-*.puml through 04-*.puml), found %d", len(pumlFiles))
+	if len(pumlFiles) < 3 {
+		return fmt.Errorf("expected at least 3 numbered .puml files (01-*.puml through 03-*.puml), found %d", len(pumlFiles))
 	}
 
 	// Create temp directory
@@ -178,7 +178,7 @@ func (s *SVGStacker) findNumberedPumlFiles() ([]string, error) {
 		return nil, err
 	}
 
-	// Filter and sort by number prefix
+	// Filter and sort by number prefix (01-04, with 04 being optional)
 	var numbered []string
 	numberRegex := regexp.MustCompile(`^0[1-4]-.*\.puml$`)
 
@@ -556,9 +556,16 @@ func (s *SVGStacker) buildStackedSVG() string {
   <!-- Navigation Buttons -->
 `)
 
-	// Generate navigation buttons
-	for i, level := range levels {
-		x := 26 + i*117
+	// Generate navigation buttons (only for levels that exist)
+	buttonIndex := 0
+	for _, level := range levels {
+		if _, exists := s.diagrams[level]; !exists {
+			continue // Skip button if diagram doesn't exist
+		}
+
+		x := 26 + buttonIndex*117
+		buttonIndex++
+
 		if s.cssOnly {
 			// CSS-only version using <a> tags with href fragments
 			sb.WriteString(fmt.Sprintf(`  <a href="#layer-%s">
@@ -587,9 +594,10 @@ func (s *SVGStacker) buildStackedSVG() string {
 	}
 
 	// Add fit-to-width toggle button (JavaScript mode only)
+	// Positioned far right, will be adjusted by JavaScript on load/resize
 	if !s.cssOnly {
 		sb.WriteString(`
-  <!-- Fit to Width Toggle -->
+  <!-- Fit to Width Toggle (right-aligned via JavaScript) -->
   <rect x="520" y="91" width="130" height="33" rx="4"
         fill="#3498db" stroke="#2980b9" stroke-width="1"
         style="cursor:pointer" onclick="toggleFitMode()"
@@ -598,15 +606,16 @@ func (s *SVGStacker) buildStackedSVG() string {
         fill="white" style="cursor:pointer; user-select: none"
         onclick="toggleFitMode()" id="fit-text">
     Native Size
-  </text>`)
+  </text>
+
+  <!-- Instructions -->
+  <text x="390" y="113" font-family="Arial, sans-serif" font-size="13" fill="#7f8c8d" text-anchor="end" id="instructions">
+    Click buttons or diagram elements to navigate
+  </text>
+`)
 	}
 
 	sb.WriteString(`
-
-  <!-- Instructions -->
-  <text x="676" y="113" font-family="Arial, sans-serif" font-size="13" fill="#7f8c8d">
-    Click buttons or diagram elements to navigate
-  </text>
 
   <!-- Diagram Layers -->
 `)
@@ -623,18 +632,32 @@ func (s *SVGStacker) buildStackedSVG() string {
     `)
 	// Inject actual diagram dimensions
 	sb.WriteString("const diagramData = {\n")
-	for i, level := range levels {
+	diagramCount := 0
+	for _, level := range levels {
 		if diagram, exists := s.diagrams[level]; exists {
+			if diagramCount > 0 {
+				sb.WriteString(",\n")
+			}
 			sb.WriteString(fmt.Sprintf("  '%s': { width: %.0f, height: %.0f, ratio: %.2f }",
 				level, diagram.width, diagram.height, diagram.aspectRatio))
-			if i < len(levels)-1 {
-				sb.WriteString(",\n")
-			} else {
-				sb.WriteString("\n")
-			}
+			diagramCount++
 		}
 	}
-	sb.WriteString("};\n\n")
+	sb.WriteString("\n};\n\n")
+
+	// Inject available levels list
+	sb.WriteString("const availableLevels = [")
+	levelCount := 0
+	for _, level := range levels {
+		if _, exists := s.diagrams[level]; exists {
+			if levelCount > 0 {
+				sb.WriteString(", ")
+			}
+			sb.WriteString(fmt.Sprintf("'%s'", level))
+			levelCount++
+		}
+	}
+	sb.WriteString("];\n\n")
 
 	sb.Write(jsContent)
 	sb.WriteString(`
