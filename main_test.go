@@ -12,7 +12,7 @@ import (
 func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
 	// Create a temporary directory for test output
 	tempDir := t.TempDir()
-	
+
 	// Test both JavaScript and CSS-only modes
 	modes := []struct {
 		name    string
@@ -22,25 +22,25 @@ func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
 		{"JavaScript", false, ""},
 		{"CSS-only", true, "-css"},
 	}
-	
+
 	for _, mode := range modes {
 		t.Run(mode.name, func(t *testing.T) {
 			outputFile := filepath.Join(tempDir, "test-stacked-c4"+mode.suffix+".svg")
-			
+
 			stacker := NewSVGStacker("examples/output", outputFile, mode.cssOnly)
-			
+
 			// Generate the SVG
 			err := stacker.CreateStackedSVG()
 			if err != nil {
 				t.Fatalf("Failed to create stacked SVG: %v", err)
 			}
-			
+
 			// Read the generated SVG
 			content, err := os.ReadFile(outputFile)
 			if err != nil {
 				t.Fatalf("Failed to read generated SVG: %v", err)
 			}
-			
+
 			// Validate XML structure using streaming parser (more detailed error reporting)
 			decoder := xml.NewDecoder(strings.NewReader(string(content)))
 			for {
@@ -50,7 +50,7 @@ func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
 				}
 				if err != nil {
 					t.Errorf("Generated SVG is not valid XML in %s mode: %v", mode.name, err)
-					
+
 					// Try to provide helpful context about where the error occurred
 					lines := strings.Split(string(content), "\n")
 					if xmlErr, ok := err.(*xml.SyntaxError); ok {
@@ -85,7 +85,7 @@ func TestActualGeneratedFiles(t *testing.T) {
 		{"examples/output/stacked-c4.svg", "JavaScript"},
 		{"examples/output/stacked-c4-css.svg", "CSS-only"},
 	}
-	
+
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			content, err := os.ReadFile(tc.file)
@@ -93,7 +93,7 @@ func TestActualGeneratedFiles(t *testing.T) {
 				t.Skipf("File %s not found, skipping test", tc.file)
 				return
 			}
-			
+
 			// Validate XML structure using streaming parser
 			decoder := xml.NewDecoder(strings.NewReader(string(content)))
 			for {
@@ -103,7 +103,7 @@ func TestActualGeneratedFiles(t *testing.T) {
 				}
 				if err != nil {
 					t.Errorf("File %s is not valid XML: %v", tc.file, err)
-					
+
 					// Try to provide helpful context about where the error occurred
 					lines := strings.Split(string(content), "\n")
 					if xmlErr, ok := err.(*xml.SyntaxError); ok {
@@ -132,7 +132,7 @@ func TestActualGeneratedFiles(t *testing.T) {
 func TestGeneratedSVGIsValidXML(t *testing.T) {
 	// Create a temporary directory for test output
 	tempDir := t.TempDir()
-	
+
 	// Test both JavaScript and CSS-only modes
 	modes := []struct {
 		name    string
@@ -142,25 +142,25 @@ func TestGeneratedSVGIsValidXML(t *testing.T) {
 		{"JavaScript", false, ""},
 		{"CSS-only", true, "-css"},
 	}
-	
+
 	for _, mode := range modes {
 		t.Run(mode.name, func(t *testing.T) {
 			outputFile := filepath.Join(tempDir, "test-stacked-c4"+mode.suffix+".svg")
-			
+
 			stacker := NewSVGStacker("examples/output", outputFile, mode.cssOnly)
-			
+
 			// Generate the SVG
 			err := stacker.CreateStackedSVG()
 			if err != nil {
 				t.Fatalf("Failed to create stacked SVG: %v", err)
 			}
-			
+
 			// Read the generated SVG
 			content, err := os.ReadFile(outputFile)
 			if err != nil {
 				t.Fatalf("Failed to read generated SVG: %v", err)
 			}
-			
+
 			// Validate XML structure using streaming parser (more detailed error reporting)
 			decoder := xml.NewDecoder(strings.NewReader(string(content)))
 			for {
@@ -170,7 +170,7 @@ func TestGeneratedSVGIsValidXML(t *testing.T) {
 				}
 				if err != nil {
 					t.Errorf("Generated SVG is not valid XML in %s mode: %v", mode.name, err)
-					
+
 					// Try to provide helpful context about where the error occurred
 					lines := strings.Split(string(content), "\n")
 					if xmlErr, ok := err.(*xml.SyntaxError); ok {
@@ -226,19 +226,19 @@ func TestCleanDiagramContentPreservesXMLStructure(t *testing.T) {
 			expectValid: true,
 		},
 	}
-	
+
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			stacker := &SVGStacker{cssOnly: tc.cssOnly}
 			result := stacker.cleanDiagramContent(tc.input, tc.level)
-			
+
 			// Wrap in a minimal SVG structure for XML validation
 			xmlContent := `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg">` + result + `</svg>`
-			
+
 			var xmlDoc interface{}
 			err := xml.Unmarshal([]byte(xmlContent), &xmlDoc)
-			
+
 			if tc.expectValid && err != nil {
 				t.Errorf("Expected valid XML but got error: %v", err)
 				t.Errorf("Generated content: %s", result)

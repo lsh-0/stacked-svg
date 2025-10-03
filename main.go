@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -256,7 +257,7 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	if match == "" {
 		return info, fmt.Errorf("no SVG element")
 	}
-	
+
 	// Extract viewBox
 	viewBoxRegex := regexp.MustCompile(`viewBox="([^"]*)"`)
 	if viewBoxMatch := viewBoxRegex.FindStringSubmatch(match); len(viewBoxMatch) > 1 {
@@ -264,11 +265,11 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	} else {
 		info.viewBox = "0 0 400 300"
 	}
-	
+
 	// Extract width and height
 	widthRegex := regexp.MustCompile(`width="([^"]*)"`)
 	heightRegex := regexp.MustCompile(`height="([^"]*)"`)
-	
+
 	var err error
 	if widthMatch := widthRegex.FindStringSubmatch(match); len(widthMatch) > 1 {
 		widthStr := strings.TrimSuffix(widthMatch[1], "px")
@@ -279,7 +280,7 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	} else {
 		info.width = 400
 	}
-	
+
 	if heightMatch := heightRegex.FindStringSubmatch(match); len(heightMatch) > 1 {
 		heightStr := strings.TrimSuffix(heightMatch[1], "px")
 		info.height, err = strconv.ParseFloat(heightStr, 64)
@@ -289,9 +290,9 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	} else {
 		info.height = 300
 	}
-	
+
 	info.aspectRatio = info.width / info.height
-	
+
 	// Extract content between <svg> and </svg> more robustly
 	// Find the end of the opening <svg> tag
 	svgStartPos := strings.Index(content, "<svg")
@@ -310,21 +311,55 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	if endIdx == -1 || endIdx <= startIdx {
 		return info, fmt.Errorf("no </svg> tag")
 	}
-	
-	info.content = content[startIdx:endIdx]
-	
+
+	info.content = s.prettyPrintXML(content[startIdx:endIdx])
+
 	return info, nil
+}
+
+func (s *SVGStacker) prettyPrintXML(content string) string {
+	// Wrap in a root element for parsing
+	wrapped := "<root>" + content + "</root>"
+
+	var buf bytes.Buffer
+	decoder := xml.NewDecoder(strings.NewReader(wrapped))
+	encoder := xml.NewEncoder(&buf)
+	encoder.Indent("      ", "  ")
+
+	for {
+		token, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			// If parsing fails, return original content
+			return content
+		}
+		if err := encoder.EncodeToken(token); err != nil {
+			return content
+		}
+	}
+
+	if err := encoder.Flush(); err != nil {
+		return content
+	}
+
+	// Remove the wrapper tags
+	result := buf.String()
+	result = strings.TrimPrefix(result, "<root>")
+	result = strings.TrimSuffix(result, "</root>")
+	return strings.TrimSpace(result)
 }
 
 func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) string {
 	// Remove scripts
 	scriptRegex := regexp.MustCompile(`<script[^>]*>.*?</script>`)
 	content = scriptRegex.ReplaceAllString(content, "")
-	
+
 	// Determine next level for navigation
 	nextLevel := s.getNextLevel(currentLevel)
 	_ = nextLevel // May be unused in CSS-only mode
-	
+
 	// For CSS-only mode, we need to ensure clean XML structure
 	if s.cssOnly {
 		// Use proper XML parsing to remove <a> tags
@@ -335,34 +370,34 @@ func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) st
 		content = aTagRegex.ReplaceAllStringFunc(content, func(match string) string {
 			submatches := aTagRegex.FindStringSubmatch(match)
 			if len(submatches) >= 3 {
-				gTag := submatches[1]        // <g ...>
+				gTag := submatches[1]          // <g ...>
 				contentInside := submatches[2] // content inside <a>
-				
+
 				// JavaScript mode: add onclick to the g element
 				return strings.Replace(gTag, ">", ` onclick="navigateDown()" style="cursor:pointer;">`, 1) + contentInside
 			}
 			return match
 		})
-		
+
 		// Clean up any remaining <a> tags
 		content = regexp.MustCompile(`<a\s+[^>]*>`).ReplaceAllString(content, "")
 		content = strings.ReplaceAll(content, "</a>", "")
 	}
-	
+
 	return content
 }
 
 func (s *SVGStacker) removeATagsWithXML(content string) string {
 	// Wrap content in a root element to make it valid XML
 	wrappedContent := "<root>" + content + "</root>"
-	
+
 	// Parse the XML
 	decoder := xml.NewDecoder(strings.NewReader(wrappedContent))
 	var result strings.Builder
-	
+
 	// Track if we're inside an <a> tag
 	var aTagDepth int
-	
+
 	for {
 		token, err := decoder.Token()
 		if err != nil {
@@ -370,7 +405,7 @@ func (s *SVGStacker) removeATagsWithXML(content string) string {
 			// This means CSS-only mode won't have navigation but will have valid XML
 			return content
 		}
-		
+
 		switch t := token.(type) {
 		case xml.StartElement:
 			if t.Name.Local == "a" {
@@ -419,13 +454,13 @@ func (s *SVGStacker) removeATagsWithXML(content string) string {
 			}
 		}
 	}
-	
+
 	// Remove the wrapper root element
 	resultStr := result.String()
 	if strings.HasPrefix(resultStr, "<root>") && strings.HasSuffix(resultStr, "</root>") {
 		resultStr = resultStr[6 : len(resultStr)-7]
 	}
-	
+
 	return resultStr
 }
 
@@ -433,7 +468,7 @@ func (s *SVGStacker) getNextLevel(currentLevel string) string {
 	switch currentLevel {
 	case "context":
 		return "container"
-	case "container": 
+	case "container":
 		return "component"
 	case "component":
 		return "code"
@@ -444,7 +479,7 @@ func (s *SVGStacker) getNextLevel(currentLevel string) string {
 
 func (s *SVGStacker) buildStackedSVG() string {
 	levels := []string{"context", "container", "component", "code"}
-	
+
 	var jsContent []byte
 	if !s.cssOnly {
 		// Load JavaScript for interactive mode
@@ -455,9 +490,9 @@ func (s *SVGStacker) buildStackedSVG() string {
 			jsContent = []byte("// Navigation script not found")
 		}
 	}
-	
+
 	var sb strings.Builder
-	
+
 	// SVG Header
 	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" 
@@ -467,10 +502,10 @@ func (s *SVGStacker) buildStackedSVG() string {
      style="background: #f8f9fa; display: block; min-height: 100vh;">
      
   <title>Stacked C4 Architecture Diagrams</title>`)
-  
-  	// Add CSS styles for CSS-only mode
-  	if s.cssOnly {
-  		sb.WriteString(`
+
+	// Add CSS styles for CSS-only mode
+	if s.cssOnly {
+		sb.WriteString(`
   <style>
     /* CSS-only navigation using :target pseudo-class */
     .layer { 
@@ -498,9 +533,9 @@ func (s *SVGStacker) buildStackedSVG() string {
       fill: #2980b9 !important; 
     }
   </style>`)
-  	}
-  	
-  	sb.WriteString(`
+	}
+
+	sb.WriteString(`
   
   <!-- Navigation Header -->
   <rect x="0" y="0" width="100%" height="60" fill="#2c3e50"/>
@@ -530,7 +565,7 @@ func (s *SVGStacker) buildStackedSVG() string {
   </a>
 `, level, x, x+10, strings.Title(level)))
 		} else {
-			// JavaScript version  
+			// JavaScript version
 			sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="70" width="80" height="25" rx="3" 
         fill="#3498db" stroke="#2980b9" stroke-width="1" 
         style="cursor:pointer" onclick="showLevel('%s')" 
@@ -543,7 +578,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 `, x, level, level, x+10, level, strings.Title(level)))
 		}
 	}
-	
+
 	// Add fit-to-width toggle button (JavaScript mode only)
 	if !s.cssOnly {
 		sb.WriteString(`
@@ -558,7 +593,7 @@ func (s *SVGStacker) buildStackedSVG() string {
     Auto Scale
   </text>`)
 	}
-	
+
 	sb.WriteString(`
   <!-- Diagram Layers -->
 `)
@@ -567,7 +602,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 	for _, level := range levels {
 		sb.WriteString(s.createDiagramLayer(level))
 	}
-	
+
 	// Add JavaScript
 	sb.WriteString(`
   <!-- Navigation Script -->
@@ -577,7 +612,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 	sb.WriteString("const diagramData = {\n")
 	for i, level := range levels {
 		if diagram, exists := s.diagrams[level]; exists {
-			sb.WriteString(fmt.Sprintf("  '%s': { width: %.0f, height: %.0f, ratio: %.2f }", 
+			sb.WriteString(fmt.Sprintf("  '%s': { width: %.0f, height: %.0f, ratio: %.2f }",
 				level, diagram.width, diagram.height, diagram.aspectRatio))
 			if i < len(levels)-1 {
 				sb.WriteString(",\n")
@@ -587,7 +622,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 		}
 	}
 	sb.WriteString("};\n\n")
-	
+
 	sb.Write(jsContent)
 	sb.WriteString(`
   ]]></script>
@@ -614,15 +649,15 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
     </text>
   </g>`, level, level, strings.Title(level))
 	}
-	
+
 	displayStyle := ""
 	if !s.cssOnly {
 		displayStyle = ` style="display:none"`
 	}
-	
+
 	// Clean the diagram content with the current level for proper navigation
 	cleanedContent := s.cleanDiagramContent(diagram.content, level)
-	
+
 	return fmt.Sprintf(`
   <!-- %s layer -->
   <g id="layer-%s" class="layer"%s>
