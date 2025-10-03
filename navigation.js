@@ -155,21 +155,16 @@ function navigateUp() {
 
 function toggleFitMode() {
   fitToWidth = !fitToWidth;
-  
-  // Update button appearance
-  const toggleButton = document.getElementById('fit-toggle');
+
+  // Update button text
   const toggleText = document.getElementById('fit-text');
-  
+
   if (fitToWidth) {
-    toggleButton.setAttribute('fill', '#e74c3c'); // Red when in auto-scale mode
-    toggleButton.setAttribute('stroke', '#c0392b');
-    toggleText.textContent = 'Native Size'; // Click to go to native size
+    toggleText.textContent = 'Auto Scale';
   } else {
-    toggleButton.setAttribute('fill', '#27ae60'); // Green when in native size mode
-    toggleButton.setAttribute('stroke', '#229954');
-    toggleText.textContent = 'Auto Scale'; // Click to go to auto-scale
+    toggleText.textContent = 'Native Size';
   }
-  
+
   // Reapply scaling with new mode
   resizeContainers();
 }

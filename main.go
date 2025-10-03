@@ -590,14 +590,14 @@ func (s *SVGStacker) buildStackedSVG() string {
 	if !s.cssOnly {
 		sb.WriteString(`
   <!-- Fit to Width Toggle -->
-  <rect x="400" y="70" width="100" height="25" rx="3" 
-        fill="#27ae60" stroke="#229954" stroke-width="1" 
-        style="cursor:pointer" onclick="toggleFitMode()" 
+  <rect x="400" y="70" width="100" height="25" rx="3"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="toggleFitMode()"
         id="fit-toggle"/>
-  <text x="410" y="86" font-family="Arial, sans-serif" font-size="11" 
-        fill="white" style="cursor:pointer; user-select: none" 
+  <text x="410" y="86" font-family="Arial, sans-serif" font-size="11"
+        fill="white" style="cursor:pointer; user-select: none"
         onclick="toggleFitMode()" id="fit-text">
-    Auto Scale
+    Native Size
   </text>`)
 	}
 
