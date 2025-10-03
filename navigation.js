@@ -118,28 +118,22 @@ function showLevel(level) {
     if (layer) {
       layer.style.display = 'none';
     }
-    
+
     // Update button styles
     const btn = document.getElementById('nav-' + l);
     if (btn) {
       btn.setAttribute('fill', l === level ? '#e74c3c' : '#3498db');
     }
   });
-  
+
   // Show selected layer
   const targetLayer = document.getElementById('layer-' + level);
   if (targetLayer) {
     targetLayer.style.display = 'block';
   }
-  
-  // Update breadcrumb
-  const breadcrumb = document.getElementById('breadcrumb');
-  if (breadcrumb) {
-    breadcrumb.textContent = level.charAt(0).toUpperCase() + level.slice(1) + ' Level';
-  }
-  
+
   currentLevel = level;
-  
+
   // Resize containers after showing layer
   setTimeout(resizeContainers, 10);
 }
