@@ -1,3 +1,5 @@
+release/*
+
 # Go binaries
 svg-stacker
 svg-stacker.exe

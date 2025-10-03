@@ -26,8 +26,43 @@ case "$1" in
         shift 2
         ./svg-stacker "$dir" "$@"
         ;;
+    release)
+        echo "Building release binaries..."
+        mkdir -p release
+
+        LDFLAGS="-s -w"
+        BUILDFLAGS="-trimpath"
+
+        # Linux amd64
+        GOOS=linux GOARCH=amd64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-linux-amd64
+        echo "Built release/svg-stacker-linux-amd64"
+
+        # Linux arm64
+        GOOS=linux GOARCH=arm64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-linux-arm64
+        echo "Built release/svg-stacker-linux-arm64"
+
+        # macOS amd64 (Intel)
+        GOOS=darwin GOARCH=amd64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-darwin-amd64
+        echo "Built release/svg-stacker-darwin-amd64"
+
+        # macOS arm64 (Apple Silicon)
+        GOOS=darwin GOARCH=arm64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-darwin-arm64
+        echo "Built release/svg-stacker-darwin-arm64"
+
+        # Windows amd64
+        GOOS=windows GOARCH=amd64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-windows-amd64.exe
+        echo "Built release/svg-stacker-windows-amd64.exe"
+
+        # Windows arm64
+        GOOS=windows GOARCH=arm64 go build $BUILDFLAGS -ldflags="$LDFLAGS" -o release/svg-stacker-windows-arm64.exe
+        echo "Built release/svg-stacker-windows-arm64.exe"
+
+        echo ""
+        echo "Release binaries created in release/"
+        ls -lh release/
+        ;;
     *)
-        echo "Usage: $0 {build|test|generate <svg-directory>}"
+        echo "Usage: $0 {build|test|generate <svg-directory>|release}"
         exit 1
         ;;
 esac
