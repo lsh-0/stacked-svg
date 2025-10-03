@@ -6,10 +6,10 @@ function resizeContainers() {
   // Get the actual browser viewport dimensions
   const viewBoxWidth = window.innerWidth;
   const viewBoxHeight = window.innerHeight;
-  
+
   // Calculate available space in viewport coordinates (subtract header and navigation)
   const containerWidth = viewBoxWidth - 10; // Minimal padding
-  const containerHeight = viewBoxHeight - 130; // header + nav + padding
+  const containerHeight = viewBoxHeight - 160; // header + nav + padding
   
   // Diagram dimensions are provided by the Go program
   // diagramData will be injected before this script
@@ -63,17 +63,17 @@ function resizeContainers() {
         if (finalHeight > containerHeight) {
           containerFinalHeight = finalHeight + 20;
           const mainSVG = document.documentElement;
-          const newSVGHeight = 130 + finalHeight + 40;
+          const newSVGHeight = 160 + finalHeight + 40;
           mainSVG.style.minHeight = newSVGHeight + 'px';
         }
       } else {
         // Native mode - make container large enough for full diagram + some padding
         containerFinalWidth = Math.max(containerWidth, finalWidth + 40);
         containerFinalHeight = Math.max(containerHeight, finalHeight + 40);
-        
+
         // Extend SVG canvas to accommodate large diagrams
         const mainSVG = document.documentElement;
-        const newSVGHeight = 130 + finalHeight + 80; // header + diagram + padding
+        const newSVGHeight = 160 + finalHeight + 80; // header + diagram + padding
         const newSVGWidth = Math.max(viewBoxWidth, finalWidth + 80);
         mainSVG.style.minHeight = newSVGHeight + 'px';
         mainSVG.style.minWidth = newSVGWidth + 'px';
@@ -86,9 +86,9 @@ function resizeContainers() {
       // Update diagram SVG - centered horizontally with minimal padding
       const diagramX = Math.max(0, (containerFinalWidth - finalWidth) / 2);
       const diagramY = 5; // Minimal top padding
-      
+
       diagram.setAttribute('x', 5 + diagramX); // Minimal left offset
-      diagram.setAttribute('y', 110 + diagramY);
+      diagram.setAttribute('y', 140 + diagramY);
       diagram.setAttribute('width', finalWidth);
       diagram.setAttribute('height', finalHeight);
     }

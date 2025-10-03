@@ -543,46 +543,46 @@ func (s *SVGStacker) buildStackedSVG() string {
 	}
 
 	sb.WriteString(`
-  
+
   <!-- Navigation Header -->
-  <rect x="0" y="0" width="100%" height="60" fill="#2c3e50"/>
-  <text x="20" y="25" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">
+  <rect x="0" y="0" width="100%" height="80" fill="#2c3e50"/>
+  <text x="26" y="33" font-family="Arial, sans-serif" font-size="21" font-weight="bold" fill="white">
     🏗️ Stacked C4 Architecture
   </text>
-  <text x="20" y="45" font-family="Arial, sans-serif" font-size="12" fill="#ecf0f1" id="breadcrumb">
+  <text x="26" y="59" font-family="Arial, sans-serif" font-size="16" fill="#ecf0f1" id="breadcrumb">
     Context Level
   </text>
-  
+
   <!-- Navigation Buttons -->
 `)
 
 	// Generate navigation buttons
 	for i, level := range levels {
-		x := 20 + i*90
+		x := 26 + i*117
 		if s.cssOnly {
 			// CSS-only version using <a> tags with href fragments
 			sb.WriteString(fmt.Sprintf(`  <a href="#layer-%s">
-    <rect x="%d" y="70" width="80" height="25" rx="3" 
-          fill="#3498db" stroke="#2980b9" stroke-width="1" 
+    <rect x="%d" y="91" width="104" height="33" rx="4"
+          fill="#3498db" stroke="#2980b9" stroke-width="1"
           class="nav-button"/>
-    <text x="%d" y="86" font-family="Arial, sans-serif" font-size="11" 
+    <text x="%d" y="113" font-family="Arial, sans-serif" font-size="14"
           fill="white" style="cursor:pointer; user-select: none">
       %s
     </text>
   </a>
-`, level, x, x+10, strings.Title(level)))
+`, level, x, x+13, strings.Title(level)))
 		} else {
 			// JavaScript version
-			sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="70" width="80" height="25" rx="3" 
-        fill="#3498db" stroke="#2980b9" stroke-width="1" 
-        style="cursor:pointer" onclick="showLevel('%s')" 
+			sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="91" width="104" height="33" rx="4"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="showLevel('%s')"
         id="nav-%s"/>
-  <text x="%d" y="86" font-family="Arial, sans-serif" font-size="11" 
-        fill="white" style="cursor:pointer; user-select: none" 
+  <text x="%d" y="113" font-family="Arial, sans-serif" font-size="14"
+        fill="white" style="cursor:pointer; user-select: none"
         onclick="showLevel('%s')">
     %s
   </text>
-`, x, level, level, x+10, level, strings.Title(level)))
+`, x, level, level, x+13, level, strings.Title(level)))
 		}
 	}
 
@@ -590,11 +590,11 @@ func (s *SVGStacker) buildStackedSVG() string {
 	if !s.cssOnly {
 		sb.WriteString(`
   <!-- Fit to Width Toggle -->
-  <rect x="400" y="70" width="100" height="25" rx="3"
+  <rect x="520" y="91" width="130" height="33" rx="4"
         fill="#3498db" stroke="#2980b9" stroke-width="1"
         style="cursor:pointer" onclick="toggleFitMode()"
         id="fit-toggle"/>
-  <text x="410" y="86" font-family="Arial, sans-serif" font-size="11"
+  <text x="533" y="113" font-family="Arial, sans-serif" font-size="14"
         fill="white" style="cursor:pointer; user-select: none"
         onclick="toggleFitMode()" id="fit-text">
     Native Size
@@ -602,6 +602,12 @@ func (s *SVGStacker) buildStackedSVG() string {
 	}
 
 	sb.WriteString(`
+
+  <!-- Instructions -->
+  <text x="676" y="113" font-family="Arial, sans-serif" font-size="13" fill="#7f8c8d">
+    Click buttons or diagram elements to navigate
+  </text>
+
   <!-- Diagram Layers -->
 `)
 
@@ -633,12 +639,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 	sb.Write(jsContent)
 	sb.WriteString(`
   ]]></script>
-  
-  <!-- Instructions -->
-  <text x="520" y="86" font-family="Arial, sans-serif" font-size="10" fill="#7f8c8d">
-    Click buttons or diagram elements to navigate • Toggle fit mode for readability
-  </text>
-  
+
 </svg>`)
 
 	return sb.String()
@@ -665,8 +666,8 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
 	return fmt.Sprintf(`
   <!-- %s layer -->
   <g id="layer-%s" class="layer"%s>
-    <rect x="5" y="110" width="calc(100%% - 10px)" height="calc(100vh - 130px)" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
-    <svg x="10" y="115" width="calc(100%% - 20px)" height="calc(100vh - 140px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
+    <rect x="5" y="140" width="calc(100%% - 10px)" height="calc(100vh - 160px)" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
+    <svg x="10" y="145" width="calc(100%% - 20px)" height="calc(100vh - 170px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
       %s
     </svg>
   </g>`, level, level, displayStyle, level, diagram.viewBox, level, diagram.content)
