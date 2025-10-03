@@ -335,6 +335,15 @@ func (s *SVGStacker) prettyPrintXML(content string) string {
 			// If parsing fails, return original content
 			return content
 		}
+
+		// Skip the root wrapper element
+		if start, ok := token.(xml.StartElement); ok && start.Name.Local == "root" {
+			continue
+		}
+		if end, ok := token.(xml.EndElement); ok && end.Name.Local == "root" {
+			continue
+		}
+
 		if err := encoder.EncodeToken(token); err != nil {
 			return content
 		}
@@ -344,11 +353,7 @@ func (s *SVGStacker) prettyPrintXML(content string) string {
 		return content
 	}
 
-	// Remove the wrapper tags
-	result := buf.String()
-	result = strings.TrimPrefix(result, "<root>")
-	result = strings.TrimSuffix(result, "</root>")
-	return strings.TrimSpace(result)
+	return strings.TrimSpace(buf.String())
 }
 
 func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) string {
