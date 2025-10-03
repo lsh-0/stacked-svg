@@ -2,6 +2,8 @@
 
 Generate self-contained, navigable C4 architecture diagrams from PlantUML with embedded JavaScript navigation.
 
+[![Demo Screenshot](docs/demo-thumb.png)](docs/demo.png)
+
 ## Features
 
 - **Self-contained**: Single SVG file with all diagrams and navigation
