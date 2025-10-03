@@ -2,7 +2,9 @@
 
 Generate self-contained, navigable C4 architecture diagrams from PlantUML with embedded JavaScript navigation.
 
-[![Demo Screenshot](docs/demo-thumb.png)](docs/demo.png)
+<p align="center">
+  <a href="./docs/demo.png"><img src="./docs/demo-thumb.png?raw=true" width="400" alt="Example screenshot"></a>
+</p>
 
 ## Features
 
