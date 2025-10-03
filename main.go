@@ -1,20 +1,26 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
+	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
 
 type SVGStacker struct {
-	diagrams map[string]DiagramInfo
-	svgWidth int
-	svgHeight int
-	inputDir string
+	diagrams   map[string]DiagramInfo
+	svgWidth   int
+	svgHeight  int
+	inputDir   string
 	outputFile string
+	cssOnly    bool
+	tempDir    string
 }
 
 type DiagramInfo struct {
@@ -25,88 +31,202 @@ type DiagramInfo struct {
 	aspectRatio float64
 }
 
+func validateXML(content string) error {
+	decoder := xml.NewDecoder(strings.NewReader(content))
+	for {
+		_, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: svg-stacker <directory>")
-		fmt.Println("")
-		fmt.Println("Automatically discovers C4 SVG files in the directory and creates a stacked SVG.")
-		fmt.Println("Looks for files matching patterns: *context*.svg, *container*.svg, *component*.svg, *code*.svg")
+		fmt.Fprintf(os.Stderr, "Usage: svg-stacker <directory> [-o output.svg] [--css-only]\n")
 		os.Exit(1)
 	}
-	
+
 	inputDir := os.Args[1]
-	outputFile := filepath.Join(inputDir, "stacked-c4.svg")
-	
-	stacker := NewSVGStacker(inputDir, outputFile)
+	outputFile := ""
+	cssOnly := false
+
+	for i := 2; i < len(os.Args); i++ {
+		switch os.Args[i] {
+		case "-o":
+			if i+1 < len(os.Args) {
+				outputFile = os.Args[i+1]
+				i++
+			} else {
+				fmt.Fprintf(os.Stderr, "Error: -o requires an argument\n")
+				os.Exit(1)
+			}
+		case "--css-only":
+			cssOnly = true
+		}
+	}
+
+	stacker := NewSVGStacker(inputDir, outputFile, cssOnly)
 	if err := stacker.CreateStackedSVG(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating stacked SVG: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}
 }
 
-func NewSVGStacker(inputDir, outputFile string) *SVGStacker {
+func NewSVGStacker(inputDir, outputFile string, cssOnly bool) *SVGStacker {
 	return &SVGStacker{
 		diagrams:   make(map[string]DiagramInfo),
 		svgWidth:   800,
 		svgHeight:  600,
 		inputDir:   inputDir,
 		outputFile: outputFile,
+		cssOnly:    cssOnly,
 	}
 }
 
 func (s *SVGStacker) CreateStackedSVG() error {
-	fmt.Println("📚 Creating self-contained stacked SVG...")
-	
+	// Check if input directory contains .puml files
+	hasPuml, err := s.hasPumlFiles()
+	if err != nil {
+		return err
+	}
+
+	if hasPuml {
+		// Generate SVG files from PlantUML
+		if err := s.generateSVGsFromPuml(); err != nil {
+			return err
+		}
+		// Clean up temp directory on exit
+		defer func() {
+			if s.tempDir != "" {
+				os.RemoveAll(s.tempDir)
+			}
+		}()
+	}
+
 	// Load all SVG files
 	if err := s.loadDiagrams(); err != nil {
-		return fmt.Errorf("failed to load diagrams: %w", err)
+		return err
 	}
-	
+
 	// Create the master SVG
 	stackedSVG := s.buildStackedSVG()
-	
-	// Write the result
-	if err := os.WriteFile(s.outputFile, []byte(stackedSVG), 0644); err != nil {
-		return fmt.Errorf("failed to write stacked SVG: %w", err)
+
+	// Write to stdout or file
+	if s.outputFile == "" {
+		fmt.Print(stackedSVG)
+	} else {
+		if err := os.WriteFile(s.outputFile, []byte(stackedSVG), 0644); err != nil {
+			return err
+		}
 	}
-	
-	fmt.Printf("✅ Created %s\n", s.outputFile)
-	fmt.Println("📖 Open this file directly in any SVG viewer or browser")
+
 	return nil
+}
+
+func (s *SVGStacker) hasPumlFiles() (bool, error) {
+	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.puml"))
+	if err != nil {
+		return false, err
+	}
+	return len(files) > 0, nil
+}
+
+func (s *SVGStacker) generateSVGsFromPuml() error {
+	// Find all .puml files numbered 01-04
+	pumlFiles, err := s.findNumberedPumlFiles()
+	if err != nil {
+		return err
+	}
+
+	if len(pumlFiles) != 4 {
+		return fmt.Errorf("expected 4 numbered .puml files (01-*.puml through 04-*.puml), found %d", len(pumlFiles))
+	}
+
+	// Create temp directory
+	tempDir, err := os.MkdirTemp("", "svg-stacker-*")
+	if err != nil {
+		return err
+	}
+	s.tempDir = tempDir
+
+	// Run plantuml to generate SVG files
+	plantumlPath := "/home/user/bin/plantuml"
+	args := []string{"-tsvg", "-o", tempDir}
+	args = append(args, pumlFiles...)
+
+	cmd := exec.Command(plantumlPath, args...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "PlantUML output: %s\n", string(output))
+		return fmt.Errorf("plantuml failed: %w", err)
+	}
+
+	// Update inputDir to point to temp directory
+	s.inputDir = tempDir
+	return nil
+}
+
+func (s *SVGStacker) findNumberedPumlFiles() ([]string, error) {
+	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.puml"))
+	if err != nil {
+		return nil, err
+	}
+
+	// Filter and sort by number prefix
+	var numbered []string
+	numberRegex := regexp.MustCompile(`^0[1-4]-.*\.puml$`)
+
+	for _, file := range files {
+		base := filepath.Base(file)
+		if numberRegex.MatchString(base) {
+			numbered = append(numbered, file)
+		}
+	}
+
+	sort.Strings(numbered)
+	return numbered, nil
 }
 
 func (s *SVGStacker) loadDiagrams() error {
 	// Find all SVG files in the input directory
 	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.svg"))
 	if err != nil {
-		return fmt.Errorf("failed to glob SVG files: %w", err)
+		return err
 	}
 
 	for _, file := range files {
 		content, err := os.ReadFile(file)
 		if err != nil {
-			return fmt.Errorf("failed to read %s: %w", file, err)
+			return err
 		}
-		
+
+		// Validate XML before processing
+		if err := validateXML(string(content)); err != nil {
+			return err
+		}
+
 		level := s.extractLevel(filepath.Base(file))
 		if level == "unknown" {
 			continue // Skip files that don't match C4 patterns
 		}
-		
+
 		info, err := s.parseSVG(string(content))
 		if err != nil {
-			return fmt.Errorf("failed to parse %s: %w", file, err)
+			return err
 		}
-		
+
 		s.diagrams[level] = info
-		fmt.Printf("  📄 Loaded %s level (%.0fx%.0f, ratio: %.2f)\n", 
-			level, info.width, info.height, info.aspectRatio)
 	}
-	
+
 	if len(s.diagrams) == 0 {
-		return fmt.Errorf("no C4 SVG files found in %s (looking for *context*, *container*, *component*, *code* patterns)", s.inputDir)
+		return fmt.Errorf("no C4 SVG files found")
 	}
-	
+
 	return nil
 }
 
@@ -129,12 +249,12 @@ func (s *SVGStacker) extractLevel(filename string) string {
 
 func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	var info DiagramInfo
-	
+
 	// Extract SVG element attributes
 	svgRegex := regexp.MustCompile(`<svg[^>]*>`)
 	match := svgRegex.FindString(content)
 	if match == "" {
-		return info, fmt.Errorf("no SVG element found")
+		return info, fmt.Errorf("no SVG element")
 	}
 	
 	// Extract viewBox
@@ -172,56 +292,168 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 	
 	info.aspectRatio = info.width / info.height
 	
-	// Extract content between <svg> and </svg>
-	startIdx := strings.Index(content, ">") + 1
+	// Extract content between <svg> and </svg> more robustly
+	// Find the end of the opening <svg> tag
+	svgStartPos := strings.Index(content, "<svg")
+	if svgStartPos == -1 {
+		return info, fmt.Errorf("no <svg> tag")
+	}
+
+	svgTagEndPos := strings.Index(content[svgStartPos:], ">")
+	if svgTagEndPos == -1 {
+		return info, fmt.Errorf("malformed <svg> tag")
+	}
+
+	startIdx := svgStartPos + svgTagEndPos + 1
 	endIdx := strings.LastIndex(content, "</svg>")
-	if startIdx > 0 && endIdx > startIdx {
-		info.content = content[startIdx:endIdx]
-	} else {
-		return info, fmt.Errorf("failed to extract SVG content")
+
+	if endIdx == -1 || endIdx <= startIdx {
+		return info, fmt.Errorf("no </svg> tag")
 	}
 	
-	// Clean the content
-	info.content = s.cleanDiagramContent(info.content)
+	info.content = content[startIdx:endIdx]
 	
 	return info, nil
 }
 
-func (s *SVGStacker) cleanDiagramContent(content string) string {
+func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) string {
 	// Remove scripts
 	scriptRegex := regexp.MustCompile(`<script[^>]*>.*?</script>`)
 	content = scriptRegex.ReplaceAllString(content, "")
 	
-	// Find <a> tags and their parent elements to add click handlers
-	// Look for pattern: <g ...><a href="...">content</a></g>
-	aTagRegex := regexp.MustCompile(`(<g[^>]*)(>\s*<a\s+[^>]*href="[^"]*"[^>]*>)(.*?)</a>`)
-	content = aTagRegex.ReplaceAllStringFunc(content, func(match string) string {
-		submatches := aTagRegex.FindStringSubmatch(match)
-		if len(submatches) >= 4 {
-			gTag := submatches[1]           // <g attributes
-			contentInside := submatches[3]  // content inside <a>
-			
-			// Add onclick to the g element and remove the <a> tag
-			return gTag + ` onclick="navigateDown()" style="cursor:pointer;">` + contentInside
-		}
-		return match
-	})
+	// Determine next level for navigation
+	nextLevel := s.getNextLevel(currentLevel)
+	_ = nextLevel // May be unused in CSS-only mode
 	
-	// Clean up any remaining <a> tags that might not have been caught
-	content = regexp.MustCompile(`<a\s+[^>]*>`).ReplaceAllString(content, "")
-	content = strings.ReplaceAll(content, "</a>", "")
+	// For CSS-only mode, we need to ensure clean XML structure
+	if s.cssOnly {
+		// Use proper XML parsing to remove <a> tags
+		content = s.removeATagsWithXML(content)
+	} else {
+		// JavaScript mode: add onclick handlers and clean up <a> tags
+		aTagRegex := regexp.MustCompile(`(<g[^>]*>)\s*<a\s+[^>]*href="[^"]*"[^>]*>(.*?)</a>`)
+		content = aTagRegex.ReplaceAllStringFunc(content, func(match string) string {
+			submatches := aTagRegex.FindStringSubmatch(match)
+			if len(submatches) >= 3 {
+				gTag := submatches[1]        // <g ...>
+				contentInside := submatches[2] // content inside <a>
+				
+				// JavaScript mode: add onclick to the g element
+				return strings.Replace(gTag, ">", ` onclick="navigateDown()" style="cursor:pointer;">`, 1) + contentInside
+			}
+			return match
+		})
+		
+		// Clean up any remaining <a> tags
+		content = regexp.MustCompile(`<a\s+[^>]*>`).ReplaceAllString(content, "")
+		content = strings.ReplaceAll(content, "</a>", "")
+	}
 	
 	return content
+}
+
+func (s *SVGStacker) removeATagsWithXML(content string) string {
+	// Wrap content in a root element to make it valid XML
+	wrappedContent := "<root>" + content + "</root>"
+	
+	// Parse the XML
+	decoder := xml.NewDecoder(strings.NewReader(wrappedContent))
+	var result strings.Builder
+	
+	// Track if we're inside an <a> tag
+	var aTagDepth int
+	
+	for {
+		token, err := decoder.Token()
+		if err != nil {
+			// If XML parsing fails, fall back to the original content without <a> tag removal
+			// This means CSS-only mode won't have navigation but will have valid XML
+			return content
+		}
+		
+		switch t := token.(type) {
+		case xml.StartElement:
+			if t.Name.Local == "a" {
+				aTagDepth++
+				// Skip the <a> start tag
+				continue
+			} else if aTagDepth == 0 {
+				// Only output non-<a> start elements when not inside <a> tags
+				result.WriteString("<")
+				result.WriteString(t.Name.Local)
+				for _, attr := range t.Attr {
+					result.WriteString(" ")
+					result.WriteString(attr.Name.Local)
+					result.WriteString(`="`)
+					// Properly escape attribute values
+					escaped := strings.ReplaceAll(attr.Value, `"`, `&quot;`)
+					escaped = strings.ReplaceAll(escaped, `&`, `&amp;`)
+					escaped = strings.ReplaceAll(escaped, `<`, `&lt;`)
+					escaped = strings.ReplaceAll(escaped, `>`, `&gt;`)
+					result.WriteString(escaped)
+					result.WriteString(`"`)
+				}
+				result.WriteString(">")
+			}
+		case xml.EndElement:
+			if t.Name.Local == "a" {
+				aTagDepth--
+				// Skip the </a> end tag
+				continue
+			} else if aTagDepth == 0 {
+				// Only output non-<a> end elements when not inside <a> tags
+				result.WriteString("</")
+				result.WriteString(t.Name.Local)
+				result.WriteString(">")
+			}
+		case xml.CharData:
+			if aTagDepth == 0 {
+				// Only output character data when not inside <a> tags
+				result.Write(t)
+			}
+		case xml.Comment:
+			if aTagDepth == 0 {
+				result.WriteString("<!--")
+				result.Write(t)
+				result.WriteString("-->")
+			}
+		}
+	}
+	
+	// Remove the wrapper root element
+	resultStr := result.String()
+	if strings.HasPrefix(resultStr, "<root>") && strings.HasSuffix(resultStr, "</root>") {
+		resultStr = resultStr[6 : len(resultStr)-7]
+	}
+	
+	return resultStr
+}
+
+func (s *SVGStacker) getNextLevel(currentLevel string) string {
+	switch currentLevel {
+	case "context":
+		return "container"
+	case "container": 
+		return "component"
+	case "component":
+		return "code"
+	default:
+		return ""
+	}
 }
 
 func (s *SVGStacker) buildStackedSVG() string {
 	levels := []string{"context", "container", "component", "code"}
 	
-	// Load JavaScript
-	jsContent, err := os.ReadFile("navigation.js")
-	if err != nil {
-		fmt.Printf("Warning: could not load navigation.js: %v\n", err)
-		jsContent = []byte("// Navigation script not found")
+	var jsContent []byte
+	if !s.cssOnly {
+		// Load JavaScript for interactive mode
+		var err error
+		jsContent, err = os.ReadFile("navigation.js")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: could not load navigation.js: %v\n", err)
+			jsContent = []byte("// Navigation script not found")
+		}
 	}
 	
 	var sb strings.Builder
@@ -234,7 +466,41 @@ func (s *SVGStacker) buildStackedSVG() string {
      height="100%" 
      style="background: #f8f9fa; display: block; min-height: 100vh;">
      
-  <title>Stacked C4 Architecture Diagrams</title>
+  <title>Stacked C4 Architecture Diagrams</title>`)
+  
+  	// Add CSS styles for CSS-only mode
+  	if s.cssOnly {
+  		sb.WriteString(`
+  <style>
+    /* CSS-only navigation using :target pseudo-class */
+    .layer { 
+      display: none; 
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .layer:target { display: block; }
+    
+    /* Show context layer by default when no fragment */
+    #layer-context { display: block; }
+    
+    /* Hide default layer when any layer is targeted */
+    .layer:target ~ #layer-context:not(:target) { display: none; }
+    
+    /* Navigation button styles */
+    .nav-button { 
+      cursor: pointer; 
+      transition: fill 0.2s; 
+    }
+    .nav-button:hover { 
+      fill: #2980b9 !important; 
+    }
+  </style>`)
+  	}
+  	
+  	sb.WriteString(`
   
   <!-- Navigation Header -->
   <rect x="0" y="0" width="100%" height="60" fill="#2c3e50"/>
@@ -251,7 +517,21 @@ func (s *SVGStacker) buildStackedSVG() string {
 	// Generate navigation buttons
 	for i, level := range levels {
 		x := 20 + i*90
-		sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="70" width="80" height="25" rx="3" 
+		if s.cssOnly {
+			// CSS-only version using <a> tags with href fragments
+			sb.WriteString(fmt.Sprintf(`  <a href="#layer-%s">
+    <rect x="%d" y="70" width="80" height="25" rx="3" 
+          fill="#3498db" stroke="#2980b9" stroke-width="1" 
+          class="nav-button"/>
+    <text x="%d" y="86" font-family="Arial, sans-serif" font-size="11" 
+          fill="white" style="cursor:pointer; user-select: none">
+      %s
+    </text>
+  </a>
+`, level, x, x+10, strings.Title(level)))
+		} else {
+			// JavaScript version  
+			sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="70" width="80" height="25" rx="3" 
         fill="#3498db" stroke="#2980b9" stroke-width="1" 
         style="cursor:pointer" onclick="showLevel('%s')" 
         id="nav-%s"/>
@@ -261,10 +541,12 @@ func (s *SVGStacker) buildStackedSVG() string {
     %s
   </text>
 `, x, level, level, x+10, level, strings.Title(level)))
+		}
 	}
 	
-	// Add fit-to-width toggle button
-	sb.WriteString(`
+	// Add fit-to-width toggle button (JavaScript mode only)
+	if !s.cssOnly {
+		sb.WriteString(`
   <!-- Fit to Width Toggle -->
   <rect x="400" y="70" width="100" height="25" rx="3" 
         fill="#27ae60" stroke="#229954" stroke-width="1" 
@@ -275,6 +557,7 @@ func (s *SVGStacker) buildStackedSVG() string {
         onclick="toggleFitMode()" id="fit-text">
     Auto Scale
   </text>`)
+	}
 	
 	sb.WriteString(`
   <!-- Diagram Layers -->
@@ -332,12 +615,20 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
   </g>`, level, level, strings.Title(level))
 	}
 	
+	displayStyle := ""
+	if !s.cssOnly {
+		displayStyle = ` style="display:none"`
+	}
+	
+	// Clean the diagram content with the current level for proper navigation
+	cleanedContent := s.cleanDiagramContent(diagram.content, level)
+	
 	return fmt.Sprintf(`
   <!-- %s layer -->
-  <g id="layer-%s" style="display:none">
+  <g id="layer-%s" class="layer"%s>
     <rect x="5" y="110" width="calc(100%% - 10px)" height="calc(100vh - 130px)" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
     <svg x="10" y="115" width="calc(100%% - 20px)" height="calc(100vh - 140px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
       %s
     </svg>
-  </g>`, level, level, level, diagram.viewBox, level, diagram.content)
+  </g>`, level, level, displayStyle, level, diagram.viewBox, level, cleanedContent)
 }
