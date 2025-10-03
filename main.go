@@ -165,7 +165,11 @@ func (s *SVGStacker) generateSVGsFromPuml() error {
 	s.tempDir = tempDir
 
 	// Run plantuml to generate SVG files
-	plantumlPath := "/home/user/bin/plantuml"
+	plantumlPath, err := exec.LookPath("plantuml")
+	if err != nil {
+		return fmt.Errorf("plantuml not found in PATH: %w", err)
+	}
+
 	args := []string{"-tsvg", "-o", tempDir}
 	args = append(args, pumlFiles...)
 

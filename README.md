@@ -7,11 +7,7 @@ Generate self-contained, navigable C4 architecture diagrams from PlantUML with e
 ## Features
 
 - **Self-contained**: Single SVG file with all diagrams and navigation
-- **No dependencies**: Works in any SVG-capable viewer or browser
-- **Responsive**: Adapts to viewport size with intelligent scaling
-- **Native browser integration**: Supports scrolling and zoom
 - **Clickable navigation**: Click diagram elements to drill down between C4 levels
-- **Automatic PlantUML processing**: Generates SVGs from .puml files automatically
 - **Flexible diagram count**: Supports 3 or 4 C4 levels (code level optional)
 
 ## Quick Start
@@ -96,7 +92,7 @@ The link filenames don't matter - they're replaced with JavaScript navigation.
 ## Requirements
 
 - Go compiler for building the generator
-- PlantUML installed at `/home/user/bin/plantuml` (or modify path in code)
+- PlantUML installed and available in PATH
 - PlantUML C4 library for diagram generation
 
 ## No Runtime Dependencies
