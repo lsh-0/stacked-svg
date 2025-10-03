@@ -216,7 +216,7 @@ func (s *SVGStacker) loadDiagrams() error {
 			continue // Skip files that don't match C4 patterns
 		}
 
-		info, err := s.parseSVG(string(content))
+		info, err := s.parseSVG(string(content), level)
 		if err != nil {
 			return err
 		}
@@ -248,7 +248,7 @@ func (s *SVGStacker) extractLevel(filename string) string {
 	return "unknown"
 }
 
-func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
+func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error) {
 	var info DiagramInfo
 
 	// Extract SVG element attributes
@@ -312,7 +312,9 @@ func (s *SVGStacker) parseSVG(content string) (DiagramInfo, error) {
 		return info, fmt.Errorf("no </svg> tag")
 	}
 
-	info.content = s.prettyPrintXML(content[startIdx:endIdx])
+	rawContent := content[startIdx:endIdx]
+	cleanedContent := s.cleanDiagramContent(rawContent, level)
+	info.content = s.prettyPrintXML(cleanedContent)
 
 	return info, nil
 }
@@ -660,9 +662,6 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
 		displayStyle = ` style="display:none"`
 	}
 
-	// Clean the diagram content with the current level for proper navigation
-	cleanedContent := s.cleanDiagramContent(diagram.content, level)
-
 	return fmt.Sprintf(`
   <!-- %s layer -->
   <g id="layer-%s" class="layer"%s>
@@ -670,5 +669,5 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
     <svg x="10" y="115" width="calc(100%% - 20px)" height="calc(100vh - 140px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
       %s
     </svg>
-  </g>`, level, level, displayStyle, level, diagram.viewBox, level, cleanedContent)
+  </g>`, level, level, displayStyle, level, diagram.viewBox, level, diagram.content)
 }
