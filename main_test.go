@@ -9,12 +9,51 @@ import (
 	"testing"
 )
 
+// createTestSVGFiles creates minimal valid SVG files for testing
+func createTestSVGFiles(t *testing.T, dir string) {
+	t.Helper()
+
+	testSVGs := map[string]string{
+		"01-context.svg": `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <title>Test Context</title>
+  <rect x="10" y="10" width="380" height="280" fill="white" stroke="black"/>
+  <text x="200" y="150" text-anchor="middle">Context Diagram</text>
+  <g class="link">
+    <path d="M 100,100 L 300,200" stroke="#666" stroke-width="1"/>
+    <text x="200" y="150" fill="#666">Test Link</text>
+  </g>
+</svg>`,
+		"02-container.svg": `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="400" viewBox="0 0 500 400">
+  <title>Test Container</title>
+  <rect x="10" y="10" width="480" height="380" fill="white" stroke="black"/>
+  <text x="250" y="200" text-anchor="middle">Container Diagram</text>
+</svg>`,
+	}
+
+	for filename, content := range testSVGs {
+		path := filepath.Join(dir, filename)
+		if err := os.WriteFile(path, []byte(content), 0644); err != nil {
+			t.Fatalf("Failed to create test SVG %s: %v", filename, err)
+		}
+	}
+}
+
 func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
-	// Create a temporary directory for test output
+	// Create a temporary directory for test input and output
 	tempDir := t.TempDir()
+	inputDir := filepath.Join(tempDir, "input")
+	if err := os.Mkdir(inputDir, 0755); err != nil {
+		t.Fatalf("Failed to create input directory: %v", err)
+	}
+
+	// Create test SVG files
+	createTestSVGFiles(t, inputDir)
+
 	outputFile := filepath.Join(tempDir, "test-stacked-c4.svg")
 
-	stacker := NewSVGStacker("examples/output", outputFile, "Test Diagram")
+	stacker := NewSVGStacker(inputDir, outputFile, "Test Diagram")
 
 	// Generate the SVG
 	err := stacker.CreateStackedSVG()
@@ -62,15 +101,22 @@ func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
 }
 
 func TestActualGeneratedFiles(t *testing.T) {
-	// Test that we can generate a valid SVG from examples directory
+	// Test that we can generate a valid SVG with test files
 	tempDir := t.TempDir()
+	inputDir := filepath.Join(tempDir, "input")
+	if err := os.Mkdir(inputDir, 0755); err != nil {
+		t.Fatalf("Failed to create input directory: %v", err)
+	}
+
+	// Create test SVG files
+	createTestSVGFiles(t, inputDir)
+
 	outputFile := filepath.Join(tempDir, "actual-test.svg")
 
-	stacker := NewSVGStacker("examples/output", outputFile, "Test")
+	stacker := NewSVGStacker(inputDir, outputFile, "Test")
 	err := stacker.CreateStackedSVG()
 	if err != nil {
-		t.Skipf("Could not generate SVG (no example files?): %v", err)
-		return
+		t.Fatalf("Could not generate SVG: %v", err)
 	}
 
 	content, err := os.ReadFile(outputFile)
@@ -112,11 +158,19 @@ func TestActualGeneratedFiles(t *testing.T) {
 }
 
 func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
-	// Create a temporary directory for test output
+	// Create a temporary directory for test input and output
 	tempDir := t.TempDir()
+	inputDir := filepath.Join(tempDir, "input")
+	if err := os.Mkdir(inputDir, 0755); err != nil {
+		t.Fatalf("Failed to create input directory: %v", err)
+	}
+
+	// Create test SVG files
+	createTestSVGFiles(t, inputDir)
+
 	outputFile := filepath.Join(tempDir, "test-stacked-c4.svg")
 
-	stacker := NewSVGStacker("examples/output", outputFile, "Test Architecture")
+	stacker := NewSVGStacker(inputDir, outputFile, "Test Architecture")
 
 	// Generate the SVG
 	err := stacker.CreateStackedSVG()
