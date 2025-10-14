@@ -426,19 +426,32 @@ func (s *SVGStacker) buildStackedSVG() string {
     /* Path highlighting - works without JavaScript */
     .link path,
     .link polygon {
-      transition: all 0.2s ease;
       pointer-events: stroke; /* Only capture events on the stroke itself */
     }
 
-    .link:hover path,
-    .link:hover polygon {
+    /* Highlight when JavaScript adds highlighted class (triggered by text hover) */
+    .link.highlighted path,
+    .link.highlighted polygon {
       stroke: #e74c3c !important;
       stroke-width: 3 !important;
       filter: drop-shadow(0 0 3px rgba(231, 76, 60, 0.5));
     }
 
-    .link:hover {
+    /* Make link text labels hoverable and disable tooltips */
+    .link text {
       cursor: pointer;
+      user-select: none;
+      pointer-events: all;
+    }
+
+    /* Make text white when link is highlighted so it shows on red background */
+    .link.highlighted text {
+      fill: white !important;
+    }
+
+    /* Hide any title elements that might trigger tooltips */
+    .link title {
+      display: none;
     }
 
     /* Dimmed state (applied by JavaScript) */

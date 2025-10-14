@@ -176,29 +176,91 @@ function setupLinkHoverEnhancements() {
   const currentLayer = document.getElementById('layer-' + currentLevel);
   if (!currentLayer) return;
 
+  // Remove all <title> elements from the diagram to prevent tooltips
+  const allTitles = currentLayer.querySelectorAll('title');
+  allTitles.forEach(t => t.remove());
+
   const links = currentLayer.querySelectorAll('g.link');
 
   links.forEach(link => {
-    // Add mouseenter handler
-    link.addEventListener('mouseenter', function() {
-      // Bring this link to front by moving it to end of parent
-      const parent = link.parentNode;
-      parent.appendChild(link);
+    // Remove any title elements that might trigger tooltips
+    const titleElements = link.querySelectorAll('title');
+    titleElements.forEach(t => t.remove());
 
-      // Dim all other links
-      links.forEach(otherLink => {
-        if (otherLink !== link) {
-          otherLink.classList.add('dimmed');
-        }
-      });
+    // Find text elements within this link (the labels)
+    const textElements = link.querySelectorAll('text');
+
+    // Remove title attributes from all text elements and make them non-interactive
+    textElements.forEach(textEl => {
+      textEl.removeAttribute('title');
+      textEl.style.pointerEvents = 'none'; // Let hitbox underneath handle all mouse events
+      let parent = textEl.parentElement;
+      while (parent && parent !== link) {
+        parent.removeAttribute('title');
+        parent = parent.parentElement;
+      }
     });
 
-    // Add mouseleave handler
-    link.addEventListener('mouseleave', function() {
-      // Remove dimming from all links
-      links.forEach(otherLink => {
-        otherLink.classList.remove('dimmed');
+    // Create persistent background rectangle for the label area
+    if (textElements.length > 0) {
+      // Calculate bounding box of all text elements together
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      textElements.forEach(t => {
+        const bbox = t.getBBox();
+        minX = Math.min(minX, bbox.x);
+        minY = Math.min(minY, bbox.y);
+        maxX = Math.max(maxX, bbox.x + bbox.width);
+        maxY = Math.max(maxY, bbox.y + bbox.height);
       });
-    });
+
+      // Create invisible hitbox rectangle that's always present
+      const hitbox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      hitbox.setAttribute('x', minX - 3);
+      hitbox.setAttribute('y', minY - 2);
+      hitbox.setAttribute('width', (maxX - minX) + 6);
+      hitbox.setAttribute('height', (maxY - minY) + 4);
+      hitbox.setAttribute('fill', 'transparent');
+      hitbox.setAttribute('rx', '3');
+      hitbox.style.cursor = 'pointer';
+      hitbox.classList.add('label-hitbox');
+
+      // Insert before first text element
+      textElements[0].parentNode.insertBefore(hitbox, textElements[0]);
+
+      // Create visible background (hidden by default)
+      const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bgRect.setAttribute('x', minX - 3);
+      bgRect.setAttribute('y', minY - 2);
+      bgRect.setAttribute('width', (maxX - minX) + 6);
+      bgRect.setAttribute('height', (maxY - minY) + 4);
+      bgRect.setAttribute('fill', '#e74c3c');
+      bgRect.setAttribute('fill-opacity', '0');
+      bgRect.setAttribute('rx', '3');
+      bgRect.classList.add('text-bg');
+      bgRect.style.pointerEvents = 'none'; // Don't interfere with hitbox
+
+      // Insert before first text element
+      textElements[0].parentNode.insertBefore(bgRect, textElements[0]);
+
+      // Add hover handler to hitbox
+      hitbox.addEventListener('mouseenter', function(e) {
+        e.preventDefault();
+
+        // Bring this link to front
+        const parent = link.parentNode;
+        parent.appendChild(link);
+
+        // Add highlight class
+        link.classList.add('highlighted');
+
+        // Show background
+        bgRect.setAttribute('fill-opacity', '0.9');
+      });
+
+      hitbox.addEventListener('mouseleave', function() {
+        link.classList.remove('highlighted');
+        bgRect.setAttribute('fill-opacity', '0');
+      });
+    }
   });
 }
