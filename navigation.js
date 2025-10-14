@@ -28,94 +28,51 @@ function positionRightAlignedElements() {
 
 function resizeContainers() {
   // Get the actual browser viewport dimensions
-  const viewBoxWidth = window.innerWidth;
-  const viewBoxHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
 
-  // Calculate available space in viewport coordinates (subtract header and navigation)
-  const containerWidth = viewBoxWidth - 10; // Minimal padding
-  const containerHeight = viewBoxHeight - 160; // header + nav + padding
-  
-  // Diagram dimensions are provided by the Go program
-  // diagramData and availableLevels will be injected before this script
+  // Get the outer SVG
+  const mainSVG = document.documentElement;
+  if (!mainSVG) return;
 
-  // Update all container rectangles and diagrams
-  availableLevels.forEach(level => {
-    const container = document.getElementById('container-' + level);
-    const diagram = document.getElementById('diagram-' + level);
-    const data = diagramData[level];
-    
-    if (container && diagram && data) {
-      // Algorithm: Prioritize readability by using available space more effectively
-      const minScale = 0.4; // Allow smaller scale for very large diagrams
-      const maxScale = 2.0;  // Allow more scaling up for small diagrams
-      
-      // Calculate scale to fit container with more aggressive space usage
-      const scaleToFitWidth = containerWidth / data.width;
-      const scaleToFitHeight = containerHeight / data.height;
-      const scaleToFit = Math.min(scaleToFitWidth, scaleToFitHeight);
-      
-      // Choose scaling strategy based on fit mode
-      let finalScale;
-      if (fitToWidth) {
-        // Auto-scale mode - fit to available viewport (constrained)
-        if (scaleToFit < 0.8) {
-          // Large diagram - use available space but ensure no overflow
-          finalScale = Math.max(minScale, scaleToFit * 0.98); // Use 98% to prevent overflow
-        } else {
-          // Smaller diagram - scale up to use space efficiently
-          finalScale = Math.min(maxScale, scaleToFit * 0.95); // Slight margin to prevent overflow
-        }
-      } else {
-        // Native size mode - no scaling, show at original diagram size for free zoom
-        finalScale = 1.0;
-      }
-      
-      // Calculate final diagram size
-      const finalWidth = data.width * finalScale;
-      const finalHeight = data.height * finalScale;
-      
-      // Container sizing based on mode
-      let containerFinalWidth, containerFinalHeight;
-      
-      if (fitToWidth) {
-        // Auto-scale mode - container fits viewport (constrained)
-        containerFinalWidth = containerWidth;
-        containerFinalHeight = containerHeight;
-        
-        // For tall diagrams in auto-scale mode, extend height
-        if (finalHeight > containerHeight) {
-          containerFinalHeight = finalHeight + 20;
-          const mainSVG = document.documentElement;
-          const newSVGHeight = 160 + finalHeight + 40;
-          mainSVG.style.minHeight = newSVGHeight + 'px';
-        }
-      } else {
-        // Native mode - make container large enough for full diagram + some padding
-        containerFinalWidth = Math.max(containerWidth, finalWidth + 40);
-        containerFinalHeight = Math.max(containerHeight, finalHeight + 40);
+  // Get current level diagram data
+  const data = diagramData[currentLevel];
+  if (!data) return;
 
-        // Extend SVG canvas to accommodate large diagrams
-        const mainSVG = document.documentElement;
-        const newSVGHeight = 160 + finalHeight + 80; // header + diagram + padding
-        const newSVGWidth = Math.max(viewBoxWidth, finalWidth + 80);
-        mainSVG.style.minHeight = newSVGHeight + 'px';
-        mainSVG.style.minWidth = newSVGWidth + 'px';
-      }
-      
-      // Update container rectangle
-      container.setAttribute('width', containerFinalWidth);
-      container.setAttribute('height', containerFinalHeight);
-      
-      // Update diagram SVG - centered horizontally with minimal padding
-      const diagramX = Math.max(0, (containerFinalWidth - finalWidth) / 2);
-      const diagramY = 5; // Minimal top padding
+  // Get container and diagram elements
+  const container = document.getElementById('container-' + currentLevel);
+  const diagramGroup = document.getElementById('diagram-' + currentLevel);
+  const diagramSVG = diagramGroup ? diagramGroup.querySelector('svg') : null;
 
-      diagram.setAttribute('x', 5 + diagramX); // Minimal left offset
-      diagram.setAttribute('y', 140 + diagramY);
-      diagram.setAttribute('width', finalWidth);
-      diagram.setAttribute('height', finalHeight);
-    }
-  });
+  if (!container || !diagramSVG) return;
+
+  if (fitToWidth) {
+    // Auto-scale mode - SVG fits viewport, diagram scales to fit available space
+    mainSVG.setAttribute('width', viewportWidth);
+    mainSVG.setAttribute('height', viewportHeight);
+
+    const availableWidth = viewportWidth - 20;
+    const availableHeight = viewportHeight - 160;
+
+    container.setAttribute('width', availableWidth);
+    container.setAttribute('height', availableHeight);
+
+    diagramSVG.setAttribute('width', availableWidth - 10);
+    diagramSVG.setAttribute('height', availableHeight - 10);
+  } else {
+    // Native size mode - SVG expands to diagram's native size, browser provides scrollbars
+    const svgWidth = Math.max(viewportWidth, data.width + 30);
+    const svgHeight = Math.max(viewportHeight, 140 + data.height + 30);
+
+    mainSVG.setAttribute('width', svgWidth);
+    mainSVG.setAttribute('height', svgHeight);
+
+    container.setAttribute('width', data.width + 20);
+    container.setAttribute('height', data.height + 20);
+
+    diagramSVG.setAttribute('width', data.width);
+    diagramSVG.setAttribute('height', data.height);
+  }
 }
 
 function showLevel(level) {
@@ -143,6 +100,9 @@ function showLevel(level) {
 
   // Resize containers after showing layer
   setTimeout(resizeContainers, 10);
+
+  // Setup link hover enhancements (JavaScript progressive enhancement)
+  setupLinkHoverEnhancements();
 }
 
 // Initialize - show context level and setup resize
@@ -206,6 +166,100 @@ function toggleNotes() {
         if (notePath) {
           g.style.display = notesVisible ? 'block' : 'none';
         }
+      });
+    }
+  });
+}
+
+// Progressive enhancement: JavaScript-enhanced link hovering
+function setupLinkHoverEnhancements() {
+  const currentLayer = document.getElementById('layer-' + currentLevel);
+  if (!currentLayer) return;
+
+  // Remove all <title> elements from the diagram to prevent tooltips
+  const allTitles = currentLayer.querySelectorAll('title');
+  allTitles.forEach(t => t.remove());
+
+  const links = currentLayer.querySelectorAll('g.link');
+
+  links.forEach(link => {
+    // Remove any title elements that might trigger tooltips
+    const titleElements = link.querySelectorAll('title');
+    titleElements.forEach(t => t.remove());
+
+    // Find text elements within this link (the labels)
+    const textElements = link.querySelectorAll('text');
+
+    // Remove title attributes from all text elements and make them non-interactive
+    textElements.forEach(textEl => {
+      textEl.removeAttribute('title');
+      textEl.style.pointerEvents = 'none'; // Let hitbox underneath handle all mouse events
+      let parent = textEl.parentElement;
+      while (parent && parent !== link) {
+        parent.removeAttribute('title');
+        parent = parent.parentElement;
+      }
+    });
+
+    // Create persistent background rectangle for the label area
+    if (textElements.length > 0) {
+      // Calculate bounding box of all text elements together
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      textElements.forEach(t => {
+        const bbox = t.getBBox();
+        minX = Math.min(minX, bbox.x);
+        minY = Math.min(minY, bbox.y);
+        maxX = Math.max(maxX, bbox.x + bbox.width);
+        maxY = Math.max(maxY, bbox.y + bbox.height);
+      });
+
+      // Create invisible hitbox rectangle that's always present
+      const hitbox = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      hitbox.setAttribute('x', minX - 3);
+      hitbox.setAttribute('y', minY - 2);
+      hitbox.setAttribute('width', (maxX - minX) + 6);
+      hitbox.setAttribute('height', (maxY - minY) + 4);
+      hitbox.setAttribute('fill', 'transparent');
+      hitbox.setAttribute('rx', '3');
+      hitbox.style.cursor = 'pointer';
+      hitbox.classList.add('label-hitbox');
+
+      // Insert before first text element
+      textElements[0].parentNode.insertBefore(hitbox, textElements[0]);
+
+      // Create visible background (hidden by default)
+      const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bgRect.setAttribute('x', minX - 3);
+      bgRect.setAttribute('y', minY - 2);
+      bgRect.setAttribute('width', (maxX - minX) + 6);
+      bgRect.setAttribute('height', (maxY - minY) + 4);
+      bgRect.setAttribute('fill', '#e74c3c');
+      bgRect.setAttribute('fill-opacity', '0');
+      bgRect.setAttribute('rx', '3');
+      bgRect.classList.add('text-bg');
+      bgRect.style.pointerEvents = 'none'; // Don't interfere with hitbox
+
+      // Insert before first text element
+      textElements[0].parentNode.insertBefore(bgRect, textElements[0]);
+
+      // Add hover handler to hitbox
+      hitbox.addEventListener('mouseenter', function(e) {
+        e.preventDefault();
+
+        // Bring this link to front
+        const parent = link.parentNode;
+        parent.appendChild(link);
+
+        // Add highlight class
+        link.classList.add('highlighted');
+
+        // Show background
+        bgRect.setAttribute('fill-opacity', '0.9');
+      });
+
+      hitbox.addEventListener('mouseleave', function() {
+        link.classList.remove('highlighted');
+        bgRect.setAttribute('fill-opacity', '0');
       });
     }
   });
