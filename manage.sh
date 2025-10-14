@@ -61,8 +61,15 @@ case "$1" in
         echo "Release binaries created in release/"
         ls -lh release/
         ;;
+    clean)
+        echo "Cleaning temporary files and binaries..."
+        rm -f svg-stacker
+        rm -f *.svg
+        rm -rf release/
+        echo "Cleaned: binaries, test SVGs, and release directory"
+        ;;
     *)
-        echo "Usage: $0 {build|test|generate <svg-directory>|release}"
+        echo "Usage: $0 {build|test|generate <svg-directory>|release|clean}"
         exit 1
         ;;
 esac
