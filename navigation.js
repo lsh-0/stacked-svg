@@ -28,94 +28,51 @@ function positionRightAlignedElements() {
 
 function resizeContainers() {
   // Get the actual browser viewport dimensions
-  const viewBoxWidth = window.innerWidth;
-  const viewBoxHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
 
-  // Calculate available space in viewport coordinates (subtract header and navigation)
-  const containerWidth = viewBoxWidth - 10; // Minimal padding
-  const containerHeight = viewBoxHeight - 160; // header + nav + padding
-  
-  // Diagram dimensions are provided by the Go program
-  // diagramData and availableLevels will be injected before this script
+  // Get the outer SVG
+  const mainSVG = document.documentElement;
+  if (!mainSVG) return;
 
-  // Update all container rectangles and diagrams
-  availableLevels.forEach(level => {
-    const container = document.getElementById('container-' + level);
-    const diagram = document.getElementById('diagram-' + level);
-    const data = diagramData[level];
-    
-    if (container && diagram && data) {
-      // Algorithm: Prioritize readability by using available space more effectively
-      const minScale = 0.4; // Allow smaller scale for very large diagrams
-      const maxScale = 2.0;  // Allow more scaling up for small diagrams
-      
-      // Calculate scale to fit container with more aggressive space usage
-      const scaleToFitWidth = containerWidth / data.width;
-      const scaleToFitHeight = containerHeight / data.height;
-      const scaleToFit = Math.min(scaleToFitWidth, scaleToFitHeight);
-      
-      // Choose scaling strategy based on fit mode
-      let finalScale;
-      if (fitToWidth) {
-        // Auto-scale mode - fit to available viewport (constrained)
-        if (scaleToFit < 0.8) {
-          // Large diagram - use available space but ensure no overflow
-          finalScale = Math.max(minScale, scaleToFit * 0.98); // Use 98% to prevent overflow
-        } else {
-          // Smaller diagram - scale up to use space efficiently
-          finalScale = Math.min(maxScale, scaleToFit * 0.95); // Slight margin to prevent overflow
-        }
-      } else {
-        // Native size mode - no scaling, show at original diagram size for free zoom
-        finalScale = 1.0;
-      }
-      
-      // Calculate final diagram size
-      const finalWidth = data.width * finalScale;
-      const finalHeight = data.height * finalScale;
-      
-      // Container sizing based on mode
-      let containerFinalWidth, containerFinalHeight;
-      
-      if (fitToWidth) {
-        // Auto-scale mode - container fits viewport (constrained)
-        containerFinalWidth = containerWidth;
-        containerFinalHeight = containerHeight;
-        
-        // For tall diagrams in auto-scale mode, extend height
-        if (finalHeight > containerHeight) {
-          containerFinalHeight = finalHeight + 20;
-          const mainSVG = document.documentElement;
-          const newSVGHeight = 160 + finalHeight + 40;
-          mainSVG.style.minHeight = newSVGHeight + 'px';
-        }
-      } else {
-        // Native mode - make container large enough for full diagram + some padding
-        containerFinalWidth = Math.max(containerWidth, finalWidth + 40);
-        containerFinalHeight = Math.max(containerHeight, finalHeight + 40);
+  // Get current level diagram data
+  const data = diagramData[currentLevel];
+  if (!data) return;
 
-        // Extend SVG canvas to accommodate large diagrams
-        const mainSVG = document.documentElement;
-        const newSVGHeight = 160 + finalHeight + 80; // header + diagram + padding
-        const newSVGWidth = Math.max(viewBoxWidth, finalWidth + 80);
-        mainSVG.style.minHeight = newSVGHeight + 'px';
-        mainSVG.style.minWidth = newSVGWidth + 'px';
-      }
-      
-      // Update container rectangle
-      container.setAttribute('width', containerFinalWidth);
-      container.setAttribute('height', containerFinalHeight);
-      
-      // Update diagram SVG - centered horizontally with minimal padding
-      const diagramX = Math.max(0, (containerFinalWidth - finalWidth) / 2);
-      const diagramY = 5; // Minimal top padding
+  // Get container and diagram elements
+  const container = document.getElementById('container-' + currentLevel);
+  const diagramGroup = document.getElementById('diagram-' + currentLevel);
+  const diagramSVG = diagramGroup ? diagramGroup.querySelector('svg') : null;
 
-      diagram.setAttribute('x', 5 + diagramX); // Minimal left offset
-      diagram.setAttribute('y', 140 + diagramY);
-      diagram.setAttribute('width', finalWidth);
-      diagram.setAttribute('height', finalHeight);
-    }
-  });
+  if (!container || !diagramSVG) return;
+
+  if (fitToWidth) {
+    // Auto-scale mode - SVG fits viewport, diagram scales to fit available space
+    mainSVG.setAttribute('width', viewportWidth);
+    mainSVG.setAttribute('height', viewportHeight);
+
+    const availableWidth = viewportWidth - 20;
+    const availableHeight = viewportHeight - 160;
+
+    container.setAttribute('width', availableWidth);
+    container.setAttribute('height', availableHeight);
+
+    diagramSVG.setAttribute('width', availableWidth - 10);
+    diagramSVG.setAttribute('height', availableHeight - 10);
+  } else {
+    // Native size mode - SVG expands to diagram's native size, browser provides scrollbars
+    const svgWidth = Math.max(viewportWidth, data.width + 30);
+    const svgHeight = Math.max(viewportHeight, 140 + data.height + 30);
+
+    mainSVG.setAttribute('width', svgWidth);
+    mainSVG.setAttribute('height', svgHeight);
+
+    container.setAttribute('width', data.width + 20);
+    container.setAttribute('height', data.height + 20);
+
+    diagramSVG.setAttribute('width', data.width);
+    diagramSVG.setAttribute('height', data.height);
+  }
 }
 
 function showLevel(level) {
@@ -143,6 +100,9 @@ function showLevel(level) {
 
   // Resize containers after showing layer
   setTimeout(resizeContainers, 10);
+
+  // Setup link hover enhancements (JavaScript progressive enhancement)
+  setupLinkHoverEnhancements();
 }
 
 // Initialize - show context level and setup resize
@@ -208,5 +168,37 @@ function toggleNotes() {
         }
       });
     }
+  });
+}
+
+// Progressive enhancement: JavaScript-enhanced link hovering
+function setupLinkHoverEnhancements() {
+  const currentLayer = document.getElementById('layer-' + currentLevel);
+  if (!currentLayer) return;
+
+  const links = currentLayer.querySelectorAll('g.link');
+
+  links.forEach(link => {
+    // Add mouseenter handler
+    link.addEventListener('mouseenter', function() {
+      // Bring this link to front by moving it to end of parent
+      const parent = link.parentNode;
+      parent.appendChild(link);
+
+      // Dim all other links
+      links.forEach(otherLink => {
+        if (otherLink !== link) {
+          otherLink.classList.add('dimmed');
+        }
+      });
+    });
+
+    // Add mouseleave handler
+    link.addEventListener('mouseleave', function() {
+      // Remove dimming from all links
+      links.forEach(otherLink => {
+        otherLink.classList.remove('dimmed');
+      });
+    });
   });
 }

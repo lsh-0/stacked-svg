@@ -411,15 +411,42 @@ func (s *SVGStacker) buildStackedSVG() string {
 
 	var sb strings.Builder
 
-	// SVG Header
+	// SVG Header - JavaScript will set explicit dimensions
 	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="100%"
-     height="100%"
-     style="background: #f8f9fa; display: block; min-height: 100vh;">
+     width="1920"
+     height="1080"
+     style="background: #f8f9fa; display: block;">
 
-  <title>Stacked C4 Architecture Diagrams</title>`)
+  <title>Stacked C4 Architecture Diagrams</title>
+
+  <!-- CSS Styles for Progressive Enhancement -->
+  <style>
+    /* Path highlighting - works without JavaScript */
+    .link path,
+    .link polygon {
+      transition: all 0.2s ease;
+      pointer-events: stroke; /* Only capture events on the stroke itself */
+    }
+
+    .link:hover path,
+    .link:hover polygon {
+      stroke: #e74c3c !important;
+      stroke-width: 3 !important;
+      filter: drop-shadow(0 0 3px rgba(231, 76, 60, 0.5));
+    }
+
+    .link:hover {
+      cursor: pointer;
+    }
+
+    /* Dimmed state (applied by JavaScript) */
+    .link.dimmed path,
+    .link.dimmed polygon {
+      opacity: 0.3;
+    }
+  </style>`)
 
 	sb.WriteString(fmt.Sprintf(`
 
@@ -481,7 +508,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 
 	sb.WriteString(`
 
-  <!-- Diagram Layers -->
+  <!-- Diagram Layers (positioned below header at y=140) -->
 `)
 
 	// Generate diagram layers
@@ -548,9 +575,11 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
 	return fmt.Sprintf(`
   <!-- %s layer -->
   <g id="layer-%s" style="display:none">
-    <rect x="5" y="140" width="calc(100%% - 10px)" height="calc(100vh - 160px)" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
-    <svg x="10" y="145" width="calc(100%% - 20px)" height="calc(100vh - 170px)" viewBox="%s" preserveAspectRatio="xMidYMid meet" id="diagram-%s">
-      %s
-    </svg>
-  </g>`, level, level, level, diagram.viewBox, level, diagram.content)
+    <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
+    <g id="diagram-%s">
+      <svg viewBox="%s" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        %s
+      </svg>
+    </g>
+  </g>`, level, level, level, level, diagram.viewBox, diagram.content)
 }
