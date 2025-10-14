@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -13,6 +14,9 @@ import (
 	"strconv"
 	"strings"
 )
+
+//go:embed navigation.js
+var navigationJS string
 
 type SVGStacker struct {
 	diagrams   map[string]DiagramInfo
@@ -327,7 +331,8 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 
 	rawContent := content[startIdx:endIdx]
 	cleanedContent := s.cleanDiagramContent(rawContent, level)
-	info.content = s.prettyPrintXML(cleanedContent)
+	// Don't pretty-print to avoid corrupting namespace declarations
+	info.content = cleanedContent
 
 	return info, nil
 }
@@ -401,12 +406,8 @@ func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) st
 func (s *SVGStacker) buildStackedSVG() string {
 	levels := []string{"context", "container", "component", "code"}
 
-	// Load JavaScript for interactive mode
-	jsContent, err := os.ReadFile("navigation.js")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Warning: could not load navigation.js: %v\n", err)
-		jsContent = []byte("// Navigation script not found")
-	}
+	// Use embedded JavaScript for interactive mode
+	jsContent := []byte(navigationJS)
 
 	var sb strings.Builder
 
