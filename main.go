@@ -331,15 +331,20 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 
 	rawContent := content[startIdx:endIdx]
 	cleanedContent := s.cleanDiagramContent(rawContent, level)
-	// Pretty-print the content for better readability
+	// Pretty-print the content for better readability (namespace context is preserved)
 	info.content = s.prettyPrintXML(cleanedContent)
 
 	return info, nil
 }
 
 func (s *SVGStacker) prettyPrintXML(content string) string {
-	// Wrap in a root element for parsing
-	wrapped := "<root>" + content + "</root>"
+	// Wrap in a root element with namespace declarations for parsing.
+	// IMPORTANT: We must include xmlns:xlink here because the content we're formatting
+	// is extracted from inside an <svg> tag (which normally declares xmlns:xlink).
+	// Without this declaration, Go's xml.Encoder will mangle xlink:href attributes
+	// by changing xmlns:xlink="http://www.w3.org/1999/xlink" to xmlns:xlink="xlink",
+	// which breaks <image> elements that use xlink:href for embedded data URIs.
+	wrapped := `<root xmlns:xlink="http://www.w3.org/1999/xlink">` + content + "</root>"
 
 	var buf bytes.Buffer
 	decoder := xml.NewDecoder(strings.NewReader(wrapped))
