@@ -331,8 +331,8 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 
 	rawContent := content[startIdx:endIdx]
 	cleanedContent := s.cleanDiagramContent(rawContent, level)
-	// Don't pretty-print to avoid corrupting namespace declarations
-	info.content = cleanedContent
+	// Pretty-print the content for better readability
+	info.content = s.prettyPrintXML(cleanedContent)
 
 	return info, nil
 }
