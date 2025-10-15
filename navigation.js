@@ -159,12 +159,35 @@ function toggleNotes() {
   availableLevels.forEach(level => {
     const layer = document.getElementById('layer-' + level);
     if (layer) {
+      const noteIds = [];
       const noteElements = layer.querySelectorAll('g.entity');
       noteElements.forEach(g => {
         // Check if this group contains a note (yellow fill path)
         const notePath = g.querySelector('path[fill="#FEFFDD"]');
         if (notePath) {
           g.style.display = notesVisible ? 'block' : 'none';
+          // Extract the entity ID from the note's id attribute (e.g., "entity_GMN49" -> "GMN49")
+          const noteId = g.id;
+          if (noteId) {
+            const match = noteId.match(/entity_(.+)/);
+            if (match) {
+              noteIds.push(match[1]);
+            }
+          }
+        }
+      });
+
+      // Hide links that reference any of the note IDs
+      // Links have IDs like "link_GMN49_template_loader" where GMN49 is the note ID
+      const linkElements = layer.querySelectorAll('g.link');
+      linkElements.forEach(link => {
+        const linkId = link.id;
+        if (linkId) {
+          // Check if this link references any note ID
+          const referencesNote = noteIds.some(noteId => linkId.includes(noteId));
+          if (referencesNote) {
+            link.style.display = notesVisible ? 'block' : 'none';
+          }
         }
       });
     }
