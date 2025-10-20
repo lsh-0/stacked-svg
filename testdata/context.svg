@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <title>Test Context</title>
+  <rect x="10" y="10" width="380" height="280" fill="white" stroke="black"/>
+  <text x="200" y="150" text-anchor="middle">Context Diagram</text>
+  <g class="link">
+    <path d="M 100,100 L 300,200" stroke="#666" stroke-width="1"/>
+    <text x="200" y="150" fill="#666">Test Link</text>
+  </g>
+</svg>

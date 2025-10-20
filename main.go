@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 //go:embed navigation.js
@@ -20,8 +21,6 @@ var navigationJS string
 
 type SVGStacker struct {
 	diagrams   map[string]DiagramInfo
-	svgWidth   int
-	svgHeight  int
 	inputDir   string
 	outputFile string
 	title      string
@@ -36,7 +35,8 @@ type DiagramInfo struct {
 	aspectRatio float64
 }
 
-func validateXML(content string) error {
+// checks if a string is valid XML
+func ValidateXML(content string) error {
 	decoder := xml.NewDecoder(strings.NewReader(content))
 	for {
 		_, err := decoder.Token()
@@ -51,6 +51,16 @@ func validateXML(content string) error {
 }
 
 var version = "unreleased"
+
+// converts a string to title case (first letter uppercase, rest as-is).
+func titleCase(s string) string {
+	if s == "" {
+		return s
+	}
+	r := []rune(s)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
+}
 
 func printUsage() {
 	fmt.Fprintf(os.Stderr, `Usage: svg-stacker [OPTIONS] <directory>
@@ -77,57 +87,76 @@ func printVersion() {
 	fmt.Printf("svg-stacker version %s\n", version)
 }
 
+func parseArgsSlice(args []string) (inputDir, outputFile, title string, err error) {
+	if len(args) < 1 {
+		return "", "", "", fmt.Errorf("directory argument required")
+	}
+
+	// Check for help/version flags first
+	for _, arg := range args {
+		if arg == "-h" || arg == "--help" {
+			return "", "", "", fmt.Errorf("help")
+		}
+		if arg == "-v" || arg == "--version" {
+			return "", "", "", fmt.Errorf("version")
+		}
+	}
+
+	inputDir = args[0]
+	outputFile = ""
+	title = ""
+
+	for i := 1; i < len(args); i++ {
+		switch args[i] {
+		case "--output":
+			if i+1 < len(args) {
+				outputFile = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--output requires an argument")
+			}
+		case "--title":
+			if i+1 < len(args) {
+				title = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--title requires an argument")
+			}
+		case "-h", "--help", "-v", "--version":
+			// Already handled above
+		default:
+			// Unknown flag
+			return "", "", "", fmt.Errorf("unknown flag: %s", args[i])
+		}
+	}
+
+	return inputDir, outputFile, title, nil
+}
+
 func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
 	if len(os.Args) < 2 {
 		printUsage()
 		return "", "", "", true, 1
 	}
 
-	// Check for help/version flags first
-	for _, arg := range os.Args[1:] {
-		if arg == "-h" || arg == "--help" {
-			printUsage()
-			return "", "", "", true, 0
-		}
-		if arg == "-v" || arg == "--version" {
-			printVersion()
-			return "", "", "", true, 0
-		}
+	inputDir, outputFile, title, err := parseArgsSlice(os.Args[1:])
+	if err == nil {
+		return inputDir, outputFile, title, false, 0
 	}
 
-	inputDir = os.Args[1]
-	outputFile = ""
-	title = ""
-
-	for i := 2; i < len(os.Args); i++ {
-		switch os.Args[i] {
-		case "--output":
-			if i+1 < len(os.Args) {
-				outputFile = os.Args[i+1]
-				i++
-			} else {
-				fmt.Fprintf(os.Stderr, "Error: --output requires an argument\n")
-				return "", "", "", true, 1
-			}
-		case "--title":
-			if i+1 < len(os.Args) {
-				title = os.Args[i+1]
-				i++
-			} else {
-				fmt.Fprintf(os.Stderr, "Error: --title requires an argument\n")
-				return "", "", "", true, 1
-			}
-		case "-h", "--help", "-v", "--version":
-			// Already handled above
-		default:
-			// Unknown flag
-			fmt.Fprintf(os.Stderr, "Error: unknown flag '%s'\n", os.Args[i])
-			fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
-			return "", "", "", true, 1
-		}
+	// Handle special cases
+	switch err.Error() {
+	case "help":
+		printUsage()
+		return "", "", "", true, 0
+	case "version":
+		printVersion()
+		return "", "", "", true, 0
+	default:
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
+		return "", "", "", true, 1
 	}
-
-	return inputDir, outputFile, title, false, 0
 }
 
 func main() {
@@ -149,8 +178,6 @@ func NewSVGStacker(inputDir, outputFile, title string) *SVGStacker {
 	}
 	return &SVGStacker{
 		diagrams:   make(map[string]DiagramInfo),
-		svgWidth:   800,
-		svgHeight:  600,
 		inputDir:   inputDir,
 		outputFile: outputFile,
 		title:      title,
@@ -279,7 +306,7 @@ func (s *SVGStacker) loadDiagrams() error {
 		}
 
 		// Validate XML before processing
-		if err := validateXML(string(content)); err != nil {
+		if err := ValidateXML(string(content)); err != nil {
 			return err
 		}
 
@@ -342,12 +369,13 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 	widthRegex := regexp.MustCompile(`width="([^"]*)"`)
 	heightRegex := regexp.MustCompile(`height="([^"]*)"`)
 
-	var err error
 	if widthMatch := widthRegex.FindStringSubmatch(match); len(widthMatch) > 1 {
 		widthStr := strings.TrimSuffix(widthMatch[1], "px")
-		info.width, err = strconv.ParseFloat(widthStr, 64)
+		parsedWidth, err := strconv.ParseFloat(widthStr, 64)
 		if err != nil {
 			info.width = 400
+		} else {
+			info.width = parsedWidth
 		}
 	} else {
 		info.width = 400
@@ -355,9 +383,11 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 
 	if heightMatch := heightRegex.FindStringSubmatch(match); len(heightMatch) > 1 {
 		heightStr := strings.TrimSuffix(heightMatch[1], "px")
-		info.height, err = strconv.ParseFloat(heightStr, 64)
+		parsedHeight, err := strconv.ParseFloat(heightStr, 64)
 		if err != nil {
 			info.height = 300
+		} else {
+			info.height = parsedHeight
 		}
 	} else {
 		info.height = 300
@@ -550,7 +580,7 @@ func (s *SVGStacker) buildStackedSVG() string {
         onclick="showLevel('%s')">
     %s
   </text>
-`, x, level, level, x+13, level, strings.Title(level)))
+`, x, level, level, x+13, level, titleCase(level)))
 	}
 
 	// Add toggle buttons (positioned via JavaScript on load/resize)
@@ -641,7 +671,7 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
     <text x="400" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f8c8d">
       %s diagram not found
     </text>
-  </g>`, level, level, strings.Title(level))
+  </g>`, level, level, titleCase(level))
 	}
 
 	return fmt.Sprintf(`
