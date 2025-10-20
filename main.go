@@ -50,15 +50,54 @@ func validateXML(content string) error {
 	return nil
 }
 
-func main() {
+var version = "unreleased"
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, `Usage: svg-stacker [OPTIONS] <directory>
+
+Combines C4 architecture diagrams (SVG or PlantUML) into a single interactive stacked SVG.
+
+ARGUMENTS:
+  <directory>         Directory containing SVG files or .puml files
+
+OPTIONS:
+  -h, --help          Show this help message and exit
+  -v, --version       Show version information and exit
+  --output FILE       Output file path (default: stdout)
+  --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
+
+EXAMPLES:
+  svg-stacker ./examples
+  svg-stacker ./examples --output output.svg
+  svg-stacker ./examples --title "My Architecture"
+`)
+}
+
+func printVersion() {
+	fmt.Printf("svg-stacker version %s\n", version)
+}
+
+func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
 	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "Usage: svg-stacker <directory> [--output file.svg] [--title title]\n")
-		os.Exit(1)
+		printUsage()
+		return "", "", "", true, 1
 	}
 
-	inputDir := os.Args[1]
-	outputFile := ""
-	title := ""
+	// Check for help/version flags first
+	for _, arg := range os.Args[1:] {
+		if arg == "-h" || arg == "--help" {
+			printUsage()
+			return "", "", "", true, 0
+		}
+		if arg == "-v" || arg == "--version" {
+			printVersion()
+			return "", "", "", true, 0
+		}
+	}
+
+	inputDir = os.Args[1]
+	outputFile = ""
+	title = ""
 
 	for i := 2; i < len(os.Args); i++ {
 		switch os.Args[i] {
@@ -68,7 +107,7 @@ func main() {
 				i++
 			} else {
 				fmt.Fprintf(os.Stderr, "Error: --output requires an argument\n")
-				os.Exit(1)
+				return "", "", "", true, 1
 			}
 		case "--title":
 			if i+1 < len(os.Args) {
@@ -76,9 +115,25 @@ func main() {
 				i++
 			} else {
 				fmt.Fprintf(os.Stderr, "Error: --title requires an argument\n")
-				os.Exit(1)
+				return "", "", "", true, 1
 			}
+		case "-h", "--help", "-v", "--version":
+			// Already handled above
+		default:
+			// Unknown flag
+			fmt.Fprintf(os.Stderr, "Error: unknown flag '%s'\n", os.Args[i])
+			fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
+			return "", "", "", true, 1
 		}
+	}
+
+	return inputDir, outputFile, title, false, 0
+}
+
+func main() {
+	inputDir, outputFile, title, shouldExit, exitCode := parseArgs()
+	if shouldExit {
+		os.Exit(exitCode)
 	}
 
 	stacker := NewSVGStacker(inputDir, outputFile, title)
@@ -406,7 +461,6 @@ func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) st
 
 	return content
 }
-
 
 func (s *SVGStacker) buildStackedSVG() string {
 	levels := []string{"context", "container", "component", "code"}
