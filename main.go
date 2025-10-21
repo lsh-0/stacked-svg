@@ -256,6 +256,29 @@ func runPromptCommand() {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	_ = cmd.Run()
+
+	// After Claude session ends, try to generate the stacked SVG
+	fmt.Fprintf(os.Stderr, "\n")
+	fmt.Fprintf(os.Stderr, "Generating stacked SVG from ./docs/c4/...\n")
+
+	docsC4Dir := "./docs/c4/"
+	if _, err := os.Stat(docsC4Dir); err == nil {
+		// Directory exists, try to generate stacked SVG
+		outputPath := filepath.Join(docsC4Dir, "stacked-c4-architecture.svg")
+		stacker := NewSVGStacker(docsC4Dir, outputPath, fmt.Sprintf("🏗️ %s Architecture", ctx.Name))
+		if err := stacker.CreateStackedSVG(); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: Could not auto-generate stacked SVG: %v\n", err)
+			fmt.Fprintf(os.Stderr, "\nTo generate manually, run:\n")
+			fmt.Fprintf(os.Stderr, "  ./svg-stacker ./docs/c4/ --output ./docs/c4/stacked-c4-architecture.svg\n")
+		} else {
+			fmt.Fprintf(os.Stderr, "\n✓ Generated: %s\n", outputPath)
+			fmt.Fprintf(os.Stderr, "\nTo regenerate the stacked SVG in the future, run:\n")
+			fmt.Fprintf(os.Stderr, "  ./svg-stacker ./docs/c4/ --output ./docs/c4/stacked-c4-architecture.svg\n")
+		}
+	} else {
+		fmt.Fprintf(os.Stderr, "To generate stacked SVG after creating .puml files, run:\n")
+		fmt.Fprintf(os.Stderr, "  ./svg-stacker ./docs/c4/ --output ./docs/c4/stacked-c4-architecture.svg\n")
+	}
 }
 
 func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
