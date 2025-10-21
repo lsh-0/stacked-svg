@@ -33,10 +33,16 @@ case "$1" in
         ./svg-stacker "$dir" "$@"
         ;;
     release)
-        echo "Building release binaries..."
+        read -p "Enter semver version (e.g., 1.0.0): " VERSION
+        if [ -z "$VERSION" ]; then
+            echo "Error: Version cannot be empty" >&2
+            exit 1
+        fi
+
+        echo "Building release binaries for version $VERSION..."
         mkdir -p release
 
-        LDFLAGS="-s -w"
+        LDFLAGS="-s -w -X main.version=$VERSION"
         BUILDFLAGS="-trimpath"
 
         # Linux amd64
@@ -64,7 +70,7 @@ case "$1" in
         echo "Built release/svg-stacker-windows-arm64.exe"
 
         echo ""
-        echo "Release binaries created in release/"
+        echo "Release binaries created in release/ (version $VERSION)"
         ls -lh release/
         ;;
     clean)
