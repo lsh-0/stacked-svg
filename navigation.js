@@ -2,6 +2,7 @@
 let currentLevel = 'context';
 let fitToWidth = false; // false = native size (free zoom), true = auto-scale (constrained)
 let notesVisible = true; // true = show notes, false = hide notes
+let selectedLinks = []; // Track multiple selected links (Ctrl+click to multi-select)
 
 function positionRightAlignedElements() {
   const viewBoxWidth = window.innerWidth;
@@ -265,24 +266,91 @@ function setupLinkHoverEnhancements() {
       // Insert before first text element
       textElements[0].parentNode.insertBefore(bgRect, textElements[0]);
 
-      // Add hover handler to hitbox
+      // Add hover handler to hitbox (only if not selected)
       hitbox.addEventListener('mouseenter', function(e) {
         e.preventDefault();
 
-        // Bring this link to front
-        const parent = link.parentNode;
-        parent.appendChild(link);
+        // Only highlight on hover if this link is not selected
+        if (!selectedLinks.includes(link)) {
+          // Bring this link to front
+          const parent = link.parentNode;
+          parent.appendChild(link);
 
-        // Add highlight class
-        link.classList.add('highlighted');
+          // Add highlight class
+          link.classList.add('highlighted');
 
-        // Show background
-        bgRect.setAttribute('fill-opacity', '0.9');
+          // Show background
+          bgRect.setAttribute('fill-opacity', '0.9');
+        }
       });
 
       hitbox.addEventListener('mouseleave', function() {
-        link.classList.remove('highlighted');
-        bgRect.setAttribute('fill-opacity', '0');
+        // Only remove highlight if this link is not selected
+        if (!selectedLinks.includes(link)) {
+          link.classList.remove('highlighted');
+          bgRect.setAttribute('fill-opacity', '0');
+        }
+      });
+
+      // Add click handler for persistent selection (Ctrl+click for multi-select)
+      hitbox.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isMultiSelect = e.ctrlKey || e.metaKey; // Ctrl on Windows/Linux, Cmd on Mac
+
+        if (isMultiSelect) {
+          // Toggle this link in/out of selection
+          const index = selectedLinks.indexOf(link);
+          if (index > -1) {
+            // Deselect
+            selectedLinks.splice(index, 1);
+            link.classList.remove('highlighted');
+            bgRect.setAttribute('fill-opacity', '0');
+          } else {
+            // Add to selection
+            selectedLinks.push(link);
+            const parent = link.parentNode;
+            parent.appendChild(link);
+            link.classList.add('highlighted');
+            bgRect.setAttribute('fill-opacity', '0.9');
+          }
+        } else {
+          // Single select - deselect all others
+          selectedLinks.forEach(prevLink => {
+            const prevBgRect = prevLink.querySelector('.text-bg');
+            if (prevBgRect) {
+              prevBgRect.setAttribute('fill-opacity', '0');
+            }
+            prevLink.classList.remove('highlighted');
+          });
+
+          // If clicking the same link again, deselect it
+          if (selectedLinks.length === 1 && selectedLinks[0] === link) {
+            selectedLinks = [];
+          } else {
+            // Select new link
+            selectedLinks = [link];
+            const parent = link.parentNode;
+            parent.appendChild(link);
+            link.classList.add('highlighted');
+            bgRect.setAttribute('fill-opacity', '0.9');
+          }
+        }
+      });
+
+      // Deselect all on ESC key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && selectedLinks.length > 0) {
+          selectedLinks.forEach(prevLink => {
+            const prevBgRect = prevLink.querySelector('.text-bg');
+            if (prevBgRect) {
+              prevBgRect.setAttribute('fill-opacity', '0');
+            }
+            prevLink.classList.remove('highlighted');
+          });
+          selectedLinks = [];
+        }
       });
     }
   });
