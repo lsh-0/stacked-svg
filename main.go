@@ -19,6 +19,9 @@ import (
 //go:embed navigation.js
 var navigationJS string
 
+//go:embed C4-DIAGRAM-SPEC.md
+var c4DiagramSpec string
+
 type SVGStacker struct {
 	diagrams   map[string]DiagramInfo
 	inputDir   string
@@ -63,12 +66,11 @@ func titleCase(s string) string {
 }
 
 func printUsage() {
-	fmt.Fprintf(os.Stderr, `Usage: svg-stacker [OPTIONS] <directory>
+	fmt.Fprintf(os.Stderr, `Usage: svg-stacker [COMMAND] [OPTIONS]
 
-Combines C4 architecture diagrams (SVG or PlantUML) into a single interactive stacked SVG.
-
-ARGUMENTS:
-  <directory>         Directory containing SVG files or .puml files
+COMMANDS:
+  prompt              Generate C4 diagram prompt for Claude Code
+  <directory>         Combine SVG/PlantUML files into stacked SVG (default)
 
 OPTIONS:
   -h, --help          Show this help message and exit
@@ -77,6 +79,10 @@ OPTIONS:
   --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
 
 EXAMPLES:
+  # Generate C4 diagrams with Claude
+  svg-stacker prompt
+
+  # Combine diagrams into stacked SVG
   svg-stacker ./examples
   svg-stacker ./examples --output output.svg
   svg-stacker ./examples --title "My Architecture"
@@ -92,8 +98,11 @@ func parseArgsSlice(args []string) (inputDir, outputFile, title string, err erro
 		return "", "", "", fmt.Errorf("directory argument required")
 	}
 
-	// Check for help/version flags first
+	// Check for subcommands and help/version flags first
 	for _, arg := range args {
+		if arg == "prompt" {
+			return "", "", "", fmt.Errorf("prompt")
+		}
 		if arg == "-h" || arg == "--help" {
 			return "", "", "", fmt.Errorf("help")
 		}
@@ -133,6 +142,122 @@ func parseArgsSlice(args []string) (inputDir, outputFile, title string, err erro
 	return inputDir, outputFile, title, nil
 }
 
+// ProjectContext holds discovered information about a project
+type ProjectContext struct {
+	Name       string
+	ReadmeSnip string
+	Languages  []string
+	MainFiles  []string
+}
+
+// gatherProjectContext analyzes the current directory to discover project information
+func gatherProjectContext() ProjectContext {
+	// Get current directory name as primary project name
+	wd, _ := os.Getwd()
+	dirName := filepath.Base(wd)
+	if dirName == "" || dirName == "." {
+		dirName = "project"
+	}
+
+	ctx := ProjectContext{
+		Name:      dirName,
+		Languages: []string{},
+		MainFiles: []string{},
+	}
+
+	// Read README if it exists
+	if content, err := os.ReadFile("README.md"); err == nil {
+		lines := strings.Split(string(content), "\n")
+		if len(lines) > 10 {
+			ctx.ReadmeSnip = strings.Join(lines[:10], "\n")
+		} else {
+			ctx.ReadmeSnip = string(content)
+		}
+	}
+
+	// Detect primary languages by file extensions
+	langCount := make(map[string]int)
+	if entries, err := os.ReadDir("."); err == nil {
+		for _, entry := range entries {
+			if !entry.IsDir() && !strings.HasPrefix(entry.Name(), ".") {
+				ext := filepath.Ext(entry.Name())
+				if ext != "" {
+					langCount[ext]++
+				}
+			}
+		}
+	}
+
+	// Get top languages
+	type langFreq struct {
+		ext   string
+		count int
+	}
+	var langs []langFreq
+	for ext, count := range langCount {
+		langs = append(langs, langFreq{ext, count})
+	}
+	sort.Slice(langs, func(i, j int) bool { return langs[i].count > langs[j].count })
+
+	for i := 0; i < len(langs) && i < 3; i++ {
+		ctx.Languages = append(ctx.Languages, langs[i].ext)
+	}
+
+	// List main files/dirs
+	mainItems := []string{"go.mod", "package.json", "Dockerfile", "Makefile", "src/", "cmd/", "main.go"}
+	for _, item := range mainItems {
+		if _, err := os.Stat(item); err == nil {
+			ctx.MainFiles = append(ctx.MainFiles, item)
+		}
+	}
+
+	return ctx
+}
+
+// runPromptCommand handles the 'prompt' subcommand
+func runPromptCommand() {
+	// Check if Claude Code is available
+	claudePath, err := exec.LookPath("claude")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: Claude Code CLI not found in PATH\n")
+		fmt.Fprintf(os.Stderr, "Install Claude Code from: https://claude.ai/code\n")
+		os.Exit(1)
+	}
+
+	// Gather project context
+	ctx := gatherProjectContext()
+
+	// Construct the prompt for Claude
+	var promptBuf strings.Builder
+	promptBuf.WriteString("Generate C4 architecture diagrams for this project.\n\n")
+	promptBuf.WriteString("IMPORTANT: Save all generated .puml files to: docs/c4/\n\n")
+	promptBuf.WriteString(c4DiagramSpec)
+	promptBuf.WriteString("\n\n---\n\n")
+	promptBuf.WriteString("PROJECT CONTEXT\n")
+	promptBuf.WriteString("===============\n\n")
+	promptBuf.WriteString(fmt.Sprintf("Project Name: %s\n", ctx.Name))
+	if ctx.ReadmeSnip != "" {
+		promptBuf.WriteString(fmt.Sprintf("\nREADME.md (first 10 lines):\n%s\n", ctx.ReadmeSnip))
+	}
+	if len(ctx.Languages) > 0 {
+		promptBuf.WriteString(fmt.Sprintf("\nPrimary file types: %s\n", strings.Join(ctx.Languages, ", ")))
+	}
+	if len(ctx.MainFiles) > 0 {
+		promptBuf.WriteString(fmt.Sprintf("Key files/directories: %s\n", strings.Join(ctx.MainFiles, ", ")))
+	}
+	promptBuf.WriteString("\n---\n\n")
+	promptBuf.WriteString("Please analyze this project and generate appropriate C4 diagrams following the spec above.\n")
+	promptBuf.WriteString("Generate files: 01-context.puml, 02-container.puml, 03-component.puml, and optionally 04-code.puml\n")
+	promptBuf.WriteString("All files should be saved to: docs/c4/\n")
+
+	// Invoke claude command with the prompt
+	cmd := exec.Command(claudePath)
+	cmd.Stdin = strings.NewReader(promptBuf.String())
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	_ = cmd.Run()
+}
+
 func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
 	if len(os.Args) < 2 {
 		printUsage()
@@ -146,6 +271,9 @@ func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode 
 
 	// Handle special cases
 	switch err.Error() {
+	case "prompt":
+		runPromptCommand()
+		return "", "", "", true, 0
 	case "help":
 		printUsage()
 		return "", "", "", true, 0
