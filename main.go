@@ -13,15 +13,17 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 //go:embed navigation.js
 var navigationJS string
 
+//go:embed C4-DIAGRAM-SPEC.md
+var c4DiagramSpec string
+
 type SVGStacker struct {
 	diagrams   map[string]DiagramInfo
-	svgWidth   int
-	svgHeight  int
 	inputDir   string
 	outputFile string
 	title      string
@@ -36,7 +38,8 @@ type DiagramInfo struct {
 	aspectRatio float64
 }
 
-func validateXML(content string) error {
+// checks if a string is valid XML
+func ValidateXML(content string) error {
 	decoder := xml.NewDecoder(strings.NewReader(content))
 	for {
 		_, err := decoder.Token()
@@ -50,35 +53,244 @@ func validateXML(content string) error {
 	return nil
 }
 
-func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "Usage: svg-stacker <directory> [--output file.svg] [--title title]\n")
+var version = "unreleased"
+
+// converts a string to title case (first letter uppercase, rest as-is).
+func titleCase(s string) string {
+	if s == "" {
+		return s
+	}
+	r := []rune(s)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
+}
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, `Usage: svg-stacker [COMMAND] [OPTIONS]
+
+COMMANDS:
+  prompt              Generate C4 diagram prompt for Claude Code
+  <directory>         Combine SVG/PlantUML files into stacked SVG (default)
+
+OPTIONS:
+  -h, --help          Show this help message and exit
+  -v, --version       Show version information and exit
+  --output FILE       Output file path (default: stdout)
+  --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
+
+EXAMPLES:
+  # Generate C4 diagrams with Claude
+  svg-stacker prompt
+
+  # Combine diagrams into stacked SVG
+  svg-stacker ./examples
+  svg-stacker ./examples --output output.svg
+  svg-stacker ./examples --title "My Architecture"
+`)
+}
+
+func printVersion() {
+	fmt.Printf("svg-stacker version %s\n", version)
+}
+
+func parseArgsSlice(args []string) (inputDir, outputFile, title string, err error) {
+	if len(args) < 1 {
+		return "", "", "", fmt.Errorf("directory argument required")
+	}
+
+	// Check for subcommands and help/version flags first
+	for _, arg := range args {
+		if arg == "prompt" {
+			return "", "", "", fmt.Errorf("prompt")
+		}
+		if arg == "-h" || arg == "--help" {
+			return "", "", "", fmt.Errorf("help")
+		}
+		if arg == "-v" || arg == "--version" {
+			return "", "", "", fmt.Errorf("version")
+		}
+	}
+
+	inputDir = args[0]
+	outputFile = ""
+	title = ""
+
+	for i := 1; i < len(args); i++ {
+		switch args[i] {
+		case "--output":
+			if i+1 < len(args) {
+				outputFile = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--output requires an argument")
+			}
+		case "--title":
+			if i+1 < len(args) {
+				title = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--title requires an argument")
+			}
+		case "-h", "--help", "-v", "--version":
+			// Already handled above
+		default:
+			// Unknown flag
+			return "", "", "", fmt.Errorf("unknown flag: %s", args[i])
+		}
+	}
+
+	return inputDir, outputFile, title, nil
+}
+
+// ProjectContext holds discovered information about a project
+type ProjectContext struct {
+	Name       string
+	ReadmeSnip string
+	Languages  []string
+	MainFiles  []string
+}
+
+// gatherProjectContext analyzes the current directory to discover project information
+func gatherProjectContext() ProjectContext {
+	// Get current directory name as primary project name
+	wd, _ := os.Getwd()
+	dirName := filepath.Base(wd)
+	if dirName == "" || dirName == "." {
+		dirName = "project"
+	}
+
+	ctx := ProjectContext{
+		Name:      dirName,
+		Languages: []string{},
+		MainFiles: []string{},
+	}
+
+	// Read README if it exists
+	if content, err := os.ReadFile("README.md"); err == nil {
+		lines := strings.Split(string(content), "\n")
+		if len(lines) > 10 {
+			ctx.ReadmeSnip = strings.Join(lines[:10], "\n")
+		} else {
+			ctx.ReadmeSnip = string(content)
+		}
+	}
+
+	// Detect primary languages by file extensions
+	langCount := make(map[string]int)
+	if entries, err := os.ReadDir("."); err == nil {
+		for _, entry := range entries {
+			if !entry.IsDir() && !strings.HasPrefix(entry.Name(), ".") {
+				ext := filepath.Ext(entry.Name())
+				if ext != "" {
+					langCount[ext]++
+				}
+			}
+		}
+	}
+
+	// Get top languages
+	type langFreq struct {
+		ext   string
+		count int
+	}
+	var langs []langFreq
+	for ext, count := range langCount {
+		langs = append(langs, langFreq{ext, count})
+	}
+	sort.Slice(langs, func(i, j int) bool { return langs[i].count > langs[j].count })
+
+	for i := 0; i < len(langs) && i < 3; i++ {
+		ctx.Languages = append(ctx.Languages, langs[i].ext)
+	}
+
+	// List main files/dirs
+	mainItems := []string{"go.mod", "package.json", "Dockerfile", "Makefile", "src/", "cmd/", "main.go"}
+	for _, item := range mainItems {
+		if _, err := os.Stat(item); err == nil {
+			ctx.MainFiles = append(ctx.MainFiles, item)
+		}
+	}
+
+	return ctx
+}
+
+// runPromptCommand handles the 'prompt' subcommand
+func runPromptCommand() {
+	// Check if Claude Code is available
+	claudePath, err := exec.LookPath("claude")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: Claude Code CLI not found in PATH\n")
+		fmt.Fprintf(os.Stderr, "Install Claude Code from: https://claude.ai/code\n")
 		os.Exit(1)
 	}
 
-	inputDir := os.Args[1]
-	outputFile := ""
-	title := ""
+	// Gather project context
+	ctx := gatherProjectContext()
 
-	for i := 2; i < len(os.Args); i++ {
-		switch os.Args[i] {
-		case "--output":
-			if i+1 < len(os.Args) {
-				outputFile = os.Args[i+1]
-				i++
-			} else {
-				fmt.Fprintf(os.Stderr, "Error: --output requires an argument\n")
-				os.Exit(1)
-			}
-		case "--title":
-			if i+1 < len(os.Args) {
-				title = os.Args[i+1]
-				i++
-			} else {
-				fmt.Fprintf(os.Stderr, "Error: --title requires an argument\n")
-				os.Exit(1)
-			}
-		}
+	// Construct the prompt for Claude
+	var promptBuf strings.Builder
+	promptBuf.WriteString("Generate C4 architecture diagrams for this project.\n\n")
+	promptBuf.WriteString("IMPORTANT: Save all generated .puml files to: docs/c4/\n\n")
+	promptBuf.WriteString(c4DiagramSpec)
+	promptBuf.WriteString("\n\n---\n\n")
+	promptBuf.WriteString("PROJECT CONTEXT\n")
+	promptBuf.WriteString("===============\n\n")
+	promptBuf.WriteString(fmt.Sprintf("Project Name: %s\n", ctx.Name))
+	if ctx.ReadmeSnip != "" {
+		promptBuf.WriteString(fmt.Sprintf("\nREADME.md (first 10 lines):\n%s\n", ctx.ReadmeSnip))
+	}
+	if len(ctx.Languages) > 0 {
+		promptBuf.WriteString(fmt.Sprintf("\nPrimary file types: %s\n", strings.Join(ctx.Languages, ", ")))
+	}
+	if len(ctx.MainFiles) > 0 {
+		promptBuf.WriteString(fmt.Sprintf("Key files/directories: %s\n", strings.Join(ctx.MainFiles, ", ")))
+	}
+	promptBuf.WriteString("\n---\n\n")
+	promptBuf.WriteString("Please analyze this project and generate appropriate C4 diagrams following the spec above.\n")
+	promptBuf.WriteString("Generate files: 01-context.puml, 02-container.puml, 03-component.puml, and optionally 04-code.puml\n")
+	promptBuf.WriteString("All files should be saved to: docs/c4/\n")
+
+	// Invoke claude command with the prompt
+	cmd := exec.Command(claudePath)
+	cmd.Stdin = strings.NewReader(promptBuf.String())
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	_ = cmd.Run()
+}
+
+func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
+	if len(os.Args) < 2 {
+		printUsage()
+		return "", "", "", true, 1
+	}
+
+	inputDir, outputFile, title, err := parseArgsSlice(os.Args[1:])
+	if err == nil {
+		return inputDir, outputFile, title, false, 0
+	}
+
+	// Handle special cases
+	switch err.Error() {
+	case "prompt":
+		runPromptCommand()
+		return "", "", "", true, 0
+	case "help":
+		printUsage()
+		return "", "", "", true, 0
+	case "version":
+		printVersion()
+		return "", "", "", true, 0
+	default:
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
+		return "", "", "", true, 1
+	}
+}
+
+func main() {
+	inputDir, outputFile, title, shouldExit, exitCode := parseArgs()
+	if shouldExit {
+		os.Exit(exitCode)
 	}
 
 	stacker := NewSVGStacker(inputDir, outputFile, title)
@@ -94,8 +306,6 @@ func NewSVGStacker(inputDir, outputFile, title string) *SVGStacker {
 	}
 	return &SVGStacker{
 		diagrams:   make(map[string]DiagramInfo),
-		svgWidth:   800,
-		svgHeight:  600,
 		inputDir:   inputDir,
 		outputFile: outputFile,
 		title:      title,
@@ -224,7 +434,7 @@ func (s *SVGStacker) loadDiagrams() error {
 		}
 
 		// Validate XML before processing
-		if err := validateXML(string(content)); err != nil {
+		if err := ValidateXML(string(content)); err != nil {
 			return err
 		}
 
@@ -287,12 +497,13 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 	widthRegex := regexp.MustCompile(`width="([^"]*)"`)
 	heightRegex := regexp.MustCompile(`height="([^"]*)"`)
 
-	var err error
 	if widthMatch := widthRegex.FindStringSubmatch(match); len(widthMatch) > 1 {
 		widthStr := strings.TrimSuffix(widthMatch[1], "px")
-		info.width, err = strconv.ParseFloat(widthStr, 64)
+		parsedWidth, err := strconv.ParseFloat(widthStr, 64)
 		if err != nil {
 			info.width = 400
+		} else {
+			info.width = parsedWidth
 		}
 	} else {
 		info.width = 400
@@ -300,9 +511,11 @@ func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error)
 
 	if heightMatch := heightRegex.FindStringSubmatch(match); len(heightMatch) > 1 {
 		heightStr := strings.TrimSuffix(heightMatch[1], "px")
-		info.height, err = strconv.ParseFloat(heightStr, 64)
+		parsedHeight, err := strconv.ParseFloat(heightStr, 64)
 		if err != nil {
 			info.height = 300
+		} else {
+			info.height = parsedHeight
 		}
 	} else {
 		info.height = 300
@@ -407,7 +620,6 @@ func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) st
 	return content
 }
 
-
 func (s *SVGStacker) buildStackedSVG() string {
 	levels := []string{"context", "container", "component", "code"}
 
@@ -496,7 +708,7 @@ func (s *SVGStacker) buildStackedSVG() string {
         onclick="showLevel('%s')">
     %s
   </text>
-`, x, level, level, x+13, level, strings.Title(level)))
+`, x, level, level, x+13, level, titleCase(level)))
 	}
 
 	// Add toggle buttons (positioned via JavaScript on load/resize)
@@ -587,7 +799,7 @@ func (s *SVGStacker) createDiagramLayer(level string) string {
     <text x="400" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f8c8d">
       %s diagram not found
     </text>
-  </g>`, level, level, strings.Title(level))
+  </g>`, level, level, titleCase(level))
 	}
 
 	return fmt.Sprintf(`

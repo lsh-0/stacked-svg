@@ -9,7 +9,9 @@ import (
 	"testing"
 )
 
-// createTestSVGFiles creates minimal valid SVG files for testing
+// createTestSVGFiles creates minimal valid SVG files for testing.
+// These are programmatically generated fixtures to ensure test isolation and consistency.
+// For stable test data that can be versioned, see testdata/ directory.
 func createTestSVGFiles(t *testing.T, dir string) {
 	t.Helper()
 
@@ -36,6 +38,39 @@ func createTestSVGFiles(t *testing.T, dir string) {
 		path := filepath.Join(dir, filename)
 		if err := os.WriteFile(path, []byte(content), 0644); err != nil {
 			t.Fatalf("Failed to create test SVG %s: %v", filename, err)
+		}
+	}
+}
+
+// copyTestdataFiles copies test fixtures from testdata/ directory to the target directory.
+// This is useful for tests that need to verify behavior with version-controlled fixtures.
+func copyTestdataFiles(t *testing.T, targetDir string) {
+	t.Helper()
+
+	const testdataDir = "testdata"
+	entries, err := os.ReadDir(testdataDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			t.Skipf("testdata directory not found: %v", err)
+		}
+		t.Fatalf("Failed to read testdata: %v", err)
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+
+		sourcePath := filepath.Join(testdataDir, entry.Name())
+		targetPath := filepath.Join(targetDir, entry.Name())
+
+		content, err := os.ReadFile(sourcePath)
+		if err != nil {
+			t.Fatalf("Failed to read testdata file %s: %v", entry.Name(), err)
+		}
+
+		if err := os.WriteFile(targetPath, content, 0644); err != nil {
+			t.Fatalf("Failed to copy testdata file %s: %v", entry.Name(), err)
 		}
 	}
 }
@@ -284,4 +319,233 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// TestParseArgsSlice tests the parseArgsSlice function for argument parsing logic
+func TestParseArgsSlice(t *testing.T) {
+	tests := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		expectDir    string
+		expectOutput string
+		expectTitle  string
+	}{
+		{
+			name:      "no arguments",
+			args:      []string{},
+			expectErr: true,
+		},
+		{
+			name:      "help flag short",
+			args:      []string{"-h"},
+			expectErr: true,
+		},
+		{
+			name:      "help flag long",
+			args:      []string{"--help"},
+			expectErr: true,
+		},
+		{
+			name:      "version flag short",
+			args:      []string{"-v"},
+			expectErr: true,
+		},
+		{
+			name:      "version flag long",
+			args:      []string{"--version"},
+			expectErr: true,
+		},
+		{
+			name:      "directory only",
+			args:      []string{"./examples"},
+			expectErr: false,
+			expectDir: "./examples",
+		},
+		{
+			name:         "directory with output",
+			args:         []string{"./examples", "--output", "out.svg"},
+			expectErr:    false,
+			expectDir:    "./examples",
+			expectOutput: "out.svg",
+		},
+		{
+			name:        "directory with title",
+			args:        []string{"./examples", "--title", "My Title"},
+			expectErr:   false,
+			expectDir:   "./examples",
+			expectTitle: "My Title",
+		},
+		{
+			name:         "all options",
+			args:         []string{"./examples", "--output", "out.svg", "--title", "My Title"},
+			expectErr:    false,
+			expectDir:    "./examples",
+			expectOutput: "out.svg",
+			expectTitle:  "My Title",
+		},
+		{
+			name:      "output without value",
+			args:      []string{"./examples", "--output"},
+			expectErr: true,
+		},
+		{
+			name:      "title without value",
+			args:      []string{"./examples", "--title"},
+			expectErr: true,
+		},
+		{
+			name:      "unknown flag",
+			args:      []string{"./examples", "--unknown"},
+			expectErr: true,
+		},
+		{
+			name:      "help in middle of args",
+			args:      []string{"./examples", "-h", "--output", "out.svg"},
+			expectErr: true,
+		},
+		{
+			name:      "version in middle of args",
+			args:      []string{"./examples", "--version"},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			inputDir, outputFile, title, err := parseArgsSlice(tt.args)
+
+			if (err != nil) != tt.expectErr {
+				if tt.expectErr {
+					t.Errorf("expected error, got nil")
+				} else {
+					t.Errorf("expected no error, got %v", err)
+				}
+			}
+
+			if !tt.expectErr {
+				if inputDir != tt.expectDir {
+					t.Errorf("InputDir: got %q, want %q", inputDir, tt.expectDir)
+				}
+
+				if outputFile != tt.expectOutput {
+					t.Errorf("OutputFile: got %q, want %q", outputFile, tt.expectOutput)
+				}
+
+				if title != tt.expectTitle {
+					t.Errorf("Title: got %q, want %q", title, tt.expectTitle)
+				}
+			}
+		})
+	}
+}
+
+// TestValidateXML tests XML validation
+func TestValidateXML(t *testing.T) {
+	tests := []struct {
+		name      string
+		content   string
+		expectErr bool
+	}{
+		{
+			name:      "valid simple XML",
+			content:   `<root><item>test</item></root>`,
+			expectErr: false,
+		},
+		{
+			name:      "valid SVG snippet",
+			content:   `<g><rect x="0" y="0"/></g>`,
+			expectErr: false,
+		},
+		{
+			name:      "invalid XML - missing close tag",
+			content:   `<root><item>test</root>`,
+			expectErr: true,
+		},
+		{
+			name:      "invalid XML - malformed tag",
+			content:   `<root><item test>content</item></root>`,
+			expectErr: true,
+		},
+		{
+			name:      "invalid XML - unclosed tag",
+			content:   `<root><item>`,
+			expectErr: true,
+		},
+		{
+			name:      "valid XML with attributes",
+			content:   `<svg xmlns="http://www.w3.org/2000/svg"><rect width="100"/></svg>`,
+			expectErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := ValidateXML(tt.content)
+
+			if (err != nil) != tt.expectErr {
+				if tt.expectErr {
+					t.Errorf("expected error, got nil")
+				} else {
+					t.Errorf("expected no error, got %v", err)
+				}
+			}
+		})
+	}
+}
+
+// TestExtractLevel tests the level extraction from filenames
+func TestExtractLevel(t *testing.T) {
+	tests := []struct {
+		filename  string
+		expectLvl string
+	}{
+		{"01-context.svg", "context"},
+		{"02-container.svg", "container"},
+		{"03-component.svg", "component"},
+		{"04-code.svg", "code"},
+		{"Context-Diagram.svg", "context"},
+		{"CONTAINER.svg", "container"},
+		{"component-diagram.svg", "component"},
+		{"CODE_LEVEL.svg", "code"},
+		{"unknown.svg", "unknown"},
+		{"random-file.txt", "unknown"},
+	}
+
+	stacker := &SVGStacker{}
+
+	for _, tt := range tests {
+		t.Run(tt.filename, func(t *testing.T) {
+			result := stacker.extractLevel(tt.filename)
+			if result != tt.expectLvl {
+				t.Errorf("got %q, want %q", result, tt.expectLvl)
+			}
+		})
+	}
+}
+
+// TestTitleCase tests the titleCase function
+func TestTitleCase(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"context", "Context"},
+		{"container", "Container"},
+		{"component", "Component"},
+		{"code", "Code"},
+		{"hello world", "Hello world"},
+		{"already Title", "Already Title"},
+		{"", ""},
+		{"a", "A"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			result := titleCase(tt.input)
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
 }

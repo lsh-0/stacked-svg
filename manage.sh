@@ -7,7 +7,13 @@ case "$1" in
         go build -o svg-stacker
         ;;
     test)
-        go test ./...
+        echo "Running tests with coverage..."
+        go test -v -coverprofile=coverage.out -covermode=atomic ./...
+        echo ""
+        echo "Coverage summary:"
+        go tool cover -func=coverage.out | tail -1
+        echo ""
+        echo "To view detailed coverage report, run: go tool cover -html=coverage.out"
         ;;
     generate)
         if [ -z "$2" ]; then
