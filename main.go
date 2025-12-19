@@ -250,11 +250,17 @@ func runPromptCommand() {
 	promptBuf.WriteString("Generate files: 01-context.puml, 02-container.puml, 03-component.puml, and optionally 04-code.puml\n")
 	promptBuf.WriteString("All files should be saved to: docs/c4/\n")
 
-	// Invoke claude command with the prompt
-	cmd := exec.Command(claudePath)
+	// Invoke claude with --print flag and streaming for real-time feedback
+	// This avoids the raw mode TTY issue and provides streaming output
+	cmd := exec.Command(claudePath, "--print",
+		"--input-format", "text",
+		"--output-format", "stream-json",
+		"--include-partial-messages",
+		"--verbose")
 	cmd.Stdin = strings.NewReader(promptBuf.String())
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
 	_ = cmd.Run()
 
 	// After Claude session ends, try to generate the stacked SVG
