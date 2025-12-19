@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Automatic stacked SVG generation after Claude diagram creation
 - Multi-select path highlighting with Ctrl+click (or Cmd+click on Mac)
 - Persistent path selection that remains highlighted until clicked again or ESC is pressed
+- Invisible SVG metadata embedding with generator name, version, and timestamp
 
 ### Changed
 - Project name detection now uses current working directory instead of git remote

@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
 
@@ -666,6 +667,13 @@ func (s *SVGStacker) buildStackedSVG() string {
      style="background: #f8f9fa; display: block;">
 
   <title>Stacked C4 Architecture Diagrams</title>
+
+  <!-- Generator Metadata (invisible) -->
+  <metadata>
+    <generator>stacked-c4-svg</generator>
+    <version>` + version + `</version>
+    <timestamp>` + time.Now().UTC().Format(time.RFC3339) + `</timestamp>
+  </metadata>
 
   <!-- CSS Styles for Progressive Enhancement -->
   <style>
