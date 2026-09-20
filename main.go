@@ -29,6 +29,7 @@ type SVGStacker struct {
 	outputFile string
 	title      string
 	tempDir    string
+	now        time.Time // generation time written to the metadata block; injected so output is reproducible in tests
 }
 
 type DiagramInfo struct {
@@ -339,6 +340,7 @@ func NewSVGStacker(inputDir, outputFile, title string) *SVGStacker {
 		inputDir:   inputDir,
 		outputFile: outputFile,
 		title:      title,
+		now:        time.Now(),
 	}
 }
 
@@ -672,7 +674,7 @@ func (s *SVGStacker) buildStackedSVG() string {
   <metadata>
     <generator>stacked-c4-svg</generator>
     <version>` + version + `</version>
-    <timestamp>` + time.Now().UTC().Format(time.RFC3339) + `</timestamp>
+    <timestamp>` + s.now.UTC().Format(time.RFC3339) + `</timestamp>
   </metadata>
 
   <!-- CSS Styles for Progressive Enhancement -->

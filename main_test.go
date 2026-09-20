@@ -10,8 +10,6 @@ import (
 )
 
 // createTestSVGFiles creates minimal valid SVG files for testing.
-// These are programmatically generated fixtures to ensure test isolation and consistency.
-// For stable test data that can be versioned, see testdata/ directory.
 func createTestSVGFiles(t *testing.T, dir string) {
 	t.Helper()
 
@@ -38,39 +36,6 @@ func createTestSVGFiles(t *testing.T, dir string) {
 		path := filepath.Join(dir, filename)
 		if err := os.WriteFile(path, []byte(content), 0644); err != nil {
 			t.Fatalf("Failed to create test SVG %s: %v", filename, err)
-		}
-	}
-}
-
-// copyTestdataFiles copies test fixtures from testdata/ directory to the target directory.
-// This is useful for tests that need to verify behavior with version-controlled fixtures.
-func copyTestdataFiles(t *testing.T, targetDir string) {
-	t.Helper()
-
-	const testdataDir = "testdata"
-	entries, err := os.ReadDir(testdataDir)
-	if err != nil {
-		if os.IsNotExist(err) {
-			t.Skipf("testdata directory not found: %v", err)
-		}
-		t.Fatalf("Failed to read testdata: %v", err)
-	}
-
-	for _, entry := range entries {
-		if entry.IsDir() {
-			continue
-		}
-
-		sourcePath := filepath.Join(testdataDir, entry.Name())
-		targetPath := filepath.Join(targetDir, entry.Name())
-
-		content, err := os.ReadFile(sourcePath)
-		if err != nil {
-			t.Fatalf("Failed to read testdata file %s: %v", entry.Name(), err)
-		}
-
-		if err := os.WriteFile(targetPath, content, 0644); err != nil {
-			t.Fatalf("Failed to copy testdata file %s: %v", entry.Name(), err)
 		}
 	}
 }
@@ -103,63 +68,6 @@ func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
 	}
 
 	// Validate XML structure using streaming parser (more detailed error reporting)
-	decoder := xml.NewDecoder(strings.NewReader(string(content)))
-	for {
-		_, err := decoder.Token()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			t.Errorf("Generated SVG is not valid XML: %v", err)
-
-			// Try to provide helpful context about where the error occurred
-			lines := strings.Split(string(content), "\n")
-			if xmlErr, ok := err.(*xml.SyntaxError); ok {
-				lineNum := int(xmlErr.Line) - 1
-				if lineNum >= 0 && lineNum < len(lines) {
-					t.Errorf("Error at line %d: %s", xmlErr.Line, lines[lineNum])
-					// Show some context around the error
-					start := max(0, lineNum-2)
-					end := min(len(lines), lineNum+3)
-					for i := start; i < end; i++ {
-						marker := "   "
-						if i == lineNum {
-							marker = ">>>"
-						}
-						t.Errorf("%s %d: %s", marker, i+1, lines[i])
-					}
-				}
-			}
-			return // Stop processing on first error
-		}
-	}
-}
-
-func TestActualGeneratedFiles(t *testing.T) {
-	// Test that we can generate a valid SVG with test files
-	tempDir := t.TempDir()
-	inputDir := filepath.Join(tempDir, "input")
-	if err := os.Mkdir(inputDir, 0755); err != nil {
-		t.Fatalf("Failed to create input directory: %v", err)
-	}
-
-	// Create test SVG files
-	createTestSVGFiles(t, inputDir)
-
-	outputFile := filepath.Join(tempDir, "actual-test.svg")
-
-	stacker := NewSVGStacker(inputDir, outputFile, "Test")
-	err := stacker.CreateStackedSVG()
-	if err != nil {
-		t.Fatalf("Could not generate SVG: %v", err)
-	}
-
-	content, err := os.ReadFile(outputFile)
-	if err != nil {
-		t.Fatalf("Failed to read generated file: %v", err)
-	}
-
-	// Validate XML structure using streaming parser
 	decoder := xml.NewDecoder(strings.NewReader(string(content)))
 	for {
 		_, err := decoder.Token()
