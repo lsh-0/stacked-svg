@@ -37,6 +37,51 @@ type DiagramInfo struct {
 	aspectRatio float64
 }
 
+// one C4 level: the filename prefix that identifies it and whether a diagram set must include it
+type level struct {
+	prefix   string
+	name     string
+	required bool
+}
+
+// the C4 levels in drill-down order. An ordered slice, not a map, because every consumer
+// (file discovery, button order, layer order, the viewer's level list) needs the order
+// and derives it from this one table.
+var levels = []level{
+	{"01", "context", true},
+	{"02", "container", true},
+	{"03", "component", true},
+	{"04", "code", false},
+}
+
+// a level paired with the input file found for it
+type level_file struct {
+	level level
+	path  string
+}
+
+// finds one file per level in `dir` with extension `ext` (including the dot), matched by
+// `<prefix>-` at the start of the base name. Returns levels in table order, omitting an
+// absent optional level and failing on an absent required one.
+func discover_levels(dir, ext string) ([]level_file, error) {
+	var found []level_file
+	for _, lvl := range levels {
+		matches, err := filepath.Glob(filepath.Join(dir, lvl.prefix+"-*"+ext))
+		if err != nil {
+			return nil, err
+		}
+		if len(matches) == 0 {
+			if lvl.required {
+				return nil, fmt.Errorf("missing required %s level: no %s-*%s file in %s", lvl.name, lvl.prefix, ext, dir)
+			}
+			continue
+		}
+		sort.Strings(matches)
+		found = append(found, level_file{lvl, matches[0]})
+	}
+	return found, nil
+}
+
 // checks if a string is valid XML
 func ValidateXML(content string) error {
 	decoder := xml.NewDecoder(strings.NewReader(content))
@@ -233,14 +278,13 @@ func (s *SVGStacker) hasPumlFiles() (bool, error) {
 }
 
 func (s *SVGStacker) generateSVGsFromPuml() error {
-	// Find all .puml files numbered 01-04
-	pumlFiles, err := s.findNumberedPumlFiles()
+	found, err := discover_levels(s.inputDir, ".puml")
 	if err != nil {
 		return err
 	}
-
-	if len(pumlFiles) < 3 {
-		return fmt.Errorf("expected at least 3 numbered .puml files (01-*.puml through 03-*.puml), found %d", len(pumlFiles))
+	var pumlFiles []string
+	for _, f := range found {
+		pumlFiles = append(pumlFiles, f.path)
 	}
 
 	// Create temp directory
@@ -271,80 +315,32 @@ func (s *SVGStacker) generateSVGsFromPuml() error {
 	return nil
 }
 
-func (s *SVGStacker) findNumberedPumlFiles() ([]string, error) {
-	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.puml"))
-	if err != nil {
-		return nil, err
-	}
-
-	// Filter and sort by number prefix (01-04, with 04 being optional)
-	var numbered []string
-	numberRegex := regexp.MustCompile(`^0[1-4]-.*\.puml$`)
-
-	for _, file := range files {
-		base := filepath.Base(file)
-		if numberRegex.MatchString(base) {
-			numbered = append(numbered, file)
-		}
-	}
-
-	sort.Strings(numbered)
-	return numbered, nil
-}
-
 func (s *SVGStacker) loadDiagrams() error {
-	// Find all SVG files in the input directory
-	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.svg"))
+	found, err := discover_levels(s.inputDir, ".svg")
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		content, err := os.ReadFile(file)
+	for _, f := range found {
+		content, err := os.ReadFile(f.path)
 		if err != nil {
 			return err
 		}
 
 		// Validate XML before processing
 		if err := ValidateXML(string(content)); err != nil {
-			return err
+			return fmt.Errorf("%s: %w", f.path, err)
 		}
 
-		level := s.extractLevel(filepath.Base(file))
-		if level == "unknown" {
-			continue // Skip files that don't match C4 patterns
-		}
-
-		info, err := s.parseSVG(string(content), level)
+		info, err := s.parseSVG(string(content), f.level.name)
 		if err != nil {
-			return err
+			return fmt.Errorf("%s: %w", f.path, err)
 		}
 
-		s.diagrams[level] = info
-	}
-
-	if len(s.diagrams) == 0 {
-		return fmt.Errorf("no C4 SVG files found")
+		s.diagrams[f.level.name] = info
 	}
 
 	return nil
-}
-
-func (s *SVGStacker) extractLevel(filename string) string {
-	lower := strings.ToLower(filename)
-	if strings.Contains(lower, "context") {
-		return "context"
-	}
-	if strings.Contains(lower, "container") {
-		return "container"
-	}
-	if strings.Contains(lower, "component") {
-		return "component"
-	}
-	if strings.Contains(lower, "code") {
-		return "code"
-	}
-	return "unknown"
 }
 
 func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error) {
@@ -493,8 +489,6 @@ func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) st
 }
 
 func (s *SVGStacker) buildStackedSVG() string {
-	levels := []string{"context", "container", "component", "code"}
-
 	// Use embedded JavaScript for interactive mode
 	jsContent := []byte(navigationJS)
 
@@ -570,7 +564,8 @@ func (s *SVGStacker) buildStackedSVG() string {
 
 	// Generate navigation buttons (only for levels that exist)
 	buttonIndex := 0
-	for _, level := range levels {
+	for _, lvl := range levels {
+		level := lvl.name
 		if _, exists := s.diagrams[level]; !exists {
 			continue // Skip button if diagram doesn't exist
 		}
@@ -621,8 +616,8 @@ func (s *SVGStacker) buildStackedSVG() string {
 `)
 
 	// Generate diagram layers
-	for _, level := range levels {
-		sb.WriteString(s.createDiagramLayer(level))
+	for _, lvl := range levels {
+		sb.WriteString(s.createDiagramLayer(lvl.name))
 	}
 
 	// Add JavaScript
@@ -633,7 +628,8 @@ func (s *SVGStacker) buildStackedSVG() string {
 	// Inject actual diagram dimensions
 	sb.WriteString("const diagramData = {\n")
 	diagramCount := 0
-	for _, level := range levels {
+	for _, lvl := range levels {
+		level := lvl.name
 		if diagram, exists := s.diagrams[level]; exists {
 			if diagramCount > 0 {
 				sb.WriteString(",\n")
@@ -648,7 +644,8 @@ func (s *SVGStacker) buildStackedSVG() string {
 	// Inject available levels list
 	sb.WriteString("const availableLevels = [")
 	levelCount := 0
-	for _, level := range levels {
+	for _, lvl := range levels {
+		level := lvl.name
 		if _, exists := s.diagrams[level]; exists {
 			if levelCount > 0 {
 				sb.WriteString(", ")

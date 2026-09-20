@@ -30,6 +30,10 @@ func createTestSVGFiles(t *testing.T, dir string) {
   <rect x="10" y="10" width="480" height="380" fill="white" stroke="black"/>
   <text x="250" y="200" text-anchor="middle">Container Diagram</text>
 </svg>`,
+		"03-component.svg": `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <text x="150" y="100" text-anchor="middle">Component Diagram</text>
+</svg>`,
 	}
 
 	for filename, content := range testSVGs {
@@ -402,31 +406,69 @@ func TestValidateXML(t *testing.T) {
 	}
 }
 
-// TestExtractLevel tests the level extraction from filenames
-func TestExtractLevel(t *testing.T) {
+func TestDiscoverLevels(t *testing.T) {
 	tests := []struct {
-		filename  string
-		expectLvl string
+		name         string
+		given        []string
+		expected     []string // level names in order
+		expected_err string
 	}{
-		{"01-context.svg", "context"},
-		{"02-container.svg", "container"},
-		{"03-component.svg", "component"},
-		{"04-code.svg", "code"},
-		{"Context-Diagram.svg", "context"},
-		{"CONTAINER.svg", "container"},
-		{"component-diagram.svg", "component"},
-		{"CODE_LEVEL.svg", "code"},
-		{"unknown.svg", "unknown"},
-		{"random-file.txt", "unknown"},
+		{
+			name:     "four numbered files",
+			given:    []string{"01-context.svg", "02-container.svg", "03-component.svg", "04-code.svg"},
+			expected: []string{"context", "container", "component", "code"},
+		},
+		{
+			name:     "optional code level absent",
+			given:    []string{"01-context.svg", "02-container.svg", "03-component.svg"},
+			expected: []string{"context", "container", "component"},
+		},
+		{
+			name:         "required container level absent",
+			given:        []string{"01-context.svg", "03-component.svg"},
+			expected_err: "missing required container level",
+		},
+		{
+			name:         "substring names are ignored",
+			given:        []string{"Context-Diagram.svg", "02-container.svg", "03-component.svg"},
+			expected_err: "missing required context level",
+		},
+		{
+			name:     "other extensions are ignored",
+			given:    []string{"01-context.svg", "02-container.svg", "03-component.svg", "04-code.puml"},
+			expected: []string{"context", "container", "component"},
+		},
 	}
 
-	stacker := &SVGStacker{}
-
 	for _, tt := range tests {
-		t.Run(tt.filename, func(t *testing.T) {
-			result := stacker.extractLevel(tt.filename)
-			if result != tt.expectLvl {
-				t.Errorf("got %q, want %q", result, tt.expectLvl)
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			for _, name := range tt.given {
+				if err := os.WriteFile(filepath.Join(dir, name), []byte("<svg/>"), 0644); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			found, err := discover_levels(dir, ".svg")
+
+			if tt.expected_err != "" {
+				if err == nil || !strings.Contains(err.Error(), tt.expected_err) {
+					t.Fatalf("expected error containing %q, got %v", tt.expected_err, err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			var actual []string
+			for _, f := range found {
+				actual = append(actual, f.level.name)
+				if filepath.Dir(f.path) != dir {
+					t.Errorf("path %q is not inside %q", f.path, dir)
+				}
+			}
+			if strings.Join(actual, ",") != strings.Join(tt.expected, ",") {
+				t.Errorf("got %v, want %v", actual, tt.expected)
 			}
 		})
 	}
