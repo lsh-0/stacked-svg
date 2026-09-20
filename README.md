@@ -41,21 +41,9 @@ The output is a viewer, not just a diagram. Everything below is embedded in the 
 
 3. **View the result**: Open the generated SVG in your browser
 
-## Generating C4 Diagrams with Claude
+## Generating the Diagrams with Claude Code
 
-Use the built-in `prompt` command to generate C4 diagrams with Claude Code:
-
-```bash
-./svg-stacker prompt
-```
-
-This automatically:
-1. Detects Claude Code CLI in your PATH
-2. Analyzes your project (name, README, languages, key files)
-3. Invokes Claude with the full C4 specification and project context
-4. Claude generates `.puml` files and saves them to `docs/c4/`
-
-Claude will validate each generated file's syntax and fix any errors until all files pass PlantUML validation.
+The prompt that used to ship inside the binary as the `prompt` subcommand is kept in [`docs/c4-diagram-prompt.md`](docs/c4-diagram-prompt.md). Paste it into Claude Code, with the placeholders filled in, to have the `.puml` files written for a project.
 
 ## How It Works
 
