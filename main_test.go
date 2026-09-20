@@ -165,60 +165,6 @@ func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
 	}
 }
 
-func TestCleanDiagramContentPreservesXMLStructure(t *testing.T) {
-	testCases := []struct {
-		name        string
-		input       string
-		level       string
-		expectValid bool
-	}{
-		{
-			name:        "Clickable entity with link",
-			input:       `<g class="entity"><a href="original.svg">content</a></g>`,
-			level:       "context",
-			expectValid: true,
-		},
-		{
-			name:        "Complex nested structure",
-			input:       `<g class="entity"><a href="test.svg"><rect/><text>Test</text></a><rect/></g>`,
-			level:       "container",
-			expectValid: true,
-		},
-		{
-			name:        "Script tag removal",
-			input:       `<g><script>alert("test")</script><rect/></g>`,
-			level:       "component",
-			expectValid: true,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			stacker := &SVGStacker{}
-			result := stacker.cleanDiagramContent(tc.input, tc.level)
-
-			// Wrap in a minimal SVG structure for XML validation
-			xmlContent := `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg">` + result + `</svg>`
-
-			var xmlDoc interface{}
-			err := xml.Unmarshal([]byte(xmlContent), &xmlDoc)
-
-			if tc.expectValid && err != nil {
-				t.Errorf("Expected valid XML but got error: %v", err)
-				t.Errorf("Generated content: %s", result)
-			} else if !tc.expectValid && err == nil {
-				t.Errorf("Expected invalid XML but validation passed")
-			}
-
-			// Verify script tags were removed
-			if strings.Contains(result, "<script") {
-				t.Errorf("Script tags should be removed from output")
-			}
-		})
-	}
-}
-
 func max(a, b int) int {
 	if a > b {
 		return a
@@ -346,60 +292,6 @@ func TestParseArgsSlice(t *testing.T) {
 
 				if title != tt.expectTitle {
 					t.Errorf("Title: got %q, want %q", title, tt.expectTitle)
-				}
-			}
-		})
-	}
-}
-
-// TestValidateXML tests XML validation
-func TestValidateXML(t *testing.T) {
-	tests := []struct {
-		name      string
-		content   string
-		expectErr bool
-	}{
-		{
-			name:      "valid simple XML",
-			content:   `<root><item>test</item></root>`,
-			expectErr: false,
-		},
-		{
-			name:      "valid SVG snippet",
-			content:   `<g><rect x="0" y="0"/></g>`,
-			expectErr: false,
-		},
-		{
-			name:      "invalid XML - missing close tag",
-			content:   `<root><item>test</root>`,
-			expectErr: true,
-		},
-		{
-			name:      "invalid XML - malformed tag",
-			content:   `<root><item test>content</item></root>`,
-			expectErr: true,
-		},
-		{
-			name:      "invalid XML - unclosed tag",
-			content:   `<root><item>`,
-			expectErr: true,
-		},
-		{
-			name:      "valid XML with attributes",
-			content:   `<svg xmlns="http://www.w3.org/2000/svg"><rect width="100"/></svg>`,
-			expectErr: false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := ValidateXML(tt.content)
-
-			if (err != nil) != tt.expectErr {
-				if tt.expectErr {
-					t.Errorf("expected error, got nil")
-				} else {
-					t.Errorf("expected no error, got %v", err)
 				}
 			}
 		})

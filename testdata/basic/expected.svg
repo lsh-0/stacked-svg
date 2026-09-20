@@ -123,12 +123,10 @@
         <rect x="20" y="20" width="120" height="60" fill="#08427B"></rect>
         <text x="30" y="55" fill="#FFFFFF">Customer</text>
       </g>
-  
       <g class="entity" id="ent0002">
         <rect x="240" y="20" width="120" height="60" fill="#1168BD"></rect>
         <text x="250" y="55" fill="#FFFFFF">System</text>
       </g>
-  
       <g class="link" id="lnk1" data-entity-1="ent0001" data-entity-2="ent0002">
         <path d="M140,50 L240,50" fill="none" stroke="#444444"></path>
         <text x="170" y="45" font-size="12">Uses</text>
@@ -145,12 +143,10 @@
         <rect x="20" y="20" width="140" height="70" fill="#438DD5"></rect>
         <text x="30" y="60" fill="#FFFFFF">Web App</text>
       </g>
-  
       <g class="entity" id="ent0002">
         <rect x="300" y="20" width="140" height="70" fill="#438DD5"></rect>
         <text x="310" y="60" fill="#FFFFFF">Database</text>
       </g>
-  
       <g class="link" id="lnk1" data-entity-1="ent0001" data-entity-2="ent0002">
         <path d="M160,55 L300,55" fill="none" stroke="#444444"></path>
         <text x="200" y="50" font-size="12">Reads</text>

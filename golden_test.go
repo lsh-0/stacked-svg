@@ -41,7 +41,7 @@ func TestGolden(t *testing.T) {
 	for _, case_dir := range cases {
 		t.Run(filepath.Base(case_dir), func(t *testing.T) {
 			actual := generate_case(t, case_dir)
-			if err := ValidateXML(actual); err != nil {
+			if _, err := decode_tokens([]byte(actual)); err != nil {
 				t.Fatalf("output is not well-formed XML: %v", err)
 			}
 			expected_path := filepath.Join(case_dir, "expected.svg")

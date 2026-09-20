@@ -9,7 +9,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -80,21 +79,6 @@ func discover_levels(dir, ext string) ([]level_file, error) {
 		found = append(found, level_file{lvl, matches[0]})
 	}
 	return found, nil
-}
-
-// checks if a string is valid XML
-func ValidateXML(content string) error {
-	decoder := xml.NewDecoder(strings.NewReader(content))
-	for {
-		_, err := decoder.Token()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 var version = "unreleased"
@@ -327,12 +311,7 @@ func (s *SVGStacker) loadDiagrams() error {
 			return err
 		}
 
-		// Validate XML before processing
-		if err := ValidateXML(string(content)); err != nil {
-			return fmt.Errorf("%s: %w", f.path, err)
-		}
-
-		info, err := s.parseSVG(string(content), f.level.name)
+		info, err := parse_diagram(content)
 		if err != nil {
 			return fmt.Errorf("%s: %w", f.path, err)
 		}
@@ -343,149 +322,279 @@ func (s *SVGStacker) loadDiagrams() error {
 	return nil
 }
 
-func (s *SVGStacker) parseSVG(content string, level string) (DiagramInfo, error) {
-	var info DiagramInfo
+// the SVG namespace; elements in it are emitted without a namespace so they inherit the outer document's
+const svg_namespace = "http://www.w3.org/2000/svg"
 
-	// Extract SVG element attributes
-	svgRegex := regexp.MustCompile(`<svg[^>]*>`)
-	match := svgRegex.FindString(content)
-	if match == "" {
-		return info, fmt.Errorf("no SVG element")
-	}
+// fill colour PlantUML gives note bodies; the only stable marker that a group is a note
+const note_fill = "#FEFFDD"
 
-	// Extract viewBox
-	viewBoxRegex := regexp.MustCompile(`viewBox="([^"]*)"`)
-	if viewBoxMatch := viewBoxRegex.FindStringSubmatch(match); len(viewBoxMatch) > 1 {
-		info.viewBox = viewBoxMatch[1]
-	} else {
-		info.viewBox = "0 0 400 300"
-	}
-
-	// Extract width and height
-	widthRegex := regexp.MustCompile(`width="([^"]*)"`)
-	heightRegex := regexp.MustCompile(`height="([^"]*)"`)
-
-	if widthMatch := widthRegex.FindStringSubmatch(match); len(widthMatch) > 1 {
-		widthStr := strings.TrimSuffix(widthMatch[1], "px")
-		parsedWidth, err := strconv.ParseFloat(widthStr, 64)
-		if err != nil {
-			info.width = 400
-		} else {
-			info.width = parsedWidth
-		}
-	} else {
-		info.width = 400
-	}
-
-	if heightMatch := heightRegex.FindStringSubmatch(match); len(heightMatch) > 1 {
-		heightStr := strings.TrimSuffix(heightMatch[1], "px")
-		parsedHeight, err := strconv.ParseFloat(heightStr, 64)
-		if err != nil {
-			info.height = 300
-		} else {
-			info.height = parsedHeight
-		}
-	} else {
-		info.height = 300
-	}
-
-	info.aspectRatio = info.width / info.height
-
-	// Extract content between <svg> and </svg> more robustly
-	// Find the end of the opening <svg> tag
-	svgStartPos := strings.Index(content, "<svg")
-	if svgStartPos == -1 {
-		return info, fmt.Errorf("no <svg> tag")
-	}
-
-	svgTagEndPos := strings.Index(content[svgStartPos:], ">")
-	if svgTagEndPos == -1 {
-		return info, fmt.Errorf("malformed <svg> tag")
-	}
-
-	startIdx := svgStartPos + svgTagEndPos + 1
-	endIdx := strings.LastIndex(content, "</svg>")
-
-	if endIdx == -1 || endIdx <= startIdx {
-		return info, fmt.Errorf("no </svg> tag")
-	}
-
-	rawContent := content[startIdx:endIdx]
-	cleanedContent := s.cleanDiagramContent(rawContent, level)
-	// Pretty-print the content for better readability (namespace context is preserved)
-	info.content = s.prettyPrintXML(cleanedContent)
-
-	return info, nil
-}
-
-func (s *SVGStacker) prettyPrintXML(content string) string {
-	// Wrap in a root element with namespace declarations for parsing.
-	// IMPORTANT: We must include xmlns:xlink here because the content we're formatting
-	// is extracted from inside an <svg> tag (which normally declares xmlns:xlink).
-	// Without this declaration, Go's xml.Encoder will mangle xlink:href attributes
-	// by changing xmlns:xlink="http://www.w3.org/1999/xlink" to xmlns:xlink="xlink",
-	// which breaks <image> elements that use xlink:href for embedded data URIs.
-	wrapped := `<root xmlns:xlink="http://www.w3.org/1999/xlink">` + content + "</root>"
-
-	var buf bytes.Buffer
-	decoder := xml.NewDecoder(strings.NewReader(wrapped))
-	encoder := xml.NewEncoder(&buf)
-	encoder.Indent("      ", "  ")
-
+// decodes an XML document into a token slice. A slice rather than a stream so the rewrite
+// can look ahead (a group followed by a link) and back (a link naming an earlier note).
+func decode_tokens(src []byte) ([]xml.Token, error) {
+	decoder := xml.NewDecoder(bytes.NewReader(src))
+	decoder.Entity = xml.HTMLEntity
+	var tokens []xml.Token
 	for {
 		token, err := decoder.Token()
 		if err == io.EOF {
-			break
+			return tokens, nil
 		}
 		if err != nil {
-			// If parsing fails, return original content
-			return content
+			return nil, err
 		}
-
-		// Skip the root wrapper element
-		if start, ok := token.(xml.StartElement); ok && start.Name.Local == "root" {
-			continue
-		}
-		if end, ok := token.(xml.EndElement); ok && end.Name.Local == "root" {
-			continue
-		}
-
-		if err := encoder.EncodeToken(token); err != nil {
-			return content
-		}
+		tokens = append(tokens, xml.CopyToken(token))
 	}
-
-	if err := encoder.Flush(); err != nil {
-		return content
-	}
-
-	return strings.TrimSpace(buf.String())
 }
 
-func (s *SVGStacker) cleanDiagramContent(content string, currentLevel string) string {
-	// Remove scripts
-	scriptRegex := regexp.MustCompile(`<script[^>]*>.*?</script>`)
-	content = scriptRegex.ReplaceAllString(content, "")
-
-	// Add onclick handlers and clean up <a> tags
-	aTagRegex := regexp.MustCompile(`(<g[^>]*>)\s*<a\s+[^>]*href="[^"]*"[^>]*>(.*?)</a>`)
-	content = aTagRegex.ReplaceAllStringFunc(content, func(match string) string {
-		submatches := aTagRegex.FindStringSubmatch(match)
-		if len(submatches) >= 3 {
-			gTag := submatches[1]          // <g ...>
-			contentInside := submatches[2] // content inside <a>
-
-			// Add onclick to the g element
-			return strings.Replace(gTag, ">", ` onclick="navigateDown()" style="cursor:pointer;">`, 1) + contentInside
+// index of the end element closing the start element at `i`
+func subtree_end(tokens []xml.Token, i int) int {
+	depth := 0
+	for j := i; j < len(tokens); j++ {
+		switch tokens[j].(type) {
+		case xml.StartElement:
+			depth++
+		case xml.EndElement:
+			depth--
+			if depth == 0 {
+				return j
+			}
 		}
-		return match
-	})
+	}
+	return len(tokens) - 1
+}
 
-	// Clean up any remaining <a> tags
-	content = regexp.MustCompile(`<a\s+[^>]*>`).ReplaceAllString(content, "")
-	content = strings.ReplaceAll(content, "</a>", "")
+// index of the next token at `i` or later that is not whitespace or a comment
+func next_significant(tokens []xml.Token, i int) int {
+	for ; i < len(tokens); i++ {
+		switch t := tokens[i].(type) {
+		case xml.CharData:
+			if strings.TrimSpace(string(t)) != "" {
+				return i
+			}
+		case xml.Comment:
+		default:
+			return i
+		}
+	}
+	return len(tokens)
+}
 
-	return content
+func attr(el xml.StartElement, local string) string {
+	for _, a := range el.Attr {
+		if a.Name.Local == local {
+			return a.Value
+		}
+	}
+	return ""
+}
+
+func set_attr(el xml.StartElement, local, value string) xml.StartElement {
+	for i, a := range el.Attr {
+		if a.Name.Local == local {
+			el.Attr[i].Value = value
+			return el
+		}
+	}
+	el.Attr = append(el.Attr, xml.Attr{Name: xml.Name{Local: local}, Value: value})
+	return el
+}
+
+func has_class(el xml.StartElement, class string) bool {
+	for _, c := range strings.Fields(attr(el, "class")) {
+		if c == class {
+			return true
+		}
+	}
+	return false
+}
+
+func add_class(el xml.StartElement, class string) xml.StartElement {
+	if has_class(el, class) {
+		return el
+	}
+	return set_attr(el, "class", strings.TrimSpace(attr(el, "class")+" "+class))
+}
+
+// parses a length such as "494px" or "494", falling back to `fallback`
+func parse_length(value string, fallback float64) float64 {
+	n, err := strconv.ParseFloat(strings.TrimSuffix(strings.TrimSpace(value), "px"), 64)
+	if err != nil {
+		return fallback
+	}
+	return n
+}
+
+// removes tokens the viewer must not receive: script and title subtrees, processing
+// instructions, directives, and whitespace between elements
+func strip_tokens(tokens []xml.Token) []xml.Token {
+	var out []xml.Token
+	for i := 0; i < len(tokens); i++ {
+		switch t := tokens[i].(type) {
+		case xml.StartElement:
+			if t.Name.Local == "script" || t.Name.Local == "title" {
+				i = subtree_end(tokens, i)
+				continue
+			}
+		case xml.ProcInst, xml.Directive:
+			continue
+		case xml.CharData:
+			if strings.TrimSpace(string(t)) == "" {
+				continue
+			}
+		}
+		out = append(out, tokens[i])
+	}
+	return out
+}
+
+// turns a group that directly wraps a linked `<a>` into a clickable drill-down and unwraps every other `<a>`
+func rewrite_links(tokens []xml.Token) []xml.Token {
+	drop := map[int]bool{}
+	for i, token := range tokens {
+		g, ok := token.(xml.StartElement)
+		if !ok || g.Name.Local != "g" {
+			continue
+		}
+		j := next_significant(tokens, i+1)
+		if j >= len(tokens) {
+			break
+		}
+		a, ok := tokens[j].(xml.StartElement)
+		if !ok || a.Name.Local != "a" || attr(a, "href") == "" {
+			continue
+		}
+		g = set_attr(g, "onclick", "navigateDown()")
+		g = set_attr(g, "style", strings.TrimSpace(attr(g, "style")+" cursor:pointer;"))
+		tokens[i] = g
+		drop[j] = true
+		drop[subtree_end(tokens, j)] = true
+	}
+	var out []xml.Token
+	for i, token := range tokens {
+		if drop[i] {
+			continue
+		}
+		if el, ok := token.(xml.StartElement); ok && el.Name.Local == "a" {
+			drop[subtree_end(tokens, i)] = true
+			continue
+		}
+		out = append(out, token)
+	}
+	return out
+}
+
+// tags note groups with class `note` and the links attached to them with class `note-link`.
+// A link is attached when a `data-entity-*` attribute names the note's id (current PlantUML)
+// or when the link's id contains the note's `entity_` suffix (older PlantUML).
+func tag_notes(tokens []xml.Token) []xml.Token {
+	var note_ids []string
+	for i, token := range tokens {
+		g, ok := token.(xml.StartElement)
+		if !ok || g.Name.Local != "g" || !has_class(g, "entity") {
+			continue
+		}
+		end := subtree_end(tokens, i)
+		for _, inner := range tokens[i+1 : end] {
+			if p, ok := inner.(xml.StartElement); ok && p.Name.Local == "path" && strings.EqualFold(attr(p, "fill"), note_fill) {
+				tokens[i] = add_class(g, "note")
+				note_ids = append(note_ids, attr(g, "id"))
+				break
+			}
+		}
+	}
+	for i, token := range tokens {
+		g, ok := token.(xml.StartElement)
+		if !ok || g.Name.Local != "g" || !has_class(g, "link") {
+			continue
+		}
+		for _, id := range note_ids {
+			if id == "" {
+				continue
+			}
+			suffix := strings.TrimPrefix(id, "entity_")
+			attached := attr(g, "data-entity-1") == id || attr(g, "data-entity-2") == id ||
+				(suffix != id && strings.Contains(attr(g, "id"), suffix))
+			if attached {
+				tokens[i] = add_class(g, "note-link")
+				break
+			}
+		}
+	}
+	return tokens
+}
+
+// re-encodes tokens as indented XML. Elements in the SVG namespace lose their namespace so
+// the encoder does not redeclare `xmlns` on each one; namespace declarations are dropped
+// and the encoder re-declares prefixes such as `xlink` where they are used.
+func encode_tokens(tokens []xml.Token) (string, error) {
+	var buf bytes.Buffer
+	encoder := xml.NewEncoder(&buf)
+	encoder.Indent("      ", "  ")
+	for _, token := range tokens {
+		switch t := token.(type) {
+		case xml.StartElement:
+			if t.Name.Space == svg_namespace {
+				t.Name.Space = ""
+			}
+			var attrs []xml.Attr
+			for _, a := range t.Attr {
+				if a.Name.Space == "xmlns" || (a.Name.Space == "" && a.Name.Local == "xmlns") {
+					continue
+				}
+				attrs = append(attrs, a)
+			}
+			t.Attr = attrs
+			token = t
+		case xml.EndElement:
+			if t.Name.Space == svg_namespace {
+				t.Name.Space = ""
+			}
+			token = t
+		}
+		if err := encoder.EncodeToken(token); err != nil {
+			return "", err
+		}
+	}
+	if err := encoder.Flush(); err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(buf.String()), nil
+}
+
+// parses one SVG document into its dimensions and a rewritten body ready for embedding
+func parse_diagram(src []byte) (DiagramInfo, error) {
+	var info DiagramInfo
+	tokens, err := decode_tokens(src)
+	if err != nil {
+		return info, err
+	}
+	start := next_significant(tokens, 0)
+	for start < len(tokens) {
+		if _, ok := tokens[start].(xml.StartElement); ok {
+			break
+		}
+		start = next_significant(tokens, start+1)
+	}
+	if start >= len(tokens) {
+		return info, fmt.Errorf("no root <svg> element")
+	}
+	root := tokens[start].(xml.StartElement)
+	if root.Name.Local != "svg" {
+		return info, fmt.Errorf("root element is <%s>, not <svg>", root.Name.Local)
+	}
+	end := subtree_end(tokens, start)
+
+	info.viewBox = attr(root, "viewBox")
+	if info.viewBox == "" {
+		info.viewBox = "0 0 400 300"
+	}
+	info.width = parse_length(attr(root, "width"), 400)
+	info.height = parse_length(attr(root, "height"), 300)
+	info.aspectRatio = info.width / info.height
+
+	body := tag_notes(rewrite_links(strip_tokens(tokens[start+1 : end])))
+	info.content, err = encode_tokens(body)
+	return info, err
 }
 
 func (s *SVGStacker) buildStackedSVG() string {
