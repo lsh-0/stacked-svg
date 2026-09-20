@@ -1,6 +1,6 @@
 # Stacked C4 SVG
 
-Generate self-contained, navigable C4 architecture diagrams from PlantUML with embedded JavaScript navigation.
+Turn a set of PlantUML C4 diagrams into a single portable SVG that is its own viewer. Open the file in any browser and switch between the context, container, component and code levels, drill down by clicking elements, resize, hide notes, and highlight or pin the paths you are following. No server, no external assets.
 
 <p align="center">
   <a href="./docs/demo.png"><img src="./docs/demo-thumb.png?raw=true" width="400" alt="Example screenshot"></a>
@@ -8,9 +8,15 @@ Generate self-contained, navigable C4 architecture diagrams from PlantUML with e
 
 ## Features
 
-- **Self-contained**: Single SVG file with all diagrams and navigation
-- **Clickable navigation**: Click diagram elements to drill down between C4 levels
-- **Flexible diagram count**: Supports 3 or 4 C4 levels (code level optional)
+The output is a viewer, not just a diagram. Everything below is embedded in the one SVG file.
+
+- **Self-contained**: one file holding all diagrams and the viewer script, with no external assets
+- **Level switching**: navigation buttons for each C4 level present, with 3 or 4 levels supported (code level optional)
+- **Drill-down**: click a diagram element with a `$link` to move to the next level
+- **Sizing modes**: native size with browser scrollbars, or auto-scale to fit the viewport
+- **Note toggling**: hide or show PlantUML notes and the paths attached to them
+- **Path highlighting**: hover a path label to bring that path to the front and highlight it
+- **Pinned selection**: click a path label to keep it highlighted, Ctrl-click (Cmd-click on macOS) to pin several, Escape to clear
 
 ## Quick Start
 
