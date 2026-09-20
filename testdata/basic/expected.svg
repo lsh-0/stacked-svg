@@ -193,6 +193,7 @@ let currentLevel = 'context';
 let fitToWidth = false; // false = native size (free zoom), true = auto-scale (constrained)
 let notesVisible = true; // true = show notes, false = hide notes
 let selectedLinks = []; // Track multiple selected links (Ctrl+click to multi-select)
+const enhancedLevels = new Set(); // layers whose link labels already have hitboxes; enhancement needs layout, so it runs on first show
 
 function positionRightAlignedElements() {
   const viewBoxWidth = window.innerWidth;
@@ -292,8 +293,11 @@ function showLevel(level) {
   // Resize containers after showing layer
   setTimeout(resizeContainers, 10);
 
-  // Setup link hover enhancements (JavaScript progressive enhancement)
-  setupLinkHoverEnhancements();
+  // Link labels get their hitboxes the first time the layer is visible (getBBox needs layout)
+  if (!enhancedLevels.has(level)) {
+    enhancedLevels.add(level);
+    setupLinkHoverEnhancements();
+  }
 }
 
 // Initialize - show context level and setup resize
@@ -345,74 +349,45 @@ function toggleNotes() {
   const notesText = document.getElementById('notes-text');
   notesText.textContent = notesVisible ? 'Hide Notes' : 'Show Notes';
 
-  // Find all note elements (PlantUML generates notes with the distinctive yellow fill)
-  // Notes are <g> elements with class="entity" containing paths with fill="#FEFFDD"
-  availableLevels.forEach(level => {
-    const layer = document.getElementById('layer-' + level);
-    if (layer) {
-      const noteIds = [];
-      const noteElements = layer.querySelectorAll('g.entity');
-      noteElements.forEach(g => {
-        // Check if this group contains a note (yellow fill path)
-        const notePath = g.querySelector('path[fill="#FEFFDD"]');
-        if (notePath) {
-          g.style.display = notesVisible ? 'block' : 'none';
-          // Extract the entity ID from the note's id attribute (e.g., "entity_GMN49" -> "GMN49")
-          const noteId = g.id;
-          if (noteId) {
-            const match = noteId.match(/entity_(.+)/);
-            if (match) {
-              noteIds.push(match[1]);
-            }
-          }
-        }
-      });
-
-      // Hide links that reference any of the note IDs
-      // Links have IDs like "link_GMN49_template_loader" where GMN49 is the note ID
-      const linkElements = layer.querySelectorAll('g.link');
-      linkElements.forEach(link => {
-        const linkId = link.id;
-        if (linkId) {
-          // Check if this link references any note ID
-          const referencesNote = noteIds.some(noteId => linkId.includes(noteId));
-          if (referencesNote) {
-            link.style.display = notesVisible ? 'block' : 'none';
-          }
-        }
-      });
-    }
+  // The converter tags note groups with `note` and the links attached to them with `note-link`
+  document.querySelectorAll('g.note, g.note-link').forEach(el => {
+    el.style.display = notesVisible ? '' : 'none';
   });
 }
+
+// Drop every pinned link back to its normal state
+function clearSelection() {
+  selectedLinks.forEach(prevLink => {
+    const prevBgRect = prevLink.querySelector('.text-bg');
+    if (prevBgRect) {
+      prevBgRect.setAttribute('fill-opacity', '0');
+    }
+    prevLink.classList.remove('highlighted');
+  });
+  selectedLinks = [];
+}
+
+// Escape clears the pinned selection; registered once for the document
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && selectedLinks.length > 0) {
+    clearSelection();
+  }
+});
 
 // Progressive enhancement: JavaScript-enhanced link hovering
 function setupLinkHoverEnhancements() {
   const currentLayer = document.getElementById('layer-' + currentLevel);
   if (!currentLayer) return;
 
-  // Remove all <title> elements from the diagram to prevent tooltips
-  const allTitles = currentLayer.querySelectorAll('title');
-  allTitles.forEach(t => t.remove());
-
   const links = currentLayer.querySelectorAll('g.link');
 
   links.forEach(link => {
-    // Remove any title elements that might trigger tooltips
-    const titleElements = link.querySelectorAll('title');
-    titleElements.forEach(t => t.remove());
-
     // Find text elements within this link (the labels)
     const textElements = link.querySelectorAll('text');
 
-    // Remove title attributes from all text elements and make them non-interactive
+    // Let the hitbox underneath handle all mouse events
     textElements.forEach(textEl => {
-      textEl.removeAttribute('title');
-      textEl.style.pointerEvents = 'none'; // Let hitbox underneath handle all mouse events
-      let parent = textEl.parentElement;
-      while (parent && parent !== link) {
-        parent.removeAttribute('title');
-        parent = parent.parentElement;
-      }
+      textEl.style.pointerEvents = 'none';
     });
 
     // Create persistent background rectangle for the label area
@@ -507,17 +482,12 @@ function setupLinkHoverEnhancements() {
           }
         } else {
           // Single select - deselect all others
-          selectedLinks.forEach(prevLink => {
-            const prevBgRect = prevLink.querySelector('.text-bg');
-            if (prevBgRect) {
-              prevBgRect.setAttribute('fill-opacity', '0');
-            }
-            prevLink.classList.remove('highlighted');
-          });
+          const wasOnlySelection = selectedLinks.length === 1 && selectedLinks[0] === link;
+          clearSelection();
 
-          // If clicking the same link again, deselect it
-          if (selectedLinks.length === 1 && selectedLinks[0] === link) {
-            selectedLinks = [];
+          // If clicking the same link again, leave it deselected
+          if (wasOnlySelection) {
+            // nothing more to do
           } else {
             // Select new link
             selectedLinks = [link];
@@ -526,20 +496,6 @@ function setupLinkHoverEnhancements() {
             link.classList.add('highlighted');
             bgRect.setAttribute('fill-opacity', '0.9');
           }
-        }
-      });
-
-      // Deselect all on ESC key
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && selectedLinks.length > 0) {
-          selectedLinks.forEach(prevLink => {
-            const prevBgRect = prevLink.querySelector('.text-bg');
-            if (prevBgRect) {
-              prevBgRect.setAttribute('fill-opacity', '0');
-            }
-            prevLink.classList.remove('highlighted');
-          });
-          selectedLinks = [];
         }
       });
     }
