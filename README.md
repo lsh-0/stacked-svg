@@ -43,22 +43,20 @@ The output is a viewer, not just a diagram. Everything below is embedded in the 
 
 ## Generating the Diagrams with Claude Code
 
-The prompt that used to ship inside the binary as the `prompt` subcommand is kept in [`docs/c4-diagram-prompt.md`](docs/c4-diagram-prompt.md). Paste it into Claude Code, with the placeholders filled in, to have the `.puml` files written for a project.
+[`docs/c4-diagram-prompt.md`](docs/c4-diagram-prompt.md) holds the instructions for having Claude Code write the `.puml` files for a project. Paste them into Claude Code with the placeholders filled in.
 
 ## How It Works
 
-1. Detects `.puml` files and generates SVGs via PlantUML in temp directory
-2. Extracts SVG content and validates XML structure
-3. Processes PlantUML `$link` elements and converts to JavaScript onclick handlers
-4. Creates layered SVG with embedded navigation controls
-5. Pretty-prints embedded SVG content for readability
-6. Produces single self-contained file ready for sharing
+1. When the directory holds `.puml` files, renders them with PlantUML into a temporary directory
+2. Parses each numbered SVG once, reading its dimensions and rewriting the content: `<script>` and `<title>` elements go, `$link` anchors become drill-down click handlers, and notes and the paths attached to them are tagged with classes
+3. Renders one document from a template: header, level buttons, one hidden layer per level, and the embedded viewer script
+4. Writes the single self-contained file to standard output or `--output`
 
 ## Requirements
 
 - Go compiler for building the generator
-- PlantUML installed and available in PATH
-- PlantUML C4 library for diagram generation
+- PlantUML on `PATH` when the input directory holds `.puml` files. Its bundled C4 library is used.
+- Chromium on `PATH` only to run the viewer tests; they skip without it
 
 ## Usage
 
@@ -94,7 +92,7 @@ The prompt that used to ship inside the binary as the `prompt` subcommand is kep
 ./svg-stacker <directory> --output output.svg --title "My System"
 ```
 
-## PlantUML File Naming
+## File Naming
 
 Files must be numbered 01-04 with the following convention:
 - `01-*.puml` - Context diagram (required)
@@ -103,6 +101,8 @@ Files must be numbered 01-04 with the following convention:
 - `04-*.puml` - Code diagram (optional)
 
 Example: `01-context.puml`, `02-container.puml`, `03-component.puml`, `04-code.puml`
+
+A directory of already-rendered `.svg` files follows the same convention: `01-*.svg` to `04-*.svg`. Files without a numeric prefix are ignored.
 
 ## Adding Clickable Navigation
 
@@ -118,10 +118,15 @@ The link filenames don't matter - they're replaced with JavaScript navigation.
 
 ## Project Structure
 
-- `examples/` - Example PlantUML source files (.puml)
-- `main.go` - Go generator source code
-- `navigation.js` - JavaScript navigation logic (embedded into final SVG)
-- `manage.sh` - Build and generate script
-- `svg-stacker` - Compiled Go binary (gitignored)
-- `CLAUDE.md` - Development guidance for Claude Code
+- `main.go` - the converter
+- `stacked.svg.tmpl` - the output document template, embedded in the binary
+- `navigation.js` - the viewer script, embedded in the binary
+- `*_test.go` - unit, golden-file and headless-browser tests
+- `testdata/` - golden cases: numbered input SVGs and the `expected.svg` for each
+- `examples/` - example PlantUML sources and the generated `example.svg`
+- `docs/c4-diagram-prompt.md` - instructions for generating the diagrams with Claude Code
+- `C4-DIAGRAM-SPEC.md` - the diagram conventions those instructions refer to
+- `manage.sh` - build, test, generate, release and clean script
+- `svg-stacker` - compiled Go binary (gitignored)
+- `CLAUDE.md` - development guidance for Claude Code
 
