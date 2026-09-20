@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"io"
 	"math"
@@ -488,9 +489,6 @@ func stack(title string, at time.Time, diagrams []Diagram) (string, error) {
 // converts the diagrams in `input_dir` and writes the document to `output_file`, or to
 // standard output when it is empty
 func run(input_dir, output_file, title string) error {
-	if title == "" {
-		title = "🏗️ Stacked C4 Architecture"
-	}
 	dir := input_dir
 	if pumls, _ := filepath.Glob(filepath.Join(input_dir, "*.puml")); len(pumls) > 0 {
 		svg_dir, cleanup, err := render(input_dir)
@@ -515,106 +513,81 @@ func run(input_dir, output_file, title string) error {
 	return os.WriteFile(output_file, []byte(document), 0644)
 }
 
-func printUsage() {
-	fmt.Fprintf(os.Stderr, `Usage: svg-stacker <directory> [OPTIONS]
+// what the command line asks for
+type options struct {
+	input_dir    string
+	output_file  string
+	title        string
+	show_version bool
+}
+
+const usage_header = `Usage: svg-stacker <directory> [OPTIONS]
 
 Combines the numbered SVG or PlantUML files in <directory> into one stacked SVG.
 
 OPTIONS:
-  -h, --help          Show this help message and exit
-  -v, --version       Show version information and exit
-  --output FILE       Output file path (default: stdout)
-  --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
+`
 
+const usage_examples = `
 EXAMPLES:
   svg-stacker ./examples
   svg-stacker ./examples --output output.svg
   svg-stacker ./examples --title "My Architecture"
-`)
-}
+`
 
-func printVersion() {
-	fmt.Printf("svg-stacker version %s\n", version)
-}
-
-func parseArgsSlice(args []string) (inputDir, outputFile, title string, err error) {
-	if len(args) < 1 {
-		return "", "", "", fmt.Errorf("directory argument required")
+// parses the arguments after the program name. Flags may come before or after the directory.
+// Returns `flag.ErrHelp` when help was requested; usage and errors are written to `stderr`.
+func parse_args(args []string, stderr io.Writer) (options, error) {
+	var opts options
+	flags := flag.NewFlagSet("svg-stacker", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	flags.Usage = func() {
+		fmt.Fprint(stderr, usage_header)
+		flags.PrintDefaults()
+		fmt.Fprint(stderr, usage_examples)
 	}
+	flags.StringVar(&opts.output_file, "output", "", "file to write (default: standard output)")
+	flags.StringVar(&opts.title, "title", "🏗️ Stacked C4 Architecture", "header text")
+	flags.BoolVar(&opts.show_version, "version", false, "print the version and exit")
+	flags.BoolVar(&opts.show_version, "v", false, "alias for --version")
 
-	// Check for help/version flags first
-	for _, arg := range args {
-		if arg == "-h" || arg == "--help" {
-			return "", "", "", fmt.Errorf("help")
+	var positional []string
+	for {
+		if err := flags.Parse(args); err != nil {
+			return opts, err
 		}
-		if arg == "-v" || arg == "--version" {
-			return "", "", "", fmt.Errorf("version")
+		args = flags.Args()
+		if len(args) == 0 {
+			break
 		}
+		positional = append(positional, args[0])
+		args = args[1:]
 	}
-
-	inputDir = args[0]
-	outputFile = ""
-	title = ""
-
-	for i := 1; i < len(args); i++ {
-		switch args[i] {
-		case "--output":
-			if i+1 < len(args) {
-				outputFile = args[i+1]
-				i++
-			} else {
-				return "", "", "", fmt.Errorf("--output requires an argument")
-			}
-		case "--title":
-			if i+1 < len(args) {
-				title = args[i+1]
-				i++
-			} else {
-				return "", "", "", fmt.Errorf("--title requires an argument")
-			}
-		case "-h", "--help", "-v", "--version":
-			// Already handled above
-		default:
-			// Unknown flag
-			return "", "", "", fmt.Errorf("unknown flag: %s", args[i])
-		}
+	if opts.show_version {
+		return opts, nil
 	}
-
-	return inputDir, outputFile, title, nil
-}
-
-func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
-	if len(os.Args) < 2 {
-		printUsage()
-		return "", "", "", true, 1
+	if len(positional) != 1 {
+		flags.Usage()
+		return opts, fmt.Errorf("exactly one directory argument is required, got %d", len(positional))
 	}
-
-	inputDir, outputFile, title, err := parseArgsSlice(os.Args[1:])
-	if err == nil {
-		return inputDir, outputFile, title, false, 0
-	}
-
-	// Handle special cases
-	switch err.Error() {
-	case "help":
-		printUsage()
-		return "", "", "", true, 0
-	case "version":
-		printVersion()
-		return "", "", "", true, 0
-	default:
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
-		return "", "", "", true, 1
-	}
+	opts.input_dir = positional[0]
+	return opts, nil
 }
 
 func main() {
-	inputDir, outputFile, title, shouldExit, exitCode := parseArgs()
-	if shouldExit {
-		os.Exit(exitCode)
+	opts, err := parse_args(os.Args[1:], os.Stderr)
+	if err == flag.ErrHelp {
+		os.Exit(0)
 	}
-	if err := run(inputDir, outputFile, title); err != nil {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(2)
+	}
+	if opts.show_version {
+		fmt.Printf("svg-stacker version %s\n", version)
+		return
+	}
+	if err := run(opts.input_dir, opts.output_file, opts.title); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}

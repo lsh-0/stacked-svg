@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/xml"
+	"flag"
 	"io"
 	"os"
 	"path/filepath"
@@ -97,120 +98,75 @@ func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
 	}
 }
 
-// TestParseArgsSlice tests the parseArgsSlice function for argument parsing logic
-func TestParseArgsSlice(t *testing.T) {
+func TestParseArgs(t *testing.T) {
 	tests := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectDir    string
-		expectOutput string
-		expectTitle  string
+		name          string
+		given         []string
+		expected      options
+		expected_err  string
+		expected_help bool
 	}{
 		{
-			name:      "no arguments",
-			args:      []string{},
-			expectErr: true,
+			name:     "directory only",
+			given:    []string{"./examples"},
+			expected: options{input_dir: "./examples", title: "🏗️ Stacked C4 Architecture"},
 		},
 		{
-			name:      "help flag short",
-			args:      []string{"-h"},
-			expectErr: true,
+			name:     "flags after the directory",
+			given:    []string{"./examples", "--output", "out.svg", "--title", "My Title"},
+			expected: options{input_dir: "./examples", output_file: "out.svg", title: "My Title"},
 		},
 		{
-			name:      "help flag long",
-			args:      []string{"--help"},
-			expectErr: true,
+			name:     "flags before the directory",
+			given:    []string{"--title", "My Title", "-output", "out.svg", "./examples"},
+			expected: options{input_dir: "./examples", output_file: "out.svg", title: "My Title"},
 		},
 		{
-			name:      "version flag short",
-			args:      []string{"-v"},
-			expectErr: true,
+			name:     "version long",
+			given:    []string{"--version"},
+			expected: options{show_version: true, title: "🏗️ Stacked C4 Architecture"},
 		},
 		{
-			name:      "version flag long",
-			args:      []string{"--version"},
-			expectErr: true,
+			name:     "version short",
+			given:    []string{"-v"},
+			expected: options{show_version: true, title: "🏗️ Stacked C4 Architecture"},
 		},
-		{
-			name:      "directory only",
-			args:      []string{"./examples"},
-			expectErr: false,
-			expectDir: "./examples",
-		},
-		{
-			name:         "directory with output",
-			args:         []string{"./examples", "--output", "out.svg"},
-			expectErr:    false,
-			expectDir:    "./examples",
-			expectOutput: "out.svg",
-		},
-		{
-			name:        "directory with title",
-			args:        []string{"./examples", "--title", "My Title"},
-			expectErr:   false,
-			expectDir:   "./examples",
-			expectTitle: "My Title",
-		},
-		{
-			name:         "all options",
-			args:         []string{"./examples", "--output", "out.svg", "--title", "My Title"},
-			expectErr:    false,
-			expectDir:    "./examples",
-			expectOutput: "out.svg",
-			expectTitle:  "My Title",
-		},
-		{
-			name:      "output without value",
-			args:      []string{"./examples", "--output"},
-			expectErr: true,
-		},
-		{
-			name:      "title without value",
-			args:      []string{"./examples", "--title"},
-			expectErr: true,
-		},
-		{
-			name:      "unknown flag",
-			args:      []string{"./examples", "--unknown"},
-			expectErr: true,
-		},
-		{
-			name:      "help in middle of args",
-			args:      []string{"./examples", "-h", "--output", "out.svg"},
-			expectErr: true,
-		},
-		{
-			name:      "version in middle of args",
-			args:      []string{"./examples", "--version"},
-			expectErr: true,
-		},
+		{name: "help", given: []string{"-h"}, expected_help: true},
+		{name: "help long", given: []string{"--help"}, expected_help: true},
+		{name: "no arguments", given: []string{}, expected_err: "exactly one directory argument is required, got 0"},
+		{name: "two directories", given: []string{"a", "b"}, expected_err: "exactly one directory argument is required, got 2"},
+		{name: "unknown flag", given: []string{"./examples", "--bogus"}, expected_err: "flag provided but not defined: -bogus"},
+		{name: "output without value", given: []string{"./examples", "--output"}, expected_err: "flag needs an argument: -output"},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			inputDir, outputFile, title, err := parseArgsSlice(tt.args)
+			var stderr strings.Builder
+			actual, err := parse_args(tt.given, &stderr)
 
-			if (err != nil) != tt.expectErr {
-				if tt.expectErr {
-					t.Errorf("expected error, got nil")
-				} else {
-					t.Errorf("expected no error, got %v", err)
+			if tt.expected_help {
+				if err != flag.ErrHelp {
+					t.Fatalf("expected flag.ErrHelp, got %v", err)
 				}
+				if !strings.Contains(stderr.String(), "Usage: svg-stacker") {
+					t.Error("help did not print usage")
+				}
+				return
 			}
-
-			if !tt.expectErr {
-				if inputDir != tt.expectDir {
-					t.Errorf("InputDir: got %q, want %q", inputDir, tt.expectDir)
+			if tt.expected_err != "" {
+				if err == nil || !strings.Contains(err.Error(), tt.expected_err) {
+					t.Fatalf("expected error containing %q, got %v", tt.expected_err, err)
 				}
-
-				if outputFile != tt.expectOutput {
-					t.Errorf("OutputFile: got %q, want %q", outputFile, tt.expectOutput)
+				if !strings.Contains(stderr.String(), "Usage: svg-stacker") {
+					t.Error("error did not print usage to stderr")
 				}
-
-				if title != tt.expectTitle {
-					t.Errorf("Title: got %q, want %q", title, tt.expectTitle)
-				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if actual != tt.expected {
+				t.Errorf("got %+v, want %+v", actual, tt.expected)
 			}
 		})
 	}
