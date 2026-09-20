@@ -671,14 +671,7 @@ func (s *SVGStacker) buildStackedSVG() string {
 func (s *SVGStacker) createDiagramLayer(level string) string {
 	diagram, exists := s.diagrams[level]
 	if !exists {
-		return fmt.Sprintf(`
-  <!-- %s layer (not found) -->
-  <g id="layer-%s" style="display:none">
-    <rect x="50" y="120" width="700" height="450" fill="#ecf0f1" stroke="#bdc3c7"/>
-    <text x="400" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f8c8d">
-      %s diagram not found
-    </text>
-  </g>`, level, level, titleCase(level))
+		return ""
 	}
 
 	return fmt.Sprintf(`

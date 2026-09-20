@@ -170,13 +170,6 @@
       </svg>
     </g>
   </g>
-  <!-- code layer (not found) -->
-  <g id="layer-code" style="display:none">
-    <rect x="50" y="120" width="700" height="450" fill="#ecf0f1" stroke="#bdc3c7"/>
-    <text x="400" y="350" text-anchor="middle" font-family="Arial" font-size="16" fill="#7f8c8d">
-      Code diagram not found
-    </text>
-  </g>
   <!-- Navigation Script -->
   <script type="text/ecmascript"><![CDATA[
     const diagramData = {
