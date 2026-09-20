@@ -120,7 +120,6 @@
     Native Size
   </text>
 
-
   <!-- Diagram Layers (positioned below header at y=140) -->
 
   <!-- context layer -->
@@ -225,16 +224,33 @@
       </svg>
     </g>
   </g>
+
   <!-- Navigation Script -->
   <script type="text/ecmascript"><![CDATA[
     const diagramData = {
-  'context': { width: 494, height: 562, ratio: 0.88 },
-  'container': { width: 600, height: 420, ratio: 1.43 },
-  'component': { width: 450, height: 300, ratio: 1.50 },
-  'code': { width: 300, height: 200, ratio: 1.50 }
-};
+      "code": {
+        "width": 300,
+        "height": 200,
+        "ratio": 1.5
+      },
+      "component": {
+        "width": 450,
+        "height": 300,
+        "ratio": 1.5
+      },
+      "container": {
+        "width": 600,
+        "height": 420,
+        "ratio": 1.43
+      },
+      "context": {
+        "width": 494,
+        "height": 562,
+        "ratio": 0.88
+      }
+    };
 
-const availableLevels = ['context', 'container', 'component', 'code'];
+const availableLevels = ["context","container","component","code"];
 
 // Embedded navigation JavaScript for stacked C4 diagrams
 let currentLevel = 'context';

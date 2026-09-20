@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 // createTestSVGFiles creates minimal valid SVG files for testing.
@@ -44,66 +45,6 @@ func createTestSVGFiles(t *testing.T, dir string) {
 	}
 }
 
-func TestGeneratedSVGIsValidXMLStreaming(t *testing.T) {
-	// Create a temporary directory for test input and output
-	tempDir := t.TempDir()
-	inputDir := filepath.Join(tempDir, "input")
-	if err := os.Mkdir(inputDir, 0755); err != nil {
-		t.Fatalf("Failed to create input directory: %v", err)
-	}
-
-	// Create test SVG files
-	createTestSVGFiles(t, inputDir)
-
-	outputFile := filepath.Join(tempDir, "test-stacked-c4.svg")
-
-	stacker := NewSVGStacker(inputDir, outputFile, "Test Diagram")
-
-	// Generate the SVG
-	err := stacker.CreateStackedSVG()
-	if err != nil {
-		t.Fatalf("Failed to create stacked SVG: %v", err)
-	}
-
-	// Read the generated SVG
-	content, err := os.ReadFile(outputFile)
-	if err != nil {
-		t.Fatalf("Failed to read generated SVG: %v", err)
-	}
-
-	// Validate XML structure using streaming parser (more detailed error reporting)
-	decoder := xml.NewDecoder(strings.NewReader(string(content)))
-	for {
-		_, err := decoder.Token()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			t.Errorf("Generated SVG is not valid XML: %v", err)
-
-			// Try to provide helpful context about where the error occurred
-			lines := strings.Split(string(content), "\n")
-			if xmlErr, ok := err.(*xml.SyntaxError); ok {
-				lineNum := int(xmlErr.Line) - 1
-				if lineNum >= 0 && lineNum < len(lines) {
-					t.Errorf("Error at line %d: %s", xmlErr.Line, lines[lineNum])
-					// Show some context around the error
-					start := max(0, lineNum-2)
-					end := min(len(lines), lineNum+3)
-					for i := start; i < end; i++ {
-						marker := "   "
-						if i == lineNum {
-							marker = ">>>"
-						}
-						t.Errorf("%s %d: %s", marker, i+1, lines[i])
-					}
-				}
-			}
-			return // Stop processing on first error
-		}
-	}
-}
-
 func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
 	// Create a temporary directory for test input and output
 	tempDir := t.TempDir()
@@ -115,23 +56,14 @@ func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
 	// Create test SVG files
 	createTestSVGFiles(t, inputDir)
 
-	outputFile := filepath.Join(tempDir, "test-stacked-c4.svg")
-
-	stacker := NewSVGStacker(inputDir, outputFile, "Test Architecture")
-
-	// Generate the SVG
-	err := stacker.CreateStackedSVG()
+	diagrams, err := load(inputDir)
+	if err != nil {
+		t.Fatalf("Failed to load diagrams: %v", err)
+	}
+	contentStr, err := stack("Test Architecture", time.Now(), diagrams)
 	if err != nil {
 		t.Fatalf("Failed to create stacked SVG: %v", err)
 	}
-
-	// Read the generated SVG
-	content, err := os.ReadFile(outputFile)
-	if err != nil {
-		t.Fatalf("Failed to read generated SVG: %v", err)
-	}
-
-	contentStr := string(content)
 
 	// Check for essential elements
 	expectedElements := []string{
@@ -163,20 +95,6 @@ func TestGeneratedSVGContainsExpectedElements(t *testing.T) {
 			return
 		}
 	}
-}
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 // TestParseArgsSlice tests the parseArgsSlice function for argument parsing logic

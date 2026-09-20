@@ -17,17 +17,15 @@ var golden_time = time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC)
 // generates the stacked document for one `testdata/<case>/` directory
 func generate_case(t *testing.T, case_dir string) string {
 	t.Helper()
-	output := filepath.Join(t.TempDir(), "stacked.svg")
-	stacker := NewSVGStacker(case_dir, output, "Golden "+filepath.Base(case_dir))
-	stacker.now = golden_time
-	if err := stacker.CreateStackedSVG(); err != nil {
-		t.Fatalf("generate %s: %v", case_dir, err)
-	}
-	actual, err := os.ReadFile(output)
+	diagrams, err := load(case_dir)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("load %s: %v", case_dir, err)
 	}
-	return string(actual)
+	actual, err := stack("Golden "+filepath.Base(case_dir), golden_time, diagrams)
+	if err != nil {
+		t.Fatalf("stack %s: %v", case_dir, err)
+	}
+	return actual
 }
 
 func TestGolden(t *testing.T) {

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1920"
+     height="1080"
+     style="background: #f8f9fa; display: block;">
+
+  <title>Stacked C4 Architecture Diagrams</title>
+
+  <!-- Generator Metadata (invisible) -->
+  <metadata>
+    <generator>stacked-c4-svg</generator>
+    <version>{{.Version}}</version>
+    <timestamp>{{.Timestamp}}</timestamp>
+  </metadata>
+
+  <!-- CSS Styles for Progressive Enhancement -->
+  <style>
+    /* Path highlighting - works without JavaScript */
+    .link path,
+    .link polygon {
+      pointer-events: stroke; /* Only capture events on the stroke itself */
+    }
+
+    /* Highlight when JavaScript adds highlighted class (triggered by text hover) */
+    .link.highlighted path,
+    .link.highlighted polygon {
+      stroke: #e74c3c !important;
+      stroke-width: 3 !important;
+      filter: drop-shadow(0 0 3px rgba(231, 76, 60, 0.5));
+    }
+
+    /* Make link text labels hoverable and disable tooltips */
+    .link text {
+      cursor: pointer;
+      user-select: none;
+      pointer-events: all;
+    }
+
+    /* Make text white when link is highlighted so it shows on red background */
+    .link.highlighted text {
+      fill: white !important;
+    }
+
+    /* Hide any title elements that might trigger tooltips */
+    .link title {
+      display: none;
+    }
+
+    /* Dimmed state (applied by JavaScript) */
+    .link.dimmed path,
+    .link.dimmed polygon {
+      opacity: 0.3;
+    }
+  </style>
+
+  <!-- Navigation Header -->
+  <rect x="0" y="0" width="100%" height="80" fill="#2c3e50"/>
+  <text x="26" y="50" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="white">
+    {{.Title}}
+  </text>
+
+  <!-- Navigation Buttons -->
+{{range .Layers}}  <rect x="{{.ButtonX}}" y="91" width="104" height="33" rx="4"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="showLevel('{{.Name}}')"
+        id="nav-{{.Name}}"/>
+  <text x="{{.TextX}}" y="113" font-family="Arial, sans-serif" font-size="14"
+        fill="white" style="cursor:pointer; user-select: none"
+        onclick="showLevel('{{.Name}}')">
+    {{.Label}}
+  </text>
+{{end}}
+  <!-- Notes Toggle (right-aligned via JavaScript) -->
+  <rect x="364" y="91" width="130" height="33" rx="4"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="toggleNotes()"
+        id="notes-toggle"/>
+  <text x="377" y="113" font-family="Arial, sans-serif" font-size="14"
+        fill="white" style="cursor:pointer; user-select: none"
+        onclick="toggleNotes()" id="notes-text">
+    Hide Notes
+  </text>
+
+  <!-- Fit to Width Toggle (right-aligned via JavaScript) -->
+  <rect x="520" y="91" width="130" height="33" rx="4"
+        fill="#3498db" stroke="#2980b9" stroke-width="1"
+        style="cursor:pointer" onclick="toggleFitMode()"
+        id="fit-toggle"/>
+  <text x="533" y="113" font-family="Arial, sans-serif" font-size="14"
+        fill="white" style="cursor:pointer; user-select: none"
+        onclick="toggleFitMode()" id="fit-text">
+    Native Size
+  </text>
+
+  <!-- Diagram Layers (positioned below header at y=140) -->
+{{range .Layers}}
+  <!-- {{.Name}} layer -->
+  <g id="layer-{{.Name}}" style="display:none">
+    <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-{{.Name}}"/>
+    <g id="diagram-{{.Name}}">
+      <svg viewBox="{{.ViewBox}}" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        {{.Body}}
+      </svg>
+    </g>
+  </g>{{end}}
+
+  <!-- Navigation Script -->
+  <script type="text/ecmascript"><![CDATA[
+    const diagramData = {{.DiagramData}};
+
+const availableLevels = {{.AvailableLevels}};
+
+{{.Script}}
+  ]]></script>
+
+</svg>

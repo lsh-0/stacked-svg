@@ -11,7 +11,7 @@
   <metadata>
     <generator>stacked-c4-svg</generator>
     <version>unreleased</version>
-    <timestamp>2025-12-19T06:04:40Z</timestamp>
+    <timestamp>2026-09-20T04:21:46Z</timestamp>
   </metadata>
 
   <!-- CSS Styles for Progressive Enhancement -->
@@ -120,105 +120,103 @@
     Native Size
   </text>
 
-
   <!-- Diagram Layers (positioned below header at y=140) -->
 
   <!-- context layer -->
   <g id="layer-context" style="display:none">
     <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-context"/>
     <g id="diagram-context">
-      <svg viewBox="0 0 486 550" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
-        <title>System Context for Internet Banking</title>
-      <defs></defs>
-      <g>
+      <svg viewBox="0 0 494 562" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        <defs></defs>
+      <g font-family="sans-serif" lengthAdjust="spacing">
         <g class="title" data-source-line="3">
-          <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="290.8008" x="90.6316" y="22.9951">System Context for Internet Banking</text>
+          <text x="98.322" y="22.995" fill="#000" font-size="14" textLength="290.801" font-weight="700">System Context for Internet Banking</text>
         </g><!--entity customer-->
-        <g class="entity" data-entity="customer" data-source-line="178" data-uid="ent0002" id="entity_customer">
-          <rect fill="#08427B" height="133.1875" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="138.8496" x="119.5" y="44.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="55.9453" x="160.9521" y="65.4355">«person»</text>
-          <image height="48" width="48" x="164.9248" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACMElEQVR4Xu2YvUrFQBCFb+kj+Ai+gq3Y2PgA+gCCtZ2V2AhqaSNiqY1gYWMjaCvXykoEKy21sLCNfELgMscksz8mWfDAB3Kuye7sTmYnmcwtbU9KRozSECOVla3T6uTqvrqZPlcPT68/XNw+VtvH19XC+sGe/f9UxIhl8/Cy+vj8qrpEYIsbR1N7fSxihDK/urvMKoeKHbH3ikGMEJi8Z9WbtH92lxyEGCHErLwVqWfvG4IYXkiBXGIn7f29iOGBAe0kUkTVsmN4EcMD255bdgwvYnigFOYW54cdx4MYHlIqT5Niy6oYHuzgORRbUsXwYAfPoV4DeHl7t+MnK/Y8EMMDzVlu9foQ5y6jFAU7hhcxvOSsRLH5D2J4KbqVqMlxoK3tnEevPogRAiuXUpFiD69ZxIghZidSV75GjFiYkGc3KMEpOW8RIxXed0kNJsrOAO0ypTfnxGvEKA0xSkMMD3zfIedJFQ4hCPlUwrX1daQWbURseonRBhNue1D5rc53JkVQwN9c21Wt+D20JxLjN7hpztahSwTi3RExLDlbhhCxm55PkWLMkrvrDBW73rUTYtSQu/aGQ4h0snNzBdD1wPWptrZDDBjL6tfiebBzbA2AUjg2NT3QYkBbrR9KTS/9YoC9eAxqeu0UI/eH21yiu7VzLSqApnIqxn8Af6TiA3A/A9Bn5+lV0xcMMWDoJs6qrakTo4a6OwZxqLa97YkxC1HzMkMzNQRtE3cFUAJilMY3OGTNL0NDLqIAAAAASUVORK5CYII=" y="68.2656"></image>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="86.7109" x="145.5693" y="131.1172">Customer</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="186.6997" y="147.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="9.5771" x="129.5" y="164.1826">A</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="139.0771" y="164.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34.4463" x="143.5273" y="164.1826">bank</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="177.9736" y="164.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65.9258" x="182.4238" y="164.1826">customer</text>
+        <g class="entity" data-qualified-name="customer" id="ent0001" data-source-line="178">
+          <rect x="119.73" y="44.297" width="138.85" height="136.88" fill="#08427B" style="stroke:#073B6F;stroke-width:0.5;"></rect>
+          <text x="161.182" y="65.436" fill="#FFF" font-size="12" textLength="55.945" font-style="italic">«person»</text>
+          <image width="52" height="52" x="163.309" y="68.266" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAGWElEQVR4Xu2YC0xTVxjHdWabBXQ63eZ0W9S5GeYwM9PNmDgNIKIwJejAFzIVx5xOMep0AkWQN/ISHxVUUEEUQRGhVMrLElEBgSsw3iBwpRRKoRQuD6Fn57iwmHMp3EJDi/Gf/NLmy73n/L/ennO+746bqG8/7k2CFhjr0AKqYM4vnjs2OV0nfCLSiTBuDhGVShCRyfmE3w0BYetzm9Dd5nt8khF7On6fKqAFRsISm6DDHtdS0wT5VZVltU1AJJGBVhkFZFQXaOvoAo0t7aCqvhlkl9SRwXFPHhodvHhtuonzInyckUALDIcpxk5zf/OOcU3ILK6uF0tBb18fGEqStg6Q9U+d7BiHK5i/xccQH3O40ALKgpI5xkkMIirqGzq7X+K+h1QFKQZuV1MEetv9jfGxhwMtoCy7vaK9i2saRb19ctwrY6G/IftiUvo8S+81+PjKQgsow4+2Z/ZkFtYIu3qUfzK4CqsawG6vGI6OkeM0fB5loAUYMn7yavbMywnZQml7J+5t2IpOe5a1aGegxQDzMYYWYALLwOHd73YE2MNdTIqbGomeCyXgyNmEEHw+ZaAFmKCzypFlH8yjpO1duKcRKzwpL36aifMCfE6m0AJM+GC1Eystt4Lq7unF/YxY/OxysGzPuRh8TqbQAkyAWzWroVlG9cmHv7MpUk4JCSzZEaOb0NQ1J1hUVw+Fm1GFiAoh2OF+621C/dACTEB/OVirUUxKHGWVWfAc/Hw0bHQTgmcQ646giBpOqTOUkrLKwFLbs6ObENq2j57nUqo8VJHQrnkxPmv0t214sE6Yv9lnfeWLZnHfCGo4XCU1jWCvb+zoH6z9nI99RLbIVPeUbqYQWXrWfqNf+vSDitP03Eoh3PFwb0orv7we/Ooepbbi9H+sXG94QzOinpfDrxpQd/vXOW767I2e6m0fEKjB2+cXy35cWFPd0dmNex1SBVVCcPwCT6C79ZRmNHj9bHWJPHL7QWH184YW0M3gaYla2sGDvKpnsHWP/2KDh+a04K+z0Nr/sP0FXlrSk7Ji2LB11opaQFNrO2hpo4BESoF6cRsoq2sCj4pqivyjMgSwBbGAR8AUfJyRQAuogllmbutW2YXwDp2JJ05HPyQu3csigu8+IZwv84ktzpHEZ+buxlqGDlr4faqAFhjr0AJMQV2rtqEjC1UNk4z+Q9vQYSJL334Cfq0itAwc3u+/H31qQ2DsPTjGePxaptACTEDJfL3Zm21uf7XxYNA9yiU0mXK/mkpZsCNK4ALfhl+vCAO7YB4qodC9sPWmNjldpxbbBN35cO0JPfxaptACgzHTzE33GIdLPi6qJYXiNqlYSslbYaWA3orKIHDh9xbXNEqi0wrI48E80oIdTq7YxyldvOs0d4lNEN/QLoT8MyCWDOflknBzIJtaOrpQPYjuRZ/NcPMQSdo7CyqFooCoDHKp7Rk+7mEoaIGB+HS9q4G1WxSRXVJXil7vDtZ69/b2ARnV/WpbrhW1gqp6SV8FKaYgnfA7EDa3vfoBBqsBX8IxJDC5Z5UNnX43BA8+MnX5Afp4B/c1ELQAzjfbfE1OhqUUlpNiRq94VSk0H/wBeiL5eTlfbfb5A65RbdwfDi3wOvO3+Jg5h/KfovNEXZLL5eiJyu9mFJXNs/RaCTeNibhPRgnNWOeqfyAw7j56Mpog9HbWKzwt9XNz9zm4V0YJGR+65MDPKmvDB1an6hpbwQb7a5dhAzgX9ztoQh+buixzvZKSIJZ24GOqXVEpBPjWym8l7nnQhJbv5XgmZJao9DWvqoTqQpMjob/Dg3gq7lthQgcC4kLKYRGpqdofcFcAj5KluG+FCfnfzAhBZ4mm6uztRwAeJ+a47wETQttiKDcnDB9EkxSTXgBgicQsoWlrTywMv5/LxQfRJAmIagDX+ZuTUG4pCfT3B79NSGP1xiWUAdfQT0zXEKxodTixj68M1iKoWxH8PLBoZyCzhBBWJ2+GPC19gY+jEero6gG23jFhn6w7qYv7VpjQ7I0ey//mJCaW1mpWtdAMa8ugmIf1C6x8TbUMHVi4b4UJIXS3+q7Y6X7LA3aMgiuJT0Fkcr7auJ6cLz93J/OFXWCci952v12TjdgzcL9DJoRABeAsMzfThdYBXvBkVhvf2wR5fmnptV/b0FEH94hDC4x1aIGxzr9XBgujsWOPcQAAAABJRU5ErkJggg=="></image>
+          <text x="145.799" y="134.809" fill="#FFF" font-size="16" textLength="86.711" font-weight="700">Customer</text>
+          <text x="186.93" y="151.578" fill="#FFF" font-size="14"></text>
+          <text x="129.73" y="167.875" fill="#FFF" font-size="14">A</text>
+          <text x="139.307" y="167.875" fill="#FFF" font-size="14"></text>
+          <text x="143.757" y="167.875" fill="#FFF" font-size="14" textLength="34.446">bank</text>
+          <text x="178.204" y="167.875" fill="#FFF" font-size="14"></text>
+          <text x="182.654" y="167.875" fill="#FFF" font-size="14" textLength="65.926">customer</text>
         </g><!--entity banking_system-->
-        <g class="entity" data-entity="banking_system" data-source-line="197" data-uid="ent0003" id="entity_banking_system" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#1168BD" height="103.8125" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="172.5469" x="102.5" y="266.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="58.1953" x="159.6758" y="287.4355">«system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="73.625" x="112.5" y="305.1172">Internet</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="186.125" y="305.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="73.3516" x="191.6953" y="305.1172">Banking</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="66.6484" x="155.4492" y="323.7422">System</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="186.5483" y="340.5107"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="33.4209" x="114.2583" y="356.8076">Main</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="147.6792" y="356.8076"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.0957" x="152.1294" y="356.8076">banking</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="208.2251" y="356.8076"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50.6133" x="212.6753" y="356.8076">system</text>
+        <g class="entity" data-qualified-name="banking_system" id="ent0002" data-source-line="197" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="102.89" y="270.177" width="172.547" height="103.813" fill="#1168BD" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="160.066" y="291.316" fill="#FFF" font-size="12" textLength="58.195" font-style="italic">«system»</text>
+          <text x="112.89" y="308.997" fill="#FFF" font-size="16" textLength="73.625" font-weight="700">Internet</text>
+          <text x="186.515" y="308.997" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="192.085" y="308.997" fill="#FFF" font-size="16" textLength="73.352" font-weight="700">Banking</text>
+          <text x="155.839" y="327.622" fill="#FFF" font-size="16" textLength="66.648" font-weight="700">System</text>
+          <text x="186.938" y="344.391" fill="#FFF" font-size="14"></text>
+          <text x="114.648" y="360.688" fill="#FFF" font-size="14" textLength="33.421">Main</text>
+          <text x="148.069" y="360.688" fill="#FFF" font-size="14"></text>
+          <text x="152.519" y="360.688" fill="#FFF" font-size="14" textLength="56.096">banking</text>
+          <text x="208.615" y="360.688" fill="#FFF" font-size="14"></text>
+          <text x="213.065" y="360.688" fill="#FFF" font-size="14" textLength="50.613">system</text>
         </g><!--entity mainframe-->
-        <g class="entity" data-entity="mainframe" data-source-line="212" data-uid="ent0004" id="entity_mainframe">
-          <rect fill="#999999" height="85.1875" rx="2.5" ry="2.5" style="stroke:#8A8A8A;stroke-width:0.5;" width="168.3193" x="7" y="459.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113.9941" x="34.1626" y="480.4355">«external_system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="96.7656" x="42.7769" y="498.1172">Mainframe</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="88.9346" y="514.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.71" x="17" y="531.1826">Core</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="49.71" y="531.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.0957" x="54.1602" y="531.1826">banking</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="110.2559" y="531.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50.6133" x="114.7061" y="531.1826">system</text>
+        <g class="entity" data-qualified-name="mainframe" id="ent0003" data-source-line="212">
+          <rect x="7" y="462.987" width="168.319" height="85.188" fill="#999" style="stroke:#8A8A8A;stroke-width:0.5;"></rect>
+          <text x="34.163" y="484.126" fill="#FFF" font-size="12" textLength="113.994" font-style="italic">«external_system»</text>
+          <text x="42.777" y="501.807" fill="#FFF" font-size="16" textLength="96.766" font-weight="700">Mainframe</text>
+          <text x="88.935" y="518.576" fill="#FFF" font-size="14"></text>
+          <text x="17" y="534.873" fill="#FFF" font-size="14" textLength="32.71">Core</text>
+          <text x="49.71" y="534.873" fill="#FFF" font-size="14"></text>
+          <text x="54.16" y="534.873" fill="#FFF" font-size="14" textLength="56.096">banking</text>
+          <text x="110.256" y="534.873" fill="#FFF" font-size="14"></text>
+          <text x="114.706" y="534.873" fill="#FFF" font-size="14" textLength="50.613">system</text>
         </g><!--entity email-->
-        <g class="entity" data-entity="email" data-source-line="212" data-uid="ent0005" id="entity_email">
-          <rect fill="#999999" height="85.1875" rx="2.5" ry="2.5" style="stroke:#8A8A8A;stroke-width:0.5;" width="153.0273" x="210.5" y="459.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113.9941" x="230.0166" y="480.4355">«external_system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="49.3672" x="226.2207" y="498.1172">Email</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="275.5879" y="498.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="66.6484" x="281.1582" y="498.1172">System</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="284.7886" y="514.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42.5537" x="220.5" y="531.1826">Sends</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="263.0537" y="531.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.0234" x="267.5039" y="531.1826">notifications</text>
+        <g class="entity" data-qualified-name="email" id="ent0004" data-source-line="212">
+          <rect x="210.65" y="462.987" width="153.027" height="85.188" fill="#999" style="stroke:#8A8A8A;stroke-width:0.5;"></rect>
+          <text x="230.167" y="484.126" fill="#FFF" font-size="12" textLength="113.994" font-style="italic">«external_system»</text>
+          <text x="226.371" y="501.807" fill="#FFF" font-size="16" textLength="49.367" font-weight="700">Email</text>
+          <text x="275.738" y="501.807" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="281.308" y="501.807" fill="#FFF" font-size="16" textLength="66.648" font-weight="700">System</text>
+          <text x="284.939" y="518.576" fill="#FFF" font-size="14"></text>
+          <text x="220.65" y="534.873" fill="#FFF" font-size="14" textLength="42.554">Sends</text>
+          <text x="263.204" y="534.873" fill="#FFF" font-size="14"></text>
+          <text x="267.654" y="534.873" fill="#FFF" font-size="14" textLength="86.023">notifications</text>
         </g>
-        <g class="entity" data-entity="GMN9" data-source-line="14" data-uid="ent0010" id="entity_GMN9">
-          <path d="M310.5,305.7969 L310.5,314.2969 L275.5,318.2969 L310.5,322.2969 L310.5,330.9297 A0,0 0 0 0 310.5,330.9297 L479.064,330.9297 A0,0 0 0 0 479.064,330.9297 L479.064,315.7969 L469.064,305.7969 L310.5,305.7969 A0,0 0 0 0 310.5,305.7969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M469.064,305.7969 L469.064,315.7969 L479.064,315.7969 L469.064,305.7969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="316.5" y="322.8638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="347.4766" y="322.8638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="351.6089" y="322.8638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="364.6597" y="322.8638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.769" x="368.792" y="322.8638">see</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="391.561" y="322.8638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="68.3706" x="395.6934" y="322.8638">containers</text>
+        <g class="entity note" data-qualified-name="GMN8" id="ent0009" data-source-line="14">
+          <path d="M310.88,309.517 L310.88,318.087 L275.66,322.087 L310.88,326.087 L310.88,334.65 A0,0 0 0 0 310.88,334.65 L479.444,334.65 A0,0 0 0 0 479.444,334.65 L479.444,319.517 L469.444,309.517 L310.88,309.517 A0,0 0 0 0 310.88,309.517" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M469.444,309.517 L469.444,319.517 L479.444,319.517 L469.444,309.517" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <text x="316.88" y="326.584" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="347.857" y="326.584" fill="#000" font-size="13"></text>
+          <text x="351.989" y="326.584" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="365.04" y="326.584" fill="#000" font-size="13"></text>
+          <text x="369.172" y="326.584" fill="#000" font-size="13" textLength="22.769">see</text>
+          <text x="391.941" y="326.584" fill="#000" font-size="13"></text>
+          <text x="396.073" y="326.584" fill="#000" font-size="13" textLength="68.371">containers</text>
         </g><!--link customer to banking_system-->
-        <g class="link" data-entity-1="customer" data-entity-2="banking_system" data-source-line="1706" data-uid="lnk6" id="link_customer_banking_system">
-          <path d="M189,177.3869 C189,206.0469 189,231.1669 189,257.9869" fill="none" id="customer-to-banking_system" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="189,265.9869,192,257.9869,186,257.9869,189,265.9869" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="197.8662" y="219.4355">Uses</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47.9004" x="190" y="233.4043">[HTTPS]</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0002" id="lnk5" data-source-line="1779" data-link-type="dependency">
+          <path d="M189.16,181.627 C189.16,210.327 189.16,235.197 189.16,261.817" style="stroke:#666;stroke-width:1;" fill="none" id="customer-to-banking_system"></path>
+          <polygon points="189.16,269.817,192.16,261.817,186.16,261.817,189.16,269.817" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="198.026" y="223.316" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
+          <text x="190.16" y="237.284" fill="#666" font-size="12" textLength="47.9" font-style="italic">[HTTPS]</text>
         </g><!--link banking_system to mainframe-->
-        <g class="link" data-entity-1="banking_system" data-entity-2="mainframe" data-source-line="1706" data-uid="lnk7" id="link_banking_system_mainframe">
-          <path d="M157.96,370.3869 C152.19,380.2369 146.31,390.5369 141,400.2969 C130.66,419.2969 123.4059,433.5309 114.5159,451.7009" fill="none" id="banking_system-to-mainframe" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="111,458.8869,117.2106,453.0193,111.8211,450.3824,111,458.8869" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.8672" x="142" y="412.4355">Gets</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="172.8672" y="412.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.5215" x="177.0449" y="412.4355">data</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="207.5664" y="412.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="31.8867" x="211.7441" y="412.4355">from</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="28.3477" x="178.6416" y="426.4043">[API]</text>
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0003" id="lnk6" data-source-line="1779" data-link-type="dependency">
+          <path d="M158.11,374.117 C152.34,383.957 146.47,394.237 141.16,403.987 C130.81,423.007 123.553,437.249 114.663,455.439" style="stroke:#666;stroke-width:1;" fill="none" id="banking_system-to-mainframe"></path>
+          <polygon points="111.15,462.627,117.358,456.757,111.967,454.122,111.15,462.627" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="142.16" y="416.126" fill="#666" font-size="12" textLength="30.867" font-weight="700">Gets</text>
+          <text x="173.027" y="416.126" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="177.205" y="416.126" fill="#666" font-size="12" textLength="30.521" font-weight="700">data</text>
+          <text x="207.726" y="416.126" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="211.904" y="416.126" fill="#666" font-size="12" textLength="31.887" font-weight="700">from</text>
+          <text x="178.802" y="430.094" fill="#666" font-size="12" textLength="28.348" font-style="italic">[API]</text>
         </g><!--link banking_system to email-->
-        <g class="link" data-entity-1="banking_system" data-entity-2="email" data-source-line="1706" data-uid="lnk8" id="link_banking_system_email">
-          <path d="M229.47,370.7069 C236.11,380.2669 242.58,390.3769 248,400.2969 C258.14,418.8569 264.2115,433.0893 270.8715,451.5993" fill="none" id="banking_system-to-email" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="273.58,459.1269,273.6944,450.5836,268.0487,452.615,273.58,459.1269" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.0566" x="262" y="412.4355">Sends</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="303.0566" y="412.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="44.1094" x="307.2344" y="412.4355">emails</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="351.3438" y="412.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="20.0332" x="355.5215" y="412.4355">via</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="41.9004" x="297.8271" y="426.4043">[SMTP]</text>
-        </g><!--SRC=[TP1DIyGm48Rl-HLZyL31BsHFei8Q5jt3Gh7rNBBjj8Qc2MHcb_NVctujjU8faydxllDaBhGjpA54U9AhExdAfREC9tuHWZKRXFIR65iOsr0v3zjGUeiChyessjP29EZ9sRWu4BiM_JL4SYoZKAzX7uGmlKPNOWYDzuC_f_uQbClaSNeNibFQmcW0cjgNHjlcERf_k2a2O92WlwLZVHwHRquSjw5VUTNY6DFNNQPq7fUPlvmOh2O8DzqvWqdHbWJMiQvqeLWxIy4eFj3CTl3dTv-4rBdVion9WxwJBqLprZTaWbAnWigxVkuwsVxZcqW7ilv6SDIgfzrbIOSNU16yhhyONBN0WqUGHXSDi0D2XFCwIVm0]-->
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0004" id="lnk7" data-source-line="1779" data-link-type="dependency">
+          <path d="M229.63,374.427 C236.27,383.977 242.74,394.077 248.16,403.987 C258.31,422.567 264.385,436.808 271.045,455.348" style="stroke:#666;stroke-width:1;" fill="none" id="banking_system-to-email"></path>
+          <polygon points="273.75,462.877,273.869,454.334,268.222,456.362,273.75,462.877" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="262.04" y="416.126" fill="#666" font-size="12" textLength="41.057" font-weight="700">Sends</text>
+          <text x="303.097" y="416.126" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="307.274" y="416.126" fill="#666" font-size="12" textLength="44.109" font-weight="700">emails</text>
+          <text x="351.384" y="416.126" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="355.561" y="416.126" fill="#666" font-size="12" textLength="20.033" font-weight="700">via</text>
+          <text x="297.867" y="430.094" fill="#666" font-size="12" textLength="41.9" font-style="italic">[SMTP]</text>
+        </g>
       </g>
       </svg>
     </g>
@@ -227,157 +225,156 @@
   <g id="layer-container" style="display:none">
     <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-container"/>
     <g id="diagram-container">
-      <svg viewBox="0 0 872 820" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
-        <title>Container Diagram for Internet Banking System</title>
-      <defs></defs>
-      <g>
+      <svg viewBox="0 0 880 832" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        <defs></defs>
+      <g font-family="sans-serif" lengthAdjust="spacing">
         <g class="title" data-source-line="3">
-          <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="377.8975" x="240.3064" y="22.9951">Container Diagram for Internet Banking System</text>
+          <text x="247.891" y="22.995" fill="#000" font-size="14" textLength="377.897" font-weight="700">Container Diagram for Internet Banking System</text>
         </g><!--cluster c1-->
-        <g class="cluster" data-entity="c1" data-source-line="1593" data-uid="ent0003" id="cluster_c1">
-          <rect fill="none" height="562" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1;stroke-dasharray:7,7;" width="240" x="37.5" y="252.2969"></rect>
-          <text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="224.7656" x="45.1172" y="289.1484">Internet Banking System</text>
-          <text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="59.4551" x="127.7725" y="304.0605">[system]</text>
+        <g class="cluster" data-qualified-name="c1" id="ent0002" data-source-line="1666">
+          <rect x="37.42" y="256.177" width="240" height="562.47" fill="none" style="stroke:#444;stroke-width:1;stroke-dasharray:7,7;"></rect>
+          <text x="45.037" y="293.028" fill="#444" font-size="16" textLength="224.766" font-weight="700">Internet Banking System</text>
+          <text x="127.692" y="307.941" fill="#444" font-size="12" textLength="59.455" font-weight="700">[system]</text>
         </g><!--entity web_app-->
-        <g class="entity" data-entity="web_app" data-source-line="71" data-uid="ent0004" id="entity_web_app" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#438DD5" height="99.1563" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="167.5781" x="93.5" y="323.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.6719" x="141.4531" y="344.4355">«container»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="39.9531" x="103.5" y="362.1172">Web</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="143.4531" y="362.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102.0547" x="149.0234" y="362.1172">Application</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43.7402" x="155.4189" y="377.0293">[React]</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="175.064" y="392.8545"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="33.4209" x="110.4336" y="409.1514">Main</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="143.8545" y="409.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28.9502" x="148.3047" y="409.1514">web</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="177.2549" y="409.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.4395" x="181.7051" y="409.1514">interface</text>
+        <g class="entity" data-qualified-name="c1.web_app" id="ent0003" data-source-line="71" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="93.64" y="327.177" width="167.578" height="99.156" fill="#438DD5" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="141.593" y="348.316" fill="#FFF" font-size="12" textLength="71.672" font-style="italic">«container»</text>
+          <text x="103.64" y="365.997" fill="#FFF" font-size="16" textLength="39.953" font-weight="700">Web</text>
+          <text x="143.593" y="365.997" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="149.163" y="365.997" fill="#FFF" font-size="16" textLength="102.055" font-weight="700">Application</text>
+          <text x="155.559" y="380.909" fill="#FFF" font-size="12" textLength="43.74" font-style="italic">[React]</text>
+          <text x="175.204" y="396.734" fill="#FFF" font-size="14"></text>
+          <text x="110.574" y="413.031" fill="#FFF" font-size="14" textLength="33.421">Main</text>
+          <text x="143.994" y="413.031" fill="#FFF" font-size="14"></text>
+          <text x="148.445" y="413.031" fill="#FFF" font-size="14" textLength="28.95">web</text>
+          <text x="177.395" y="413.031" fill="#FFF" font-size="14"></text>
+          <text x="181.845" y="413.031" fill="#FFF" font-size="14" textLength="62.439">interface</text>
         </g><!--entity api-->
-        <g class="entity" data-entity="api" data-source-line="71" data-uid="ent0005" id="entity_api" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#438DD5" height="99.1563" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="157.6875" x="103.5" y="511.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.6719" x="146.5078" y="532.4355">«container»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="30.0625" x="113.5" y="550.1172">API</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="143.5625" y="550.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102.0547" x="149.1328" y="550.1172">Application</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.082" x="155.3027" y="565.0293">[Node.js]</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="180.1187" y="580.8545"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="36.0117" x="151.0386" y="597.1514">REST</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="187.0503" y="597.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="22.1484" x="191.5005" y="597.1514">API</text>
+        <g class="entity" data-qualified-name="c1.api" id="ent0004" data-source-line="71" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="103.58" y="515.337" width="157.688" height="99.156" fill="#438DD5" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="146.588" y="536.476" fill="#FFF" font-size="12" textLength="71.672" font-style="italic">«container»</text>
+          <text x="113.58" y="554.157" fill="#FFF" font-size="16" textLength="30.063" font-weight="700">API</text>
+          <text x="143.642" y="554.157" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="149.213" y="554.157" fill="#FFF" font-size="16" textLength="102.055" font-weight="700">Application</text>
+          <text x="155.383" y="569.069" fill="#FFF" font-size="12" textLength="54.082" font-style="italic">[Node.js]</text>
+          <text x="180.199" y="584.894" fill="#FFF" font-size="14"></text>
+          <text x="151.119" y="601.191" fill="#FFF" font-size="14" textLength="36.012">REST</text>
+          <text x="187.13" y="601.191" fill="#FFF" font-size="14"></text>
+          <text x="191.58" y="601.191" fill="#FFF" font-size="14" textLength="22.148">API</text>
         </g><!--entity database-->
-        <g class="entity" data-entity="database" data-source-line="71" data-uid="ent0006" id="entity_database">
-          <rect fill="#438DD5" height="99.1563" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="160.8135" x="94" y="699.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.6719" x="138.5708" y="720.4355">«container»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="85.1484" x="131.8325" y="738.1172">Database</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78.5801" x="135.1167" y="753.0293">[PostgreSQL]</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="172.1816" y="768.8545"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="44.6045" x="104" y="785.1514">Stores</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="148.6045" y="785.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="55.7744" x="153.0547" y="785.1514">account</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="208.8291" y="785.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.5342" x="213.2793" y="785.1514">data</text>
+        <g class="entity" data-qualified-name="c1.database" id="ent0005" data-source-line="71">
+          <rect x="93.02" y="703.487" width="160.813" height="99.156" fill="#438DD5" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="137.591" y="724.626" fill="#FFF" font-size="12" textLength="71.672" font-style="italic">«container»</text>
+          <text x="130.853" y="742.307" fill="#FFF" font-size="16" textLength="85.148" font-weight="700">Database</text>
+          <text x="134.137" y="757.219" fill="#FFF" font-size="12" textLength="78.58" font-style="italic">[PostgreSQL]</text>
+          <text x="171.202" y="773.044" fill="#FFF" font-size="14"></text>
+          <text x="103.02" y="789.341" fill="#FFF" font-size="14" textLength="44.604">Stores</text>
+          <text x="147.624" y="789.341" fill="#FFF" font-size="14"></text>
+          <text x="152.075" y="789.341" fill="#FFF" font-size="14" textLength="55.774">account</text>
+          <text x="207.849" y="789.341" fill="#FFF" font-size="14"></text>
+          <text x="212.299" y="789.341" fill="#FFF" font-size="14" textLength="31.534">data</text>
         </g><!--entity customer-->
-        <g class="entity" data-entity="customer" data-source-line="178" data-uid="ent0002" id="entity_customer">
-          <rect fill="#08427B" height="133.1875" rx="2.5" ry="2.5" style="stroke:#073B6F;stroke-width:0.5;" width="138.8496" x="7" y="44.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="55.9453" x="48.4521" y="65.4355">«person»</text>
-          <image height="48" width="48" x="52.4248" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACMElEQVR4Xu2YvUrFQBCFb+kj+Ai+gq3Y2PgA+gCCtZ2V2AhqaSNiqY1gYWMjaCvXykoEKy21sLCNfELgMscksz8mWfDAB3Kuye7sTmYnmcwtbU9KRozSECOVla3T6uTqvrqZPlcPT68/XNw+VtvH19XC+sGe/f9UxIhl8/Cy+vj8qrpEYIsbR1N7fSxihDK/urvMKoeKHbH3ikGMEJi8Z9WbtH92lxyEGCHErLwVqWfvG4IYXkiBXGIn7f29iOGBAe0kUkTVsmN4EcMD255bdgwvYnigFOYW54cdx4MYHlIqT5Niy6oYHuzgORRbUsXwYAfPoV4DeHl7t+MnK/Y8EMMDzVlu9foQ5y6jFAU7hhcxvOSsRLH5D2J4KbqVqMlxoK3tnEevPogRAiuXUpFiD69ZxIghZidSV75GjFiYkGc3KMEpOW8RIxXed0kNJsrOAO0ypTfnxGvEKA0xSkMMD3zfIedJFQ4hCPlUwrX1daQWbURseonRBhNue1D5rc53JkVQwN9c21Wt+D20JxLjN7hpztahSwTi3RExLDlbhhCxm55PkWLMkrvrDBW73rUTYtSQu/aGQ4h0snNzBdD1wPWptrZDDBjL6tfiebBzbA2AUjg2NT3QYkBbrR9KTS/9YoC9eAxqeu0UI/eH21yiu7VzLSqApnIqxn8Af6TiA3A/A9Bn5+lV0xcMMWDoJs6qrakTo4a6OwZxqLa97YkxC1HzMkMzNQRtE3cFUAJilMY3OGTNL0NDLqIAAAAASUVORK5CYII=" y="68.2656"></image>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="86.7109" x="33.0693" y="131.1172">Customer</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="74.1997" y="147.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="9.5771" x="17" y="164.1826">A</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="26.5771" y="164.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="34.4463" x="31.0273" y="164.1826">bank</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="65.4736" y="164.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="65.9258" x="69.9238" y="164.1826">customer</text>
+        <g class="entity" data-qualified-name="customer" id="ent0001" data-source-line="178">
+          <rect x="7" y="44.297" width="138.85" height="136.88" fill="#08427B" style="stroke:#073B6F;stroke-width:0.5;"></rect>
+          <text x="48.452" y="65.436" fill="#FFF" font-size="12" textLength="55.945" font-style="italic">«person»</text>
+          <image width="52" height="52" x="50.579" y="68.266" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADQAAAA0CAYAAADFeBvrAAAGWElEQVR4Xu2YC0xTVxjHdWabBXQ63eZ0W9S5GeYwM9PNmDgNIKIwJejAFzIVx5xOMep0AkWQN/ISHxVUUEEUQRGhVMrLElEBgSsw3iBwpRRKoRQuD6Fn57iwmHMp3EJDi/Gf/NLmy73n/L/ennO+746bqG8/7k2CFhjr0AKqYM4vnjs2OV0nfCLSiTBuDhGVShCRyfmE3w0BYetzm9Dd5nt8khF7On6fKqAFRsISm6DDHtdS0wT5VZVltU1AJJGBVhkFZFQXaOvoAo0t7aCqvhlkl9SRwXFPHhodvHhtuonzInyckUALDIcpxk5zf/OOcU3ILK6uF0tBb18fGEqStg6Q9U+d7BiHK5i/xccQH3O40ALKgpI5xkkMIirqGzq7X+K+h1QFKQZuV1MEetv9jfGxhwMtoCy7vaK9i2saRb19ctwrY6G/IftiUvo8S+81+PjKQgsow4+2Z/ZkFtYIu3qUfzK4CqsawG6vGI6OkeM0fB5loAUYMn7yavbMywnZQml7J+5t2IpOe5a1aGegxQDzMYYWYALLwOHd73YE2MNdTIqbGomeCyXgyNmEEHw+ZaAFmKCzypFlH8yjpO1duKcRKzwpL36aifMCfE6m0AJM+GC1Eystt4Lq7unF/YxY/OxysGzPuRh8TqbQAkyAWzWroVlG9cmHv7MpUk4JCSzZEaOb0NQ1J1hUVw+Fm1GFiAoh2OF+621C/dACTEB/OVirUUxKHGWVWfAc/Hw0bHQTgmcQ646giBpOqTOUkrLKwFLbs6ObENq2j57nUqo8VJHQrnkxPmv0t214sE6Yv9lnfeWLZnHfCGo4XCU1jWCvb+zoH6z9nI99RLbIVPeUbqYQWXrWfqNf+vSDitP03Eoh3PFwb0orv7we/Ooepbbi9H+sXG94QzOinpfDrxpQd/vXOW767I2e6m0fEKjB2+cXy35cWFPd0dmNex1SBVVCcPwCT6C79ZRmNHj9bHWJPHL7QWH184YW0M3gaYla2sGDvKpnsHWP/2KDh+a04K+z0Nr/sP0FXlrSk7Ji2LB11opaQFNrO2hpo4BESoF6cRsoq2sCj4pqivyjMgSwBbGAR8AUfJyRQAuogllmbutW2YXwDp2JJ05HPyQu3csigu8+IZwv84ktzpHEZ+buxlqGDlr4faqAFhjr0AJMQV2rtqEjC1UNk4z+Q9vQYSJL334Cfq0itAwc3u+/H31qQ2DsPTjGePxaptACTEDJfL3Zm21uf7XxYNA9yiU0mXK/mkpZsCNK4ALfhl+vCAO7YB4qodC9sPWmNjldpxbbBN35cO0JPfxaptACgzHTzE33GIdLPi6qJYXiNqlYSslbYaWA3orKIHDh9xbXNEqi0wrI48E80oIdTq7YxyldvOs0d4lNEN/QLoT8MyCWDOflknBzIJtaOrpQPYjuRZ/NcPMQSdo7CyqFooCoDHKp7Rk+7mEoaIGB+HS9q4G1WxSRXVJXil7vDtZ69/b2ARnV/WpbrhW1gqp6SV8FKaYgnfA7EDa3vfoBBqsBX8IxJDC5Z5UNnX43BA8+MnX5Afp4B/c1ELQAzjfbfE1OhqUUlpNiRq94VSk0H/wBeiL5eTlfbfb5A65RbdwfDi3wOvO3+Jg5h/KfovNEXZLL5eiJyu9mFJXNs/RaCTeNibhPRgnNWOeqfyAw7j56Mpog9HbWKzwt9XNz9zm4V0YJGR+65MDPKmvDB1an6hpbwQb7a5dhAzgX9ztoQh+buixzvZKSIJZ24GOqXVEpBPjWym8l7nnQhJbv5XgmZJao9DWvqoTqQpMjob/Dg3gq7lthQgcC4kLKYRGpqdofcFcAj5KluG+FCfnfzAhBZ4mm6uztRwAeJ+a47wETQttiKDcnDB9EkxSTXgBgicQsoWlrTywMv5/LxQfRJAmIagDX+ZuTUG4pCfT3B79NSGP1xiWUAdfQT0zXEKxodTixj68M1iKoWxH8PLBoZyCzhBBWJ2+GPC19gY+jEero6gG23jFhn6w7qYv7VpjQ7I0ey//mJCaW1mpWtdAMa8ugmIf1C6x8TbUMHVi4b4UJIXS3+q7Y6X7LA3aMgiuJT0Fkcr7auJ6cLz93J/OFXWCci952v12TjdgzcL9DJoRABeAsMzfThdYBXvBkVhvf2wR5fmnptV/b0FEH94hDC4x1aIGxzr9XBgujsWOPcQAAAABJRU5ErkJggg=="></image>
+          <text x="33.069" y="134.809" fill="#FFF" font-size="16" textLength="86.711" font-weight="700">Customer</text>
+          <text x="74.2" y="151.578" fill="#FFF" font-size="14"></text>
+          <text x="17" y="167.875" fill="#FFF" font-size="14">A</text>
+          <text x="26.577" y="167.875" fill="#FFF" font-size="14"></text>
+          <text x="31.027" y="167.875" fill="#FFF" font-size="14" textLength="34.446">bank</text>
+          <text x="65.474" y="167.875" fill="#FFF" font-size="14"></text>
+          <text x="69.924" y="167.875" fill="#FFF" font-size="14" textLength="65.926">customer</text>
         </g><!--entity mainframe-->
-        <g class="entity" data-entity="mainframe" data-source-line="212" data-uid="ent0007" id="entity_mainframe">
-          <rect fill="#999999" height="85.1875" rx="2.5" ry="2.5" style="stroke:#8A8A8A;stroke-width:0.5;" width="168.3193" x="293.5" y="706.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113.9941" x="320.6626" y="727.4355">«external_system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="96.7656" x="329.2769" y="745.1172">Mainframe</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="375.4346" y="761.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.71" x="303.5" y="778.1826">Core</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="336.21" y="778.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.0957" x="340.6602" y="778.1826">banking</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="396.7559" y="778.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50.6133" x="401.2061" y="778.1826">system</text>
+        <g class="entity" data-qualified-name="mainframe" id="ent0006" data-source-line="212">
+          <rect x="293.27" y="710.477" width="168.319" height="85.188" fill="#999" style="stroke:#8A8A8A;stroke-width:0.5;"></rect>
+          <text x="320.433" y="731.616" fill="#FFF" font-size="12" textLength="113.994" font-style="italic">«external_system»</text>
+          <text x="329.047" y="749.297" fill="#FFF" font-size="16" textLength="96.766" font-weight="700">Mainframe</text>
+          <text x="375.205" y="766.066" fill="#FFF" font-size="14"></text>
+          <text x="303.27" y="782.363" fill="#FFF" font-size="14" textLength="32.71">Core</text>
+          <text x="335.98" y="782.363" fill="#FFF" font-size="14"></text>
+          <text x="340.43" y="782.363" fill="#FFF" font-size="14" textLength="56.096">banking</text>
+          <text x="396.526" y="782.363" fill="#FFF" font-size="14"></text>
+          <text x="400.976" y="782.363" fill="#FFF" font-size="14" textLength="50.613">system</text>
         </g><!--entity email-->
-        <g class="entity" data-entity="email" data-source-line="212" data-uid="ent0008" id="entity_email">
-          <rect fill="#999999" height="85.1875" rx="2.5" ry="2.5" style="stroke:#8A8A8A;stroke-width:0.5;" width="153.0273" x="497" y="706.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113.9941" x="516.5166" y="727.4355">«external_system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="49.3672" x="512.7207" y="745.1172">Email</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="562.0879" y="745.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="66.6484" x="567.6582" y="745.1172">System</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="571.2886" y="761.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42.5537" x="507" y="778.1826">Sends</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="549.5537" y="778.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.0234" x="554.0039" y="778.1826">notifications</text>
+        <g class="entity" data-qualified-name="email" id="ent0007" data-source-line="212">
+          <rect x="496.91" y="710.477" width="153.027" height="85.188" fill="#999" style="stroke:#8A8A8A;stroke-width:0.5;"></rect>
+          <text x="516.427" y="731.616" fill="#FFF" font-size="12" textLength="113.994" font-style="italic">«external_system»</text>
+          <text x="512.631" y="749.297" fill="#FFF" font-size="16" textLength="49.367" font-weight="700">Email</text>
+          <text x="561.998" y="749.297" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="567.568" y="749.297" fill="#FFF" font-size="16" textLength="66.648" font-weight="700">System</text>
+          <text x="571.199" y="766.066" fill="#FFF" font-size="14"></text>
+          <text x="506.91" y="782.363" fill="#FFF" font-size="14" textLength="42.554">Sends</text>
+          <text x="549.464" y="782.363" fill="#FFF" font-size="14"></text>
+          <text x="553.914" y="782.363" fill="#FFF" font-size="14" textLength="86.023">notifications</text>
         </g>
-        <g class="entity" data-entity="GMN14" data-source-line="22" data-uid="ent0015" id="entity_GMN14">
-          <path d="M181,98.2969 L181,123.4297 A0,0 0 0 0 181,123.4297 L270.03,123.4297 L196.36,323.2369 L278.03,123.4297 L376.0654,123.4297 A0,0 0 0 0 376.0654,123.4297 L376.0654,108.2969 L366.0654,98.2969 L181,98.2969 A0,0 0 0 0 181,98.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M366.0654,98.2969 L366.0654,108.2969 L376.0654,108.2969 L366.0654,98.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="187" y="115.3638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="217.9766" y="115.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="222.1089" y="115.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="235.1597" y="115.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="16.2056" x="239.292" y="115.3638">go</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="255.4976" y="115.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.894" x="259.6299" y="115.3638">back</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="290.5239" y="115.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="294.6563" y="115.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="307.707" y="115.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49.2261" x="311.8394" y="115.3638">context</text>
+        <g class="entity note" data-qualified-name="GMN13" id="ent0014" data-source-line="22">
+          <path d="M180.89,100.167 L180.89,125.3 A0,0 0 0 0 180.89,125.3 L269.82,125.3 L196.32,326.747 L277.82,125.3 L375.955,125.3 A0,0 0 0 0 375.955,125.3 L375.955,110.167 L365.955,100.167 L180.89,100.167 A0,0 0 0 0 180.89,100.167" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M365.955,100.167 L365.955,110.167 L375.955,110.167 L365.955,100.167" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <text x="186.89" y="117.234" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="217.867" y="117.234" fill="#000" font-size="13"></text>
+          <text x="221.999" y="117.234" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="235.05" y="117.234" fill="#000" font-size="13"></text>
+          <text x="239.182" y="117.234" fill="#000" font-size="13" textLength="16.206">go</text>
+          <text x="255.388" y="117.234" fill="#000" font-size="13"></text>
+          <text x="259.52" y="117.234" fill="#000" font-size="13" textLength="30.894">back</text>
+          <text x="290.414" y="117.234" fill="#000" font-size="13"></text>
+          <text x="294.546" y="117.234" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="307.597" y="117.234" fill="#000" font-size="13"></text>
+          <text x="311.729" y="117.234" fill="#000" font-size="13" textLength="49.226">context</text>
         </g>
-        <g class="entity" data-entity="GMN17" data-source-line="23" data-uid="ent0018" id="entity_GMN17">
-          <path d="M685,736.2969 L685,761.4297 L865.5103,761.4297 L865.5103,746.2969 L855.5103,736.2969 L685,736.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M855.5103,736.2969 L855.5103,746.2969 L865.5103,746.2969 L855.5103,736.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:1;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="691" y="753.3638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="721.9766" y="753.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="726.1089" y="753.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="739.1597" y="753.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.769" x="743.292" y="753.3638">see</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="766.061" y="753.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80.3169" x="770.1934" y="753.3638">components</text>
+        <g class="entity note" data-qualified-name="GMN16" id="ent0017" data-source-line="23">
+          <path d="M685.17,740.507 L685.17,765.64 L865.68,765.64 L865.68,750.507 L855.68,740.507 L685.17,740.507" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M855.68,740.507 L855.68,750.507 L865.68,750.507 L855.68,740.507" style="stroke:#181818;stroke-width:1;" fill="#FEFFDD"></path>
+          <text x="691.17" y="757.574" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="722.147" y="757.574" fill="#000" font-size="13"></text>
+          <text x="726.279" y="757.574" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="739.33" y="757.574" fill="#000" font-size="13"></text>
+          <text x="743.462" y="757.574" fill="#000" font-size="13" textLength="22.769">see</text>
+          <text x="766.231" y="757.574" fill="#000" font-size="13"></text>
+          <text x="770.363" y="757.574" fill="#000" font-size="13" textLength="80.317">components</text>
         </g><!--link customer to web_app-->
-        <g class="link" data-entity-1="customer" data-entity-2="web_app" data-source-line="1706" data-uid="lnk9" id="link_customer_web_app">
-          <path d="M101.99,177.4069 C119.58,222.6869 139.6828,274.4499 155.6628,315.5799" fill="none" id="customer-to-web_app" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="158.56,323.0369,158.4592,314.4935,152.8664,316.6664,158.56,323.0369" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="133.3662" y="219.4355">Uses</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="47.9004" x="125.5" y="233.4043">[HTTPS]</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0003" id="lnk8" data-source-line="1779" data-link-type="dependency">
+          <path d="M102.57,181.557 C120.1,227.047 139.913,278.432 155.693,319.372" style="stroke:#666;stroke-width:1;" fill="none" id="customer-to-web_app"></path>
+          <polygon points="158.57,326.837,158.492,318.293,152.894,320.451,158.57,326.837" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="132.766" y="223.316" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
+          <text x="124.9" y="237.284" fill="#666" font-size="12" textLength="47.9" font-style="italic">[HTTPS]</text>
         </g><!--link web_app to api-->
-        <g class="link" data-entity-1="web_app" data-entity-2="api" data-source-line="1706" data-uid="lnk10" id="link_web_app_api">
-          <path d="M178.81,422.6669 C179.55,450.0069 180.2432,475.9698 180.9832,503.2598" fill="none" id="web_app-to-api" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="181.2,511.2569,183.982,503.1785,177.9843,503.3411,181.2,511.2569" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="43.3008" x="181.5" y="464.4355">Makes</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="224.8008" y="464.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="22.5469" x="228.9785" y="464.4355">API</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="251.5254" y="464.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.5801" x="255.7031" y="464.4355">calls</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="81.5215" x="193.1309" y="478.4043">[JSON/HTTPS]</text>
+        <g class="link" data-entity-1="ent0003" data-entity-2="ent0004" id="lnk9" data-source-line="1779" data-link-type="dependency">
+          <path d="M178.74,426.667 C179.47,453.917 180.166,479.76 180.896,507.01" style="stroke:#666;stroke-width:1;" fill="none" id="web_app-to-api"></path>
+          <polygon points="181.11,515.007,183.895,506.929,177.897,507.09,181.11,515.007" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="181.22" y="468.476" fill="#666" font-size="12" textLength="43.301" font-weight="700">Makes</text>
+          <text x="224.521" y="468.476" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="228.699" y="468.476" fill="#666" font-size="12" textLength="22.547" font-weight="700">API</text>
+          <text x="251.245" y="468.476" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="255.423" y="468.476" fill="#666" font-size="12" textLength="30.58" font-weight="700">calls</text>
+          <text x="192.851" y="482.444" fill="#666" font-size="12" textLength="81.521" font-style="italic">[JSON/HTTPS]</text>
         </g><!--link api to database-->
-        <g class="link" data-entity-1="api" data-entity-2="database" data-source-line="1706" data-uid="lnk11" id="link_api_database">
-          <path d="M180.4,610.6669 C179.22,638.0069 178.1027,663.9742 176.9327,691.2642" fill="none" id="api-to-database" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="176.59,699.2569,179.9299,691.3927,173.9354,691.1357,176.59,699.2569" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="87.7266" x="180.5" y="652.4355">Reads/writes</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="33.1113" x="207.8076" y="666.4043">[SQL]</text>
+        <g class="link" data-entity-1="ent0004" data-entity-2="ent0005" id="lnk10" data-source-line="1779" data-link-type="dependency">
+          <path d="M180.06,614.827 C178.74,642.077 177.497,667.916 176.177,695.176" style="stroke:#666;stroke-width:1;" fill="none" id="api-to-database"></path>
+          <polygon points="175.79,703.167,179.173,695.321,173.18,695.031,175.79,703.167" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="179.46" y="656.626" fill="#666" font-size="12" textLength="87.727" font-weight="700">Reads/writes</text>
+          <text x="206.768" y="670.594" fill="#666" font-size="12" textLength="33.111" font-style="italic">[SQL]</text>
         </g><!--link api to mainframe-->
-        <g class="link" data-entity-1="api" data-entity-2="mainframe" data-source-line="1706" data-uid="lnk12" id="link_api_mainframe">
-          <path d="M243.11,610.5769 C254.42,620.1869 265.98,630.3769 276.5,640.2969 C298.58,661.1169 316.4536,679.791 335.0936,700.191" fill="none" id="api-to-mainframe" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="340.49,706.0969,337.3084,698.1674,332.8789,702.2146,340.49,706.0969" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.8672" x="305.5" y="652.4355">Gets</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="336.3672" y="652.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.5215" x="340.5449" y="652.4355">data</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="28.3477" x="324.1094" y="666.4043">[API]</text>
+        <g class="link" data-entity-1="ent0004" data-entity-2="ent0006" id="lnk11" data-source-line="1779" data-link-type="dependency">
+          <path d="M242.32,614.837 C253.51,624.457 264.97,634.627 275.42,644.487 C297.51,665.347 315.468,683.953 334.278,704.293" style="stroke:#666;stroke-width:1;" fill="none" id="api-to-mainframe"></path>
+          <polygon points="339.71,710.167,336.481,702.257,332.076,706.33,339.71,710.167" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="305.43" y="656.626" fill="#666" font-size="12" textLength="30.867" font-weight="700">Gets</text>
+          <text x="336.297" y="656.626" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="340.475" y="656.626" fill="#666" font-size="12" textLength="30.521" font-weight="700">data</text>
+          <text x="324.039" y="670.594" fill="#666" font-size="12" textLength="28.348" font-style="italic">[API]</text>
         </g><!--link api to email-->
-        <g class="link" data-entity-1="api" data-entity-2="email" data-source-line="1706" data-uid="lnk13" id="link_api_email">
-          <path d="M261.61,590.6869 C297.98,604.6369 341.41,622.2469 379.5,640.2969 C421.6,660.2469 460.3133,681.3716 496.7433,702.3016" fill="none" id="api-to-email" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="503.68,706.2869,498.2378,699.7003,495.2488,704.9028,503.68,706.2869" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="41.0566" x="434.5" y="652.4355">Sends</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="475.5566" y="652.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="44.1094" x="479.7344" y="652.4355">emails</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="41.9004" x="458.2217" y="666.4043">[SMTP]</text>
-        </g><!--link api to GMN17-->
-        <g class="link" data-entity-1="api" data-entity-2="GMN17" data-source-line="23" data-uid="lnk19" id="link_api_GMN17">
-          <path d="M261.51,575.0469 C333.21,588.1169 441.36,610.4669 532.5,640.2969 C594.73,660.6669 607.63,672.7769 667.5,699.2969 C695.69,711.7869 727.92,726.2869 749.78,736.1569" fill="none" id="api-GMN17" style="stroke:#666666;stroke-width:1;stroke-dasharray:7,7;"></path>
-        </g><!--SRC=[TL9TJzmm47pFhrYYFXmIvOhA4m8a22TArQE1NCNZoN4saRd4ZkmzFeJuxrt7kU0YDIzPEpEpExFPKrgssmhXD3kUPyVhp6WIIgCzJn9Ir29CDt2bH6D51xMnSAC9hKQ2Iw4tIZTGl3h2BabojCxecTmwCXtQ0qYpiKovle2IyR3xckudII2kByrMLyA-pkGHu_uZd-x3MmByJ4FDdh5SYxvdpWEMSD7thPA2bD6-tJqAIRvOCXWO2ieBrq8YttvfbTwSfT-ElagMmnSwT4yDZ_Hl0z4hFtX-yrdyrbHu-EY6FejY1Go9HB-pQDSRZNgK1VWaN0aIfN38_Aknz5gvSTHOBEv- -LD1ng838INdG-0vFE7x5DlYXMOTwzMy61oD3hKdPymT0lS9kZ71c8bCRHcuyEzTnhuhwig1DgJgqR3pgxh7DbhiH_9_70un_5YjyeA17ZTz3VajnOPj-1IbQDi1_RFuVJkFAGCoIeMtLxdvirKKv7qa4JAsVOtaGZXXLp5kPpAO6av1RhdAlIksYK2c1rFlFC49PBpg3Lz3OpZ2K8w_IM2KXZW8J-8kCS4XmhHxb_m5]-->
+        <g class="link" data-entity-1="ent0004" data-entity-2="ent0007" id="lnk12" data-source-line="1779" data-link-type="dependency">
+          <path d="M261.54,594.837 C297.91,608.797 341.33,626.417 379.42,644.487 C421.18,664.297 459.483,685.192 495.763,706.032" style="stroke:#666;stroke-width:1;" fill="none" id="api-to-email"></path>
+          <polygon points="502.7,710.017,497.257,703.431,494.269,708.633,502.7,710.017" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="434.81" y="656.626" fill="#666" font-size="12" textLength="41.057" font-weight="700">Sends</text>
+          <text x="475.867" y="656.626" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="480.044" y="656.626" fill="#666" font-size="12" textLength="44.109" font-weight="700">emails</text>
+          <text x="458.532" y="670.594" fill="#666" font-size="12" textLength="41.9" font-style="italic">[SMTP]</text>
+        </g><!--link api to GMN16-->
+        <g class="link note-link" data-entity-1="ent0004" data-entity-2="ent0017" id="lnk18" data-source-line="23" data-link-type="association">
+          <path d="M261.43,579.187 C333.14,592.277 441.28,614.647 532.42,644.487 C594.65,664.867 607.57,676.947 667.42,703.487 C695.24,715.827 726.99,730.137 748.83,740.007" style="stroke:#666;stroke-width:1;stroke-dasharray:7,7;" fill="none" id="api-GMN16"></path>
+        </g>
       </g>
       </svg>
     </g>
@@ -386,197 +383,196 @@
   <g id="layer-component" style="display:none">
     <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-component"/>
     <g id="diagram-component">
-      <svg viewBox="0 0 652 918" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
-        <title>Component Diagram for API Application</title>
-      <defs></defs>
-      <g>
+      <svg viewBox="0 0 658 927" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        <defs></defs>
+      <g font-family="sans-serif" lengthAdjust="spacing">
         <g class="title" data-source-line="3">
-          <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="314.7813" x="161.8528" y="22.9951">Component Diagram for API Application</text>
+          <text x="168.408" y="22.995" fill="#000" font-size="14" textLength="314.781" font-weight="700">Component Diagram for API Application</text>
         </g><!--cluster api-->
-        <g class="cluster" data-entity="api" data-source-line="1593" data-uid="ent0004" id="cluster_api">
-          <rect fill="none" height="534" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1;stroke-dasharray:7,7;" width="440" x="10" y="218.2969"></rect>
-          <text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="137.6875" x="161.1563" y="255.1484">API Application</text>
-          <text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="75.416" x="192.292" y="270.0605">[container]</text>
+        <g class="cluster" data-qualified-name="api" id="ent0003" data-source-line="1666">
+          <rect x="11.1" y="218.457" width="438" height="534.46" fill="none" style="stroke:#444;stroke-width:1;stroke-dasharray:7,7;"></rect>
+          <text x="161.256" y="255.308" fill="#444" font-size="16" textLength="137.688" font-weight="700">API Application</text>
+          <text x="192.392" y="270.221" fill="#444" font-size="12" textLength="75.416" font-weight="700">[container]</text>
         </g><!--entity auth_controller-->
-        <g class="entity" data-entity="auth_controller" data-source-line="63" data-uid="ent0005" id="entity_auth_controller" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="182.8867" x="26.5" y="289.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="76.5938" y="310.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="42.8125" x="48.5684" y="328.1172">Auth</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="91.3809" y="328.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="90.3672" x="96.9512" y="328.1172">Controller</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="69.8848" x="83.001" y="343.0293">[Express.js]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="115.7183" y="358.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.6631" x="36.5" y="375.1514">Handles</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="93.1631" y="375.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="101.7734" x="97.6133" y="375.1514">authentication</text>
+        <g class="entity" data-qualified-name="api.auth_controller" id="ent0004" data-source-line="78" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="26.66" y="289.457" width="182.887" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="76.754" y="310.596" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="48.728" y="328.277" fill="#000" font-size="16" textLength="42.813" font-weight="700">Auth</text>
+          <text x="91.541" y="328.277" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="97.111" y="328.277" fill="#000" font-size="16" textLength="90.367" font-weight="700">Controller</text>
+          <text x="83.161" y="343.189" fill="#000" font-size="12" textLength="69.885" font-style="italic">[Express.js]</text>
+          <text x="115.878" y="359.014" fill="#000" font-size="14"></text>
+          <text x="36.66" y="375.311" fill="#000" font-size="14" textLength="56.663">Handles</text>
+          <text x="93.323" y="375.311" fill="#000" font-size="14"></text>
+          <text x="97.773" y="375.311" fill="#000" font-size="14" textLength="101.773">authentication</text>
         </g><!--entity account_controller-->
-        <g class="entity" data-entity="account_controller" data-source-line="63" data-uid="ent0006" id="entity_account_controller" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="188.7109" x="244.5" y="289.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="297.5059" y="310.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="72.7734" x="254.5" y="328.1172">Account</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="327.2734" y="328.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="90.3672" x="332.8438" y="328.1172">Controller</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="69.8848" x="303.9131" y="343.0293">[Express.js]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="336.6304" y="358.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.9043" x="273.644" y="375.1514">Manages</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="336.5483" y="375.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="63.0684" x="340.9985" y="375.1514">accounts</text>
+        <g class="entity" data-qualified-name="api.account_controller" id="ent0005" data-source-line="78" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="244.74" y="289.457" width="188.711" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="297.746" y="310.596" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="254.74" y="328.277" fill="#000" font-size="16" textLength="72.773" font-weight="700">Account</text>
+          <text x="327.513" y="328.277" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="333.084" y="328.277" fill="#000" font-size="16" textLength="90.367" font-weight="700">Controller</text>
+          <text x="304.153" y="343.189" fill="#000" font-size="12" textLength="69.885" font-style="italic">[Express.js]</text>
+          <text x="336.87" y="359.014" fill="#000" font-size="14"></text>
+          <text x="273.884" y="375.311" fill="#000" font-size="14" textLength="62.904">Manages</text>
+          <text x="336.788" y="375.311" fill="#000" font-size="14"></text>
+          <text x="341.239" y="375.311" fill="#000" font-size="14" textLength="63.068">accounts</text>
         </g><!--entity auth_service-->
-        <g class="entity" data-entity="auth_service" data-source-line="63" data-uid="ent0007" id="entity_auth_service">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="160.1504" x="50" y="463.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="88.7256" y="484.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="42.8125" x="72.626" y="502.1172">Auth</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="115.4385" y="502.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="66.5156" x="121.0088" y="502.1172">Service</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.082" x="103.0342" y="517.0293">[Node.js]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="127.8501" y="532.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102.7715" x="60" y="549.1514">Authentication</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="162.7715" y="549.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.9287" x="167.2217" y="549.1514">logic</text>
+        <g class="entity" data-qualified-name="api.auth_service" id="ent0006" data-source-line="78">
+          <rect x="50.02" y="463.607" width="160.15" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="88.746" y="484.746" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="72.646" y="502.427" fill="#000" font-size="16" textLength="42.813" font-weight="700">Auth</text>
+          <text x="115.458" y="502.427" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="121.029" y="502.427" fill="#000" font-size="16" textLength="66.516" font-weight="700">Service</text>
+          <text x="103.054" y="517.339" fill="#000" font-size="12" textLength="54.082" font-style="italic">[Node.js]</text>
+          <text x="127.87" y="533.164" fill="#000" font-size="14"></text>
+          <text x="60.02" y="549.461" fill="#000" font-size="14" textLength="102.771">Authentication</text>
+          <text x="162.791" y="549.461" fill="#000" font-size="14"></text>
+          <text x="167.242" y="549.461" fill="#000" font-size="14" textLength="32.929">logic</text>
         </g><!--entity account_service-->
-        <g class="entity" data-entity="account_service" data-source-line="63" data-uid="ent0008" id="entity_account_service">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="164.8594" x="256.5" y="463.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="297.5801" y="484.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="72.7734" x="266.5" y="502.1172">Account</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="339.2734" y="502.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="66.5156" x="344.8438" y="502.1172">Service</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.082" x="311.8887" y="517.0293">[Node.js]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="336.7046" y="532.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="61.7354" x="289.3726" y="549.1514">Business</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="351.1079" y="549.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.9287" x="355.5581" y="549.1514">logic</text>
+        <g class="entity" data-qualified-name="api.account_service" id="ent0007" data-source-line="78">
+          <rect x="256.67" y="463.607" width="164.859" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="297.75" y="484.746" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="266.67" y="502.427" fill="#000" font-size="16" textLength="72.773" font-weight="700">Account</text>
+          <text x="339.443" y="502.427" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="345.014" y="502.427" fill="#000" font-size="16" textLength="66.516" font-weight="700">Service</text>
+          <text x="312.059" y="517.339" fill="#000" font-size="12" textLength="54.082" font-style="italic">[Node.js]</text>
+          <text x="336.875" y="533.164" fill="#000" font-size="14"></text>
+          <text x="289.543" y="549.461" fill="#000" font-size="14" textLength="61.735">Business</text>
+          <text x="351.278" y="549.461" fill="#000" font-size="14"></text>
+          <text x="355.728" y="549.461" fill="#000" font-size="14" textLength="32.929">logic</text>
         </g><!--entity database_access-->
-        <g class="entity" data-entity="database_access" data-source-line="63" data-uid="ent0009" id="entity_database_access">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="171.9688" x="198" y="637.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="242.6348" y="658.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="85.1484" x="208" y="676.1172">Database</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="293.1484" y="676.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="61.25" x="298.7188" y="676.1172">Access</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="62.6367" x="234.3496" y="691.0293">[Sequelize</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="3.8145" x="296.9863" y="691.0293"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="32.8184" x="300.8008" y="691.0293">ORM]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="281.7593" y="706.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="33.4277" x="221.6714" y="723.1514">Data</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="255.0991" y="723.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="47.1748" x="259.5493" y="723.1514">access</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="306.7241" y="723.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="35.123" x="311.1743" y="723.1514">layer</text>
+        <g class="entity" data-qualified-name="api.database_access" id="ent0008" data-source-line="78">
+          <rect x="170.12" y="637.767" width="171.969" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="214.755" y="658.906" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="180.12" y="676.587" fill="#000" font-size="16" textLength="85.148" font-weight="700">Database</text>
+          <text x="265.268" y="676.587" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="270.839" y="676.587" fill="#000" font-size="16" textLength="61.25" font-weight="700">Access</text>
+          <text x="206.47" y="691.499" fill="#000" font-size="12" textLength="62.637" font-style="italic">[Sequelize</text>
+          <text x="269.106" y="691.499" fill="#000" font-size="12" font-style="italic"></text>
+          <text x="272.921" y="691.499" fill="#000" font-size="12" textLength="32.818" font-style="italic">ORM]</text>
+          <text x="253.879" y="707.324" fill="#000" font-size="14"></text>
+          <text x="193.791" y="723.621" fill="#000" font-size="14" textLength="33.428">Data</text>
+          <text x="227.219" y="723.621" fill="#000" font-size="14"></text>
+          <text x="231.669" y="723.621" fill="#000" font-size="14" textLength="47.175">access</text>
+          <text x="278.844" y="723.621" fill="#000" font-size="14"></text>
+          <text x="283.294" y="723.621" fill="#000" font-size="14" textLength="35.123">layer</text>
         </g><!--entity web_app-->
-        <g class="entity" data-entity="web_app" data-source-line="71" data-uid="ent0002" id="entity_web_app">
-          <rect fill="#438DD5" height="99.1563" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="167.5781" x="255" y="44.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.6719" x="302.9531" y="65.4355">«container»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="39.9531" x="265" y="83.1172">Web</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="304.9531" y="83.1172"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="102.0547" x="310.5234" y="83.1172">Application</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="43.7402" x="316.9189" y="98.0293">[React]</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="336.564" y="113.8545"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="33.4209" x="271.9336" y="130.1514">Main</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="305.3545" y="130.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28.9502" x="309.8047" y="130.1514">web</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="338.7549" y="130.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.4395" x="343.2051" y="130.1514">interface</text>
+        <g class="entity" data-qualified-name="web_app" id="ent0001" data-source-line="71">
+          <rect x="255.31" y="44.297" width="167.578" height="99.156" fill="#438DD5" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="303.263" y="65.436" fill="#FFF" font-size="12" textLength="71.672" font-style="italic">«container»</text>
+          <text x="265.31" y="83.117" fill="#FFF" font-size="16" textLength="39.953" font-weight="700">Web</text>
+          <text x="305.263" y="83.117" fill="#FFF" font-size="16" font-weight="700"></text>
+          <text x="310.833" y="83.117" fill="#FFF" font-size="16" textLength="102.055" font-weight="700">Application</text>
+          <text x="317.229" y="98.029" fill="#FFF" font-size="12" textLength="43.74" font-style="italic">[React]</text>
+          <text x="336.874" y="113.854" fill="#FFF" font-size="14"></text>
+          <text x="272.244" y="130.151" fill="#FFF" font-size="14" textLength="33.421">Main</text>
+          <text x="305.664" y="130.151" fill="#FFF" font-size="14"></text>
+          <text x="310.115" y="130.151" fill="#FFF" font-size="14" textLength="28.95">web</text>
+          <text x="339.065" y="130.151" fill="#FFF" font-size="14"></text>
+          <text x="343.515" y="130.151" fill="#FFF" font-size="14" textLength="62.439">interface</text>
         </g><!--entity database-->
-        <g class="entity" data-entity="database" data-source-line="71" data-uid="ent0003" id="entity_database">
-          <rect fill="#438DD5" height="99.1563" rx="2.5" ry="2.5" style="stroke:#3C7FC0;stroke-width:0.5;" width="160.8135" x="203.5" y="813.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="71.6719" x="248.0708" y="834.4355">«container»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="85.1484" x="241.3325" y="852.1172">Database</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78.5801" x="244.6167" y="867.0293">[PostgreSQL]</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="281.6816" y="882.8545"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="44.6045" x="213.5" y="899.1514">Stores</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="258.1045" y="899.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="55.7744" x="262.5547" y="899.1514">account</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="318.3291" y="899.1514"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.5342" x="322.7793" y="899.1514">data</text>
+        <g class="entity" data-qualified-name="database" id="ent0002" data-source-line="71">
+          <rect x="175.69" y="813.917" width="160.813" height="99.156" fill="#438DD5" style="stroke:#3C7FC0;stroke-width:0.5;"></rect>
+          <text x="220.261" y="835.056" fill="#FFF" font-size="12" textLength="71.672" font-style="italic">«container»</text>
+          <text x="213.523" y="852.737" fill="#FFF" font-size="16" textLength="85.148" font-weight="700">Database</text>
+          <text x="216.807" y="867.649" fill="#FFF" font-size="12" textLength="78.58" font-style="italic">[PostgreSQL]</text>
+          <text x="253.872" y="883.474" fill="#FFF" font-size="14"></text>
+          <text x="185.69" y="899.771" fill="#FFF" font-size="14" textLength="44.604">Stores</text>
+          <text x="230.294" y="899.771" fill="#FFF" font-size="14"></text>
+          <text x="234.745" y="899.771" fill="#FFF" font-size="14" textLength="55.774">account</text>
+          <text x="290.519" y="899.771" fill="#FFF" font-size="14"></text>
+          <text x="294.969" y="899.771" fill="#FFF" font-size="14" textLength="31.534">data</text>
         </g><!--entity mainframe-->
-        <g class="entity" data-entity="mainframe" data-source-line="212" data-uid="ent0010" id="entity_mainframe">
-          <rect fill="#999999" height="85.1875" rx="2.5" ry="2.5" style="stroke:#8A8A8A;stroke-width:0.5;" width="168.3193" x="466" y="644.2969"></rect>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="113.9941" x="493.1626" y="665.4355">«external_system»</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="96.7656" x="501.7769" y="683.1172">Mainframe</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="547.9346" y="699.8857"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="32.71" x="476" y="716.1826">Core</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="508.71" y="716.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.0957" x="513.1602" y="716.1826">banking</text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="569.2559" y="716.1826"> </text>
-          <text fill="#FFFFFF" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="50.6133" x="573.7061" y="716.1826">system</text>
+        <g class="entity" data-qualified-name="mainframe" id="ent0009" data-source-line="212">
+          <rect x="464.94" y="644.747" width="168.319" height="85.188" fill="#999" style="stroke:#8A8A8A;stroke-width:0.5;"></rect>
+          <text x="492.103" y="665.886" fill="#FFF" font-size="12" textLength="113.994" font-style="italic">«external_system»</text>
+          <text x="500.717" y="683.567" fill="#FFF" font-size="16" textLength="96.766" font-weight="700">Mainframe</text>
+          <text x="546.875" y="700.336" fill="#FFF" font-size="14"></text>
+          <text x="474.94" y="716.633" fill="#FFF" font-size="14" textLength="32.71">Core</text>
+          <text x="507.65" y="716.633" fill="#FFF" font-size="14"></text>
+          <text x="512.1" y="716.633" fill="#FFF" font-size="14" textLength="56.096">banking</text>
+          <text x="568.196" y="716.633" fill="#FFF" font-size="14"></text>
+          <text x="572.646" y="716.633" fill="#FFF" font-size="14" textLength="50.613">system</text>
         </g>
-        <g class="entity" data-entity="GMN19" data-source-line="29" data-uid="ent0020" id="entity_GMN19">
-          <path d="M6,81.2969 L6,106.4297 A0,0 0 0 0 6,106.4297 L109.24,106.4297 L117,289.2169 L117.24,106.4297 L220.21,106.4297 A0,0 0 0 0 220.21,106.4297 L220.21,91.2969 L210.21,81.2969 L6,81.2969 A0,0 0 0 0 6,81.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M210.21,81.2969 L210.21,91.2969 L220.21,91.2969 L210.21,81.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="12" y="98.3638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="42.9766" y="98.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="47.1089" y="98.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="60.1597" y="98.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="16.2056" x="64.292" y="98.3638">go</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="80.4976" y="98.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.894" x="84.6299" y="98.3638">back</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="115.5239" y="98.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="119.6563" y="98.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="132.707" y="98.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="68.3706" x="136.8394" y="98.3638">containers</text>
+        <g class="entity note" data-qualified-name="GMN18" id="ent0019" data-source-line="29">
+          <path d="M6,81.307 L6,106.44 A0,0 0 0 0 6,106.44 L109.35,106.44 L117.09,289.107 L117.35,106.44 L220.21,106.44 A0,0 0 0 0 220.21,106.44 L220.21,91.307 L210.21,81.307 L6,81.307 A0,0 0 0 0 6,81.307" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M210.21,81.307 L210.21,91.307 L220.21,91.307 L210.21,81.307" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <text x="12" y="98.374" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="42.977" y="98.374" fill="#000" font-size="13"></text>
+          <text x="47.109" y="98.374" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="60.16" y="98.374" fill="#000" font-size="13"></text>
+          <text x="64.292" y="98.374" fill="#000" font-size="13" textLength="16.206">go</text>
+          <text x="80.498" y="98.374" fill="#000" font-size="13"></text>
+          <text x="84.63" y="98.374" fill="#000" font-size="13" textLength="30.894">back</text>
+          <text x="115.524" y="98.374" fill="#000" font-size="13"></text>
+          <text x="119.656" y="98.374" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="132.707" y="98.374" fill="#000" font-size="13"></text>
+          <text x="136.839" y="98.374" fill="#000" font-size="13" textLength="68.371">containers</text>
         </g>
-        <g class="entity" data-entity="GMN22" data-source-line="30" data-uid="ent0023" id="entity_GMN22">
-          <path d="M466.5,500.2969 L466.5,525.4297 A0,0 0 0 0 466.5,525.4297 L645.4868,525.4297 A0,0 0 0 0 645.4868,525.4297 L645.4868,510.2969 L635.4868,500.2969 L545.14,500.2969 L400.31,388.3969 L537.14,500.2969 L466.5,500.2969 A0,0 0 0 0 466.5,500.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M635.4868,500.2969 L635.4868,510.2969 L645.4868,510.2969 L635.4868,500.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="472.5" y="517.3638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="503.4766" y="517.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="507.6089" y="517.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="520.6597" y="517.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="22.769" x="524.792" y="517.3638">see</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="547.561" y="517.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="31.3511" x="551.6934" y="517.3638">code</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="583.0444" y="517.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="43.3101" x="587.1768" y="517.3638">details</text>
+        <g class="entity note" data-qualified-name="GMN21" id="ent0022" data-source-line="30">
+          <path d="M464.61,500.617 L464.61,525.75 A0,0 0 0 0 464.61,525.75 L643.597,525.75 A0,0 0 0 0 643.597,525.75 L643.597,510.617 L633.597,500.617 L543.42,500.617 L400.14,388.907 L535.42,500.617 L464.61,500.617 A0,0 0 0 0 464.61,500.617" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M633.597,500.617 L633.597,510.617 L643.597,510.617 L633.597,500.617" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <text x="470.61" y="517.684" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="501.587" y="517.684" fill="#000" font-size="13"></text>
+          <text x="505.719" y="517.684" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="518.77" y="517.684" fill="#000" font-size="13"></text>
+          <text x="522.902" y="517.684" fill="#000" font-size="13" textLength="22.769">see</text>
+          <text x="545.671" y="517.684" fill="#000" font-size="13"></text>
+          <text x="549.803" y="517.684" fill="#000" font-size="13" textLength="31.351">code</text>
+          <text x="581.154" y="517.684" fill="#000" font-size="13"></text>
+          <text x="585.287" y="517.684" fill="#000" font-size="13" textLength="43.31">details</text>
         </g><!--link web_app to auth_controller-->
-        <g class="link" data-entity-1="web_app" data-entity-2="auth_controller" data-source-line="1706" data-uid="lnk11" id="link_web_app_auth_controller">
-          <path d="M279.25,143.4769 C268.51,153.0169 257.67,163.1969 248,173.2969 C213,209.8369 182.4318,248.761 157.4618,282.581" fill="none" id="web_app-to-auth_controller" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="152.71,289.0169,159.8752,284.3629,155.0483,280.7991,152.71,289.0169" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="35.8242" x="250.7666" y="185.4355">POST</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="286.5908" y="185.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="37.9863" x="290.7686" y="185.4355">/login</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="81.5215" x="249" y="199.4043">[JSON/HTTPS]</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0004" id="lnk10" data-source-line="1779" data-link-type="dependency">
+          <path d="M279.35,143.607 C268.61,153.157 257.77,163.347 248.1,173.457 C213.1,210.017 182.529,248.949 157.559,282.799" style="stroke:#666;stroke-width:1;" fill="none" id="web_app-to-auth_controller"></path>
+          <polygon points="152.81,289.237,159.973,284.58,155.145,281.018,152.81,289.237" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="250.867" y="185.596" fill="#666" font-size="12" textLength="35.824" font-weight="700">POST</text>
+          <text x="286.691" y="185.596" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="290.869" y="185.596" fill="#666" font-size="12" textLength="37.986" font-weight="700">/login</text>
+          <text x="249.1" y="199.564" fill="#666" font-size="12" textLength="81.521" font-style="italic">[JSON/HTTPS]</text>
         </g><!--link web_app to account_controller-->
-        <g class="link" data-entity-1="web_app" data-entity-2="account_controller" data-source-line="1706" data-uid="lnk12" id="link_web_app_account_controller">
-          <path d="M339,143.3869 C339,185.7669 339,238.9369 339,281.2869" fill="none" id="web_app-to-account_controller" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="339,289.2869,342,281.2869,336,281.2869,339,289.2869" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="26.2324" x="340" y="185.4355">GET</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="366.2324" y="185.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="64.916" x="370.4102" y="185.4355">/accounts</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="81.5215" x="346.9023" y="199.4043">[JSON/HTTPS]</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0005" id="lnk11" data-source-line="1779" data-link-type="dependency">
+          <path d="M339.1,143.787 C339.1,186.087 339.1,238.917 339.1,281.197" style="stroke:#666;stroke-width:1;" fill="none" id="web_app-to-account_controller"></path>
+          <polygon points="339.1,289.197,342.1,281.197,336.1,281.197,339.1,289.197" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="340.1" y="185.596" fill="#666" font-size="12" textLength="26.232" font-weight="700">GET</text>
+          <text x="366.332" y="185.596" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="370.51" y="185.596" fill="#666" font-size="12" textLength="64.916" font-weight="700">/accounts</text>
+          <text x="347.002" y="199.564" fill="#666" font-size="12" textLength="81.521" font-style="italic">[JSON/HTTPS]</text>
         </g><!--link auth_controller to auth_service-->
-        <g class="link" data-entity-1="auth_controller" data-entity-2="auth_service" data-source-line="1706" data-uid="lnk13" id="link_auth_controller_auth_service">
-          <path d="M121.41,388.6269 C123.03,411.9669 124.4222,431.8463 126.0522,455.1663" fill="none" id="auth_controller-to-auth_service" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="126.61,463.1469,129.0449,454.9572,123.0595,455.3755,126.61,463.1469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="125" y="430.4355">Uses</text>
+        <g class="link" data-entity-1="ent0004" data-entity-2="ent0006" id="lnk12" data-source-line="1779" data-link-type="dependency">
+          <path d="M121.51,388.907 C123.13,412.167 124.504,431.936 126.124,455.206" style="stroke:#666;stroke-width:1;" fill="none" id="auth_controller-to-auth_service"></path>
+          <polygon points="126.68,463.187,129.117,454.998,123.132,455.415,126.68,463.187" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="125.46" y="430.746" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
         </g><!--link account_controller to account_service-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="account_service" data-source-line="1706" data-uid="lnk14" id="link_account_controller_account_service">
-          <path d="M339,388.6269 C339,411.9669 339,431.8269 339,455.1469" fill="none" id="account_controller-to-account_service" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="339,463.1469,342,455.1469,336,455.1469,339,463.1469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="340" y="430.4355">Uses</text>
+        <g class="link" data-entity-1="ent0005" data-entity-2="ent0007" id="lnk13" data-source-line="1779" data-link-type="dependency">
+          <path d="M339.1,388.907 C339.1,412.167 339.1,431.917 339.1,455.187" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-account_service"></path>
+          <polygon points="339.1,463.187,342.1,455.187,336.1,455.187,339.1,463.187" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="340.1" y="430.746" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
         </g><!--link auth_service to database_access-->
-        <g class="link" data-entity-1="auth_service" data-entity-2="database_access" data-source-line="1706" data-uid="lnk15" id="link_auth_service_database_access">
-          <path d="M173.72,562.6269 C194.62,585.9669 214.2235,607.8668 235.1035,631.1868" fill="none" id="auth_service-to-database_access" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="240.44,637.1469,237.3386,629.1856,232.8685,633.188,240.44,637.1469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="212" y="604.4355">Uses</text>
+        <g class="link" data-entity-1="ent0006" data-entity-2="ent0008" id="lnk14" data-source-line="1779" data-link-type="dependency">
+          <path d="M165.87,563.057 C182.89,586.317 198.475,607.611 215.515,630.891" style="stroke:#666;stroke-width:1;" fill="none" id="auth_service-to-database_access"></path>
+          <polygon points="220.24,637.347,217.936,629.119,213.094,632.663,220.24,637.347" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="197.88" y="604.906" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
         </g><!--link account_service to database_access-->
-        <g class="link" data-entity-1="account_service" data-entity-2="database_access" data-source-line="1706" data-uid="lnk16" id="link_account_service_database_access">
-          <path d="M323.39,562.6269 C315.92,585.9669 309.4445,606.2063 301.9945,629.5263" fill="none" id="account_service-to-database_access" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="299.56,637.1469,304.8522,630.4393,299.1368,628.6134,299.56,637.1469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="32.168" x="314" y="604.4355">Uses</text>
+        <g class="link" data-entity-1="ent0007" data-entity-2="ent0008" id="lnk15" data-source-line="1779" data-link-type="dependency">
+          <path d="M315.54,563.057 C304.32,586.317 294.413,606.86 283.193,630.14" style="stroke:#666;stroke-width:1;" fill="none" id="account_service-to-database_access"></path>
+          <polygon points="279.72,637.347,285.896,631.443,280.491,628.838,279.72,637.347" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="301.09" y="604.906" fill="#666" font-size="12" textLength="32.168" font-weight="700">Uses</text>
         </g><!--link database_access to database-->
-        <g class="link" data-entity-1="database_access" data-entity-2="database" data-source-line="1706" data-uid="lnk17" id="link_database_access_database">
-          <path d="M284,736.7269 C284,760.6469 284,781.3569 284,805.2369" fill="none" id="database_access-to-database" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="284,813.2369,287,805.2369,281,805.2369,284,813.2369" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="26.4902" x="285" y="780.4355">SQL</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="311.4902" y="780.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="50.584" x="315.668" y="780.4355">queries</text>
+        <g class="link" data-entity-1="ent0008" data-entity-2="ent0002" id="lnk16" data-source-line="1779" data-link-type="dependency">
+          <path d="M256.1,737.317 C256.1,761.167 256.1,781.757 256.1,805.587" style="stroke:#666;stroke-width:1;" fill="none" id="database_access-to-database"></path>
+          <polygon points="256.1,813.587,259.1,805.587,253.1,805.587,256.1,813.587" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="257.1" y="781.056" fill="#666" font-size="12" textLength="26.49" font-weight="700">SQL</text>
+          <text x="283.59" y="781.056" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="287.768" y="781.056" fill="#666" font-size="12" textLength="50.584" font-weight="700">queries</text>
         </g><!--link account_service to mainframe-->
-        <g class="link" data-entity-1="account_service" data-entity-2="mainframe" data-source-line="1706" data-uid="lnk18" id="link_account_service_mainframe">
-          <path d="M398.62,562.3969 C430.18,588.1269 462.3496,614.3417 492.5596,638.9717" fill="none" id="account_service-to-mainframe" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="498.76,644.0269,494.4553,636.6465,490.6639,641.2969,498.76,644.0269" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="22.5469" x="451" y="604.4355">API</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="473.5469" y="604.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.5801" x="477.7246" y="604.4355">calls</text>
-        </g><!--SRC=[XLF1ZjCm4BtdAuQ8Gol15g6U48lKpLOiY6vBKyGnSfrfC7NiOBlBTX7_lkCaRTCaXPpioRptPlncNWZ5vIv5U1-DHz4uYNHUQ8NAVGW29vn4E4RWLh3Ci1mssi1ayGacHI45Pqve5GIHLeu9XMRm6zS9AufN47x7TJCffD0I6NV-CADae5GGog7PC8xXi46ICiVMp29btjP7ZrfewpA3yTSl_XOxRT02urplg3wF8P8JIt93yPIP_O0LWl9RHOT3-1C0VSSM1spdVYISy4PBYSPZA0BHCU9bfuy5oTghdzRVxfXAfQ-24edYrEjBATJsEdppzZK_57Hb7pAgiALPbT-IhNlwb_ACAPQT-hSDpJ5ffjWlvrkqQ1u4nqD_SNNrfFSUL_5FpZe2gJF1BrRVOAnBxoUzsLbw2Milq1ryJuYNiXhsmwICbBxZhnrAyOGmNyx2EWSg14YsfySQ1d-38DvRXtaoVNI3dDv_GyEBzUYLPm-DQ8HWpTHMg0ni2V0pj4Hv6kJkL2pcyGf6leLogZ_7y_lHtMgrY0bx3kqpz-EKm0tNpl4bGKUoPTitYxRMwfFekj84d55rNxo7-__PPNhdRsEDQMU1R3FYCddJ9B-hd4bPSYlj49mkG6_QPi0xY6YXj_GRCarELiVZojaAlDREwRp4TvwhIM4HmQyEf4XuQODd]-->
+        <g class="link" data-entity-1="ent0007" data-entity-2="ent0009" id="lnk17" data-source-line="1779" data-link-type="dependency">
+          <path d="M398.72,563.057 C430,588.707 461.753,614.735 491.703,639.285" style="stroke:#666;stroke-width:1;" fill="none" id="account_service-to-mainframe"></path>
+          <polygon points="497.89,644.357,493.605,636.965,489.801,641.605,497.89,644.357" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="451.4" y="604.906" fill="#666" font-size="12" textLength="22.547" font-weight="700">API</text>
+          <text x="473.947" y="604.906" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="478.125" y="604.906" fill="#666" font-size="12" textLength="30.58" font-weight="700">calls</text>
+        </g>
       </g>
       </svg>
     </g>
@@ -585,156 +581,172 @@
   <g id="layer-code" style="display:none">
     <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-code"/>
     <g id="diagram-code">
-      <svg viewBox="0 0 934 670" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
-        <title>Code Diagram for Account Controller</title>
-      <defs></defs>
-      <g>
+      <svg viewBox="0 0 944 679" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
+        <defs></defs>
+      <g font-family="sans-serif" lengthAdjust="spacing">
         <g class="title" data-source-line="3">
-          <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="291.0947" x="314.936" y="22.9951">Code Diagram for Account Controller</text>
+          <text x="323.301" y="22.995" fill="#000" font-size="14" textLength="291.095" font-weight="700">Code Diagram for Account Controller</text>
         </g><!--cluster impl-->
-        <g class="cluster" data-entity="impl" data-source-line="1593" data-uid="ent0003" id="cluster_impl">
-          <rect fill="none" height="360" rx="2.5" ry="2.5" style="stroke:#444444;stroke-width:1;stroke-dasharray:7,7;" width="853" x="7" y="304.2969"></rect>
-          <text fill="#444444" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="211.9297" x="327.5352" y="341.1484">Implementation Details</text>
-          <text fill="#444444" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="59.4551" x="403.7725" y="356.0605">[system]</text>
+        <g class="cluster" data-qualified-name="impl" id="ent0002" data-source-line="1666">
+          <rect x="7" y="304.717" width="853" height="360.31" fill="none" style="stroke:#444;stroke-width:1;stroke-dasharray:7,7;"></rect>
+          <text x="327.535" y="341.568" fill="#444" font-size="16" textLength="211.93" font-weight="700">Implementation Details</text>
+          <text x="403.772" y="356.481" fill="#444" font-size="12" textLength="59.455" font-weight="700">[system]</text>
         </g><!--entity get_accounts-->
-        <g class="entity" data-entity="get_accounts" data-source-line="63" data-uid="ent0004" id="entity_get_accounts">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="187.0088" x="22.5" y="375.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="74.6548" y="396.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="126.875" x="52.5669" y="414.1172">getAccounts()</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.3691" x="88.8198" y="429.0293">[Method]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="113.7793" y="444.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28.2461" x="32.5" y="461.1514">GET</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="60.7461" y="461.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="67.7852" x="65.1963" y="461.1514">/accounts</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="132.9814" y="461.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.0771" x="137.4316" y="461.1514">endpoint</text>
+        <g class="entity" data-qualified-name="impl.get_accounts" id="ent0003" data-source-line="78">
+          <rect x="23.5" y="375.717" width="187.009" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="75.655" y="396.856" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="53.567" y="414.537" fill="#000" font-size="16" textLength="126.875" font-weight="700">getAccounts()</text>
+          <text x="89.82" y="429.449" fill="#000" font-size="12" textLength="54.369" font-style="italic">[Method]</text>
+          <text x="114.779" y="445.274" fill="#000" font-size="14"></text>
+          <text x="33.5" y="461.571" fill="#000" font-size="14" textLength="28.246">GET</text>
+          <text x="61.746" y="461.571" fill="#000" font-size="14"></text>
+          <text x="66.196" y="461.571" fill="#000" font-size="14" textLength="67.785">/accounts</text>
+          <text x="133.981" y="461.571" fill="#000" font-size="14"></text>
+          <text x="138.432" y="461.571" fill="#000" font-size="14" textLength="62.077">endpoint</text>
         </g><!--entity get_balance-->
-        <g class="entity" data-entity="get_balance" data-source-line="63" data-uid="ent0005" id="entity_get_balance">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="202.5264" x="244.5" y="375.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="304.4136" y="396.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="115.5781" x="287.9741" y="414.1172">getBalance()</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.3691" x="318.5786" y="429.0293">[Method]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="343.5381" y="444.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="28.2461" x="254.5" y="461.1514">GET</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="282.7461" y="461.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="149.8301" x="287.1963" y="461.1514">/accounts/:id/balance</text>
+        <g class="entity" data-qualified-name="impl.get_balance" id="ent0004" data-source-line="78">
+          <rect x="245.74" y="375.717" width="202.526" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="305.654" y="396.856" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="289.214" y="414.537" fill="#000" font-size="16" textLength="115.578" font-weight="700">getBalance()</text>
+          <text x="319.819" y="429.449" fill="#000" font-size="12" textLength="54.369" font-style="italic">[Method]</text>
+          <text x="344.778" y="445.274" fill="#000" font-size="14"></text>
+          <text x="255.74" y="461.571" fill="#000" font-size="14" textLength="28.246">GET</text>
+          <text x="283.986" y="461.571" fill="#000" font-size="14"></text>
+          <text x="288.436" y="461.571" fill="#000" font-size="14" textLength="149.83">/accounts/:id/balance</text>
         </g><!--entity transfer_funds-->
-        <g class="entity" data-entity="transfer_funds" data-source-line="63" data-uid="ent0006" id="entity_transfer_funds">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="189.1416" x="482.5" y="375.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="535.7212" y="396.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="142.2656" x="505.938" y="414.1172">transferFunds()</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="54.3691" x="549.8862" y="429.0293">[Method]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="574.8457" y="444.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="36.9004" x="492.5" y="461.1514">POST</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="529.4004" y="461.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="127.791" x="533.8506" y="461.1514">/accounts/transfer</text>
+        <g class="entity" data-qualified-name="impl.transfer_funds" id="ent0005" data-source-line="78">
+          <rect x="483.43" y="375.717" width="189.142" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="536.651" y="396.856" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="506.868" y="414.537" fill="#000" font-size="16" textLength="142.266" font-weight="700">transferFunds()</text>
+          <text x="550.816" y="429.449" fill="#000" font-size="12" textLength="54.369" font-style="italic">[Method]</text>
+          <text x="575.776" y="445.274" fill="#000" font-size="14"></text>
+          <text x="493.43" y="461.571" fill="#000" font-size="14" textLength="36.9">POST</text>
+          <text x="530.33" y="461.571" fill="#000" font-size="14"></text>
+          <text x="534.781" y="461.571" fill="#000" font-size="14" textLength="127.791">/accounts/transfer</text>
         </g><!--entity validator-->
-        <g class="entity" data-entity="validator" data-source-line="63" data-uid="ent0007" id="entity_validator">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="176.9688" x="372.5" y="549.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="419.6348" y="570.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="156.9688" x="382.5" y="588.1172">RequestValidator</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78.4863" x="421.7412" y="603.0293">[Middleware]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="458.7593" y="618.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64.7979" x="395.9507" y="635.1514">Validates</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="460.7485" y="635.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="60.8193" x="465.1987" y="635.1514">requests</text>
+        <g class="entity" data-qualified-name="impl.validator" id="ent0006" data-source-line="78">
+          <rect x="373.52" y="549.867" width="176.969" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="420.655" y="571.006" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="383.52" y="588.687" fill="#000" font-size="16" textLength="156.969" font-weight="700">RequestValidator</text>
+          <text x="422.761" y="603.599" fill="#000" font-size="12" textLength="78.486" font-style="italic">[Middleware]</text>
+          <text x="459.779" y="619.424" fill="#000" font-size="14"></text>
+          <text x="396.971" y="635.721" fill="#000" font-size="14" textLength="64.798">Validates</text>
+          <text x="461.769" y="635.721" fill="#000" font-size="14"></text>
+          <text x="466.219" y="635.721" fill="#000" font-size="14" textLength="60.819">requests</text>
         </g><!--entity error_handler-->
-        <g class="entity" data-entity="error_handler" data-source-line="63" data-uid="ent0008" id="entity_error_handler">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="136.8516" x="706.5" y="375.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="733.5762" y="396.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="116.8516" x="716.5" y="414.1172">ErrorHandler</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="78.4863" x="735.6826" y="429.0293">[Middleware]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="772.7007" y="444.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="56.6631" x="723.499" y="461.1514">Handles</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="780.1621" y="461.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="41.7402" x="784.6123" y="461.1514">errors</text>
+        <g class="entity" data-qualified-name="impl.error_handler" id="ent0007" data-source-line="78">
+          <rect x="707.57" y="375.717" width="136.852" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="734.646" y="396.856" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="717.57" y="414.537" fill="#000" font-size="16" textLength="116.852" font-weight="700">ErrorHandler</text>
+          <text x="736.753" y="429.449" fill="#000" font-size="12" textLength="78.486" font-style="italic">[Middleware]</text>
+          <text x="773.771" y="445.274" fill="#000" font-size="14"></text>
+          <text x="724.569" y="461.571" fill="#000" font-size="14" textLength="56.663">Handles</text>
+          <text x="781.232" y="461.571" fill="#000" font-size="14"></text>
+          <text x="785.682" y="461.571" fill="#000" font-size="14" textLength="41.74">errors</text>
         </g><!--entity account_controller-->
-        <g class="entity" data-entity="account_controller" data-source-line="63" data-uid="ent0002" id="entity_account_controller" onclick="navigateDown()" style="cursor:pointer;">
-          <rect fill="#85BBF0" height="99.1563" rx="2.5" ry="2.5" style="stroke:#78A8D8;stroke-width:0.5;" width="188.7109" x="482.5" y="144.2969"></rect>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="82.6992" x="535.5059" y="165.4355">«component»</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="72.7734" x="492.5" y="183.1172">Account</text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="5.5703" x="565.2734" y="183.1172"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="16" font-weight="bold" lengthAdjust="spacing" textLength="90.3672" x="570.8438" y="183.1172">Controller</text>
-          <text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacing" textLength="69.8848" x="541.9131" y="198.0293">[Express.js]</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="574.6304" y="213.8545"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37.249" x="538.1538" y="230.1514">Entry</text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="4.4502" x="575.4028" y="230.1514"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="35.7041" x="579.853" y="230.1514">point</text>
+        <g class="entity" data-qualified-name="account_controller" id="ent0001" data-source-line="78" onclick="navigateDown()" style="cursor:pointer;">
+          <rect x="483.64" y="144.557" width="188.711" height="99.156" fill="#85BBF0" style="stroke:#78A8D8;stroke-width:0.5;"></rect>
+          <text x="536.646" y="165.696" fill="#000" font-size="12" textLength="82.699" font-style="italic">«component»</text>
+          <text x="493.64" y="183.377" fill="#000" font-size="16" textLength="72.773" font-weight="700">Account</text>
+          <text x="566.413" y="183.377" fill="#000" font-size="16" font-weight="700"></text>
+          <text x="571.984" y="183.377" fill="#000" font-size="16" textLength="90.367" font-weight="700">Controller</text>
+          <text x="543.053" y="198.289" fill="#000" font-size="12" textLength="69.885" font-style="italic">[Express.js]</text>
+          <text x="575.77" y="214.114" fill="#000" font-size="14"></text>
+          <text x="539.294" y="230.411" fill="#000" font-size="14" textLength="37.249">Entry</text>
+          <text x="576.543" y="230.411" fill="#000" font-size="14"></text>
+          <text x="580.993" y="230.411" fill="#000" font-size="14" textLength="35.704">point</text>
         </g>
-        <g class="entity" data-entity="GMN17" data-source-line="25" data-uid="ent0018" id="entity_GMN17">
-          <path d="M506,43.2969 L506,83.5625 A0,0 0 0 0 506,83.5625 L573,83.5625 L577,144.2469 L581,83.5625 L647.707,83.5625 A0,0 0 0 0 647.707,83.5625 L647.707,53.2969 L637.707,43.2969 L506,43.2969 A0,0 0 0 0 506,43.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <path d="M637.707,43.2969 L637.707,53.2969 L647.707,53.2969 L637.707,43.2969" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"></path>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.9766" x="512" y="60.3638">Click</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="542.9766" y="60.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="547.1089" y="60.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="560.1597" y="60.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="16.2056" x="564.292" y="60.3638">go</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="580.4976" y="60.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="30.894" x="584.6299" y="60.3638">back</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4.1323" x="615.5239" y="60.3638"> </text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="13.0508" x="619.6563" y="60.3638">to</text>
-          <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80.3169" x="532.1951" y="75.4966">components</text>
+        <g class="entity note" data-qualified-name="GMN16" id="ent0017" data-source-line="25">
+          <path d="M507.15,43.297 L507.15,83.563 A0,0 0 0 0 507.15,83.563 L574,83.563 L578,144.157 L582,83.563 L648.857,83.563 A0,0 0 0 0 648.857,83.563 L648.857,53.297 L638.857,43.297 L507.15,43.297 A0,0 0 0 0 507.15,43.297" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <path d="M638.857,43.297 L638.857,53.297 L648.857,53.297 L638.857,43.297" style="stroke:#181818;stroke-width:0.5;" fill="#FEFFDD"></path>
+          <text x="513.15" y="60.364" fill="#000" font-size="13" textLength="30.977">Click</text>
+          <text x="544.127" y="60.364" fill="#000" font-size="13"></text>
+          <text x="548.259" y="60.364" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="561.31" y="60.364" fill="#000" font-size="13"></text>
+          <text x="565.442" y="60.364" fill="#000" font-size="13" textLength="16.206">go</text>
+          <text x="581.648" y="60.364" fill="#000" font-size="13"></text>
+          <text x="585.78" y="60.364" fill="#000" font-size="13" textLength="30.894">back</text>
+          <text x="616.674" y="60.364" fill="#000" font-size="13"></text>
+          <text x="620.806" y="60.364" fill="#000" font-size="13" textLength="13.051">to</text>
+          <text x="533.345" y="75.497" fill="#000" font-size="13" textLength="80.317">components</text>
         </g><!--link account_controller to get_accounts-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="get_accounts" data-source-line="1706" data-uid="lnk9" id="link_account_controller_get_accounts">
-          <path d="M482.17,207.3069 C408.09,220.4669 304.98,246.4969 227,296.2969 C195.34,316.5169 172.3477,341.9654 152.5077,368.7854" fill="none" id="account_controller-to-get_accounts" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="147.75,375.2169,154.9195,370.5695,150.0959,367.0012,147.75,375.2169" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="79.5234" x="262" y="285.4355">implements</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0003" id="lnk8" data-source-line="1779" data-link-type="dependency">
+          <path d="M483.17,207.667 C409.09,220.837 305.97,246.887 228,296.717 C196.46,316.867 173.56,342.167 153.74,368.937" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-get_accounts"></path>
+          <polygon points="148.98,375.367,156.151,370.722,151.329,367.152,148.98,375.367" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="263.09" y="285.856" fill="#666" font-size="12" textLength="79.523" font-weight="700">implements</text>
         </g><!--link account_controller to get_balance-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="get_balance" data-source-line="1706" data-uid="lnk10" id="link_account_controller_get_balance">
-          <path d="M520.5,243.6869 C509.6,253.3769 498.36,263.5669 488,273.2969 C453.31,305.8869 421.871,339.137 394.411,369.347" fill="none" id="account_controller-to-get_balance" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="389.03,375.2669,396.6309,371.3649,392.191,367.3291,389.03,375.2669" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="79.5234" x="489" y="285.4355">implements</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0004" id="lnk9" data-source-line="1779" data-link-type="dependency">
+          <path d="M521.5,244.077 C510.61,253.777 499.36,263.977 489,273.717 C454.44,306.197 423.14,339.296 395.72,369.476" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-get_balance"></path>
+          <polygon points="390.34,375.397,397.94,371.493,393.499,367.458,390.34,375.397" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="490" y="285.856" fill="#666" font-size="12" textLength="79.523" font-weight="700">implements</text>
         </g><!--link account_controller to transfer_funds-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="transfer_funds" data-source-line="1706" data-uid="lnk11" id="link_account_controller_transfer_funds">
-          <path d="M577,243.3669 C577,282.0969 577,328.0969 577,366.9069" fill="none" id="account_controller-to-transfer_funds" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="577,374.9069,580,366.9069,574,366.9069,577,374.9069" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="79.5234" x="578" y="285.4355">implements</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0005" id="lnk10" data-source-line="1779" data-link-type="dependency">
+          <path d="M578,244.017 C578,282.787 578,328.727 578,367.487" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-transfer_funds"></path>
+          <polygon points="578,375.487,581,367.487,575,367.487,578,375.487" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="579" y="285.856" fill="#666" font-size="12" textLength="79.523" font-weight="700">implements</text>
         </g><!--link account_controller to validator-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="validator" data-source-line="1706" data-uid="lnk12" id="link_account_controller_validator">
-          <path d="M671.7,201.3069 C736.64,211.2869 818.48,235.9469 861,296.2969 C906.56,360.9669 907.97,410.6369 861,474.2969 C823.89,524.5969 663.944,561.5882 557.814,581.4082" fill="none" id="account_controller-to-validator" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="549.95,582.8769,558.3648,584.3573,557.2633,578.4592,549.95,582.8769" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.9668" x="896" y="429.4355">uses</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0006" id="lnk11" data-source-line="1779" data-link-type="dependency">
+          <path d="M672.7,201.667 C737.65,211.667 819.48,236.347 862,296.717 C907.6,361.447 909,411.147 862,474.867 C824.89,525.177 664.944,562.196 558.814,582.046" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-validator"></path>
+          <polygon points="550.95,583.517,559.365,584.995,558.262,579.097,550.95,583.517" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="897.73" y="429.936" fill="#666" font-size="12" textLength="30.967" font-weight="700">uses</text>
         </g><!--link account_controller to error_handler-->
-        <g class="link" data-entity-1="account_controller" data-entity-2="error_handler" data-source-line="1706" data-uid="lnk13" id="link_account_controller_error_handler">
-          <path d="M633.5,243.6869 C644.4,253.3769 655.64,263.5669 666,273.2969 C676.54,283.1969 679.8,285.1469 689,296.2969 C709.38,321.0169 725.2288,343.8443 740.9088,368.2743" fill="none" id="account_controller-to-error_handler" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="745.23,375.0069,743.4335,366.6539,738.3841,369.8948,745.23,375.0069" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="30.9668" x="682" y="285.4355">uses</text>
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0007" id="lnk12" data-source-line="1779" data-link-type="dependency">
+          <path d="M634.5,244.077 C645.39,253.777 656.64,263.977 667,273.717 C677.53,283.617 680.81,285.557 690,296.717 C710.39,321.447 726.243,344.291 741.913,368.741" style="stroke:#666;stroke-width:1;" fill="none" id="account_controller-to-error_handler"></path>
+          <polygon points="746.23,375.477,744.439,367.123,739.387,370.36,746.23,375.477" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="683.97" y="285.856" fill="#666" font-size="12" textLength="30.967" font-weight="700">uses</text>
         </g><!--link get_accounts to validator-->
-        <g class="link" data-entity-1="get_accounts" data-entity-2="validator" data-source-line="1706" data-uid="lnk14" id="link_get_accounts_validator">
-          <path d="M206.06,474.4569 C233.8,489.1569 264.53,505.1369 293,519.2969 C318.51,531.9869 339.2095,541.9061 364.8595,553.8661" fill="none" id="get_accounts-to-validator" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="372.11,557.2469,366.1272,551.1472,363.5917,556.5851,372.11,557.2469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="63.2988" x="294" y="516.4355">validated</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="357.2988" y="516.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="16.4121" x="361.4766" y="516.4355">by</text>
+        <g class="link" data-entity-1="ent0003" data-entity-2="ent0006" id="lnk13" data-source-line="1779" data-link-type="dependency">
+          <path d="M208.07,475.157 C235.85,489.797 266.56,505.717 295,519.867 C320.24,532.437 340.619,542.245 366.009,554.175" style="stroke:#666;stroke-width:1;" fill="none" id="get_accounts-to-validator"></path>
+          <polygon points="373.25,557.577,367.285,551.46,364.734,556.89,373.25,557.577" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="296" y="517.006" fill="#666" font-size="12" textLength="63.299" font-weight="700">validated</text>
+          <text x="359.299" y="517.006" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="363.477" y="517.006" fill="#666" font-size="12" textLength="16.412" font-weight="700">by</text>
         </g><!--link get_balance to validator-->
-        <g class="link" data-entity-1="get_balance" data-entity-2="validator" data-source-line="1706" data-uid="lnk15" id="link_get_balance_validator">
-          <path d="M369.65,474.4369 C377.45,489.2069 386.56,505.2369 396,519.2969 C402.71,529.2869 405.429,533.2707 413.159,542.8907" fill="none" id="get_balance-to-validator" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="418.17,549.1269,415.4976,541.0116,410.8204,544.7698,418.17,549.1269" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="63.2988" x="397" y="516.4355">validated</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="460.2988" y="516.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="16.4121" x="464.4766" y="516.4355">by</text>
+        <g class="link" data-entity-1="ent0004" data-entity-2="ent0006" id="lnk14" data-source-line="1779" data-link-type="dependency">
+          <path d="M370.64,474.977 C378.45,489.757 387.56,505.797 397,519.867 C403.71,529.867 406.435,533.856 414.165,543.496" style="stroke:#666;stroke-width:1;" fill="none" id="get_balance-to-validator"></path>
+          <polygon points="419.17,549.737,416.506,541.619,411.825,545.372,419.17,549.737" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="398" y="517.006" fill="#666" font-size="12" textLength="63.299" font-weight="700">validated</text>
+          <text x="461.299" y="517.006" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="465.477" y="517.006" fill="#666" font-size="12" textLength="16.412" font-weight="700">by</text>
         </g><!--link transfer_funds to validator-->
-        <g class="link" data-entity-1="transfer_funds" data-entity-2="validator" data-source-line="1706" data-uid="lnk16" id="link_transfer_funds_validator">
-          <path d="M544.07,474.6269 C528.33,497.9669 514.0136,519.1946 498.2836,542.5146" fill="none" id="transfer_funds-to-validator" style="stroke:#666666;stroke-width:1;"></path>
-          <polygon fill="#666666" points="493.81,549.1469,500.7707,544.1922,495.7965,540.837,493.81,549.1469" style="stroke:#666666;stroke-width:1;"></polygon>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="63.2988" x="523" y="516.4355">validated</text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="4.1777" x="586.2988" y="516.4355"> </text>
-          <text fill="#666666" font-family="sans-serif" font-size="12" font-weight="bold" lengthAdjust="spacing" textLength="16.4121" x="590.4766" y="516.4355">by</text>
-        </g><!--SRC=[ZLDRJy8m57xlhpWkFa2YO29FH4rauEN1QCJukfJr09MkdMr1YV6_szADst2w5_hrkt0ksn6NgPWpX8kuquuxIQooN4cKzeeGowr0Y9LZ-vnEDCrWh3HSfwcQI-i8QRKI0ZKXQrk31ZP9r-m9H5LBv6u7dxb6OrflPeKSjOHSSMaTF1PSpYwZi_FJj8nkcSKaQX8oN1gBMT9pYOpgPODdkN3-U_U3cTDHovM4FbhAXOcQy4N0FPiA9sYJeahZV0uMvPb6qnVoW7Qgc3_T3bwWNKe19GlLDGy4ZgYWCiMGrmkWDgxTvQnTk2g9LbDfngYJiUlH5rbUt7Yyd_lqEDmEBhMLr0KLd56h_4QUyNsEnhwMLwj4pfZ03whHeu920pfeJIKGjLOwcLB9mfe77jy5M0qCX9kZL_cmRqAUKHnyO_PsnClTUbkTPxE6RGlywgaC-b__j3t8kS4wwVw82lbAlzlaTcXnHWQZPH6-qzqVslskQkH4AejWLGvg3DK6e0knuEdCAM2YO4J3SVrD6l83]-->
+        <g class="link" data-entity-1="ent0005" data-entity-2="ent0006" id="lnk15" data-source-line="1779" data-link-type="dependency">
+          <path d="M545.07,475.167 C529.4,498.427 515.171,519.543 499.481,542.823" style="stroke:#666;stroke-width:1;" fill="none" id="transfer_funds-to-validator"></path>
+          <polygon points="495.01,549.457,501.969,544.5,496.993,541.146,495.01,549.457" fill="#666" style="stroke:#666;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"></polygon>
+          <text x="524.48" y="517.006" fill="#666" font-size="12" textLength="63.299" font-weight="700">validated</text>
+          <text x="587.779" y="517.006" fill="#666" font-size="12" font-weight="700"></text>
+          <text x="591.957" y="517.006" fill="#666" font-size="12" textLength="16.412" font-weight="700">by</text>
+        </g>
       </g>
       </svg>
     </g>
   </g>
+
   <!-- Navigation Script -->
   <script type="text/ecmascript"><![CDATA[
     const diagramData = {
-  'context': { width: 486, height: 550, ratio: 0.88 },
-  'container': { width: 872, height: 820, ratio: 1.06 },
-  'component': { width: 652, height: 918, ratio: 0.71 },
-  'code': { width: 934, height: 670, ratio: 1.39 }
-};
+      "code": {
+        "width": 944,
+        "height": 679,
+        "ratio": 1.39
+      },
+      "component": {
+        "width": 658,
+        "height": 927,
+        "ratio": 0.71
+      },
+      "container": {
+        "width": 880,
+        "height": 832,
+        "ratio": 1.06
+      },
+      "context": {
+        "width": 494,
+        "height": 562,
+        "ratio": 0.88
+      }
+    };
 
-const availableLevels = ['context', 'container', 'component', 'code'];
+const availableLevels = ["context","container","component","code"];
 
 // Embedded navigation JavaScript for stacked C4 diagrams
 let currentLevel = 'context';

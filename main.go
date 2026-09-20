@@ -3,15 +3,18 @@ package main
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 	"unicode"
 )
@@ -19,21 +22,19 @@ import (
 //go:embed navigation.js
 var navigationJS string
 
-type SVGStacker struct {
-	diagrams   map[string]DiagramInfo
-	inputDir   string
-	outputFile string
-	title      string
-	tempDir    string
-	now        time.Time // generation time written to the metadata block; injected so output is reproducible in tests
-}
+//go:embed stacked.svg.tmpl
+var document_template_source string
 
-type DiagramInfo struct {
-	content     string
-	viewBox     string
-	width       float64
-	height      float64
-	aspectRatio float64
+var version = "unreleased"
+
+// converts a string to title case (first letter uppercase, rest as-is).
+func titleCase(s string) string {
+	if s == "" {
+		return s
+	}
+	r := []rune(s)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
 }
 
 // one C4 level: the filename prefix that identifies it and whether a diagram set must include it
@@ -81,245 +82,13 @@ func discover_levels(dir, ext string) ([]level_file, error) {
 	return found, nil
 }
 
-var version = "unreleased"
-
-// converts a string to title case (first letter uppercase, rest as-is).
-func titleCase(s string) string {
-	if s == "" {
-		return s
-	}
-	r := []rune(s)
-	r[0] = unicode.ToUpper(r[0])
-	return string(r)
-}
-
-func printUsage() {
-	fmt.Fprintf(os.Stderr, `Usage: svg-stacker <directory> [OPTIONS]
-
-Combines the numbered SVG or PlantUML files in <directory> into one stacked SVG.
-
-OPTIONS:
-  -h, --help          Show this help message and exit
-  -v, --version       Show version information and exit
-  --output FILE       Output file path (default: stdout)
-  --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
-
-EXAMPLES:
-  svg-stacker ./examples
-  svg-stacker ./examples --output output.svg
-  svg-stacker ./examples --title "My Architecture"
-`)
-}
-
-func printVersion() {
-	fmt.Printf("svg-stacker version %s\n", version)
-}
-
-func parseArgsSlice(args []string) (inputDir, outputFile, title string, err error) {
-	if len(args) < 1 {
-		return "", "", "", fmt.Errorf("directory argument required")
-	}
-
-	// Check for help/version flags first
-	for _, arg := range args {
-		if arg == "-h" || arg == "--help" {
-			return "", "", "", fmt.Errorf("help")
-		}
-		if arg == "-v" || arg == "--version" {
-			return "", "", "", fmt.Errorf("version")
-		}
-	}
-
-	inputDir = args[0]
-	outputFile = ""
-	title = ""
-
-	for i := 1; i < len(args); i++ {
-		switch args[i] {
-		case "--output":
-			if i+1 < len(args) {
-				outputFile = args[i+1]
-				i++
-			} else {
-				return "", "", "", fmt.Errorf("--output requires an argument")
-			}
-		case "--title":
-			if i+1 < len(args) {
-				title = args[i+1]
-				i++
-			} else {
-				return "", "", "", fmt.Errorf("--title requires an argument")
-			}
-		case "-h", "--help", "-v", "--version":
-			// Already handled above
-		default:
-			// Unknown flag
-			return "", "", "", fmt.Errorf("unknown flag: %s", args[i])
-		}
-	}
-
-	return inputDir, outputFile, title, nil
-}
-
-func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
-	if len(os.Args) < 2 {
-		printUsage()
-		return "", "", "", true, 1
-	}
-
-	inputDir, outputFile, title, err := parseArgsSlice(os.Args[1:])
-	if err == nil {
-		return inputDir, outputFile, title, false, 0
-	}
-
-	// Handle special cases
-	switch err.Error() {
-	case "help":
-		printUsage()
-		return "", "", "", true, 0
-	case "version":
-		printVersion()
-		return "", "", "", true, 0
-	default:
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
-		return "", "", "", true, 1
-	}
-}
-
-func main() {
-	inputDir, outputFile, title, shouldExit, exitCode := parseArgs()
-	if shouldExit {
-		os.Exit(exitCode)
-	}
-
-	stacker := NewSVGStacker(inputDir, outputFile, title)
-	if err := stacker.CreateStackedSVG(); err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-		os.Exit(1)
-	}
-}
-
-func NewSVGStacker(inputDir, outputFile, title string) *SVGStacker {
-	if title == "" {
-		title = "🏗️ Stacked C4 Architecture"
-	}
-	return &SVGStacker{
-		diagrams:   make(map[string]DiagramInfo),
-		inputDir:   inputDir,
-		outputFile: outputFile,
-		title:      title,
-		now:        time.Now(),
-	}
-}
-
-func (s *SVGStacker) CreateStackedSVG() error {
-	// Check if input directory contains .puml files
-	hasPuml, err := s.hasPumlFiles()
-	if err != nil {
-		return err
-	}
-
-	if hasPuml {
-		// Generate SVG files from PlantUML
-		if err := s.generateSVGsFromPuml(); err != nil {
-			return err
-		}
-		// Clean up temp directory on exit
-		defer func() {
-			if s.tempDir != "" {
-				os.RemoveAll(s.tempDir)
-			}
-		}()
-	}
-
-	// Load all SVG files
-	if err := s.loadDiagrams(); err != nil {
-		return err
-	}
-
-	// Create the master SVG
-	stackedSVG := s.buildStackedSVG()
-
-	// Write to stdout or file
-	if s.outputFile == "" {
-		fmt.Print(stackedSVG)
-	} else {
-		if err := os.WriteFile(s.outputFile, []byte(stackedSVG), 0644); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (s *SVGStacker) hasPumlFiles() (bool, error) {
-	files, err := filepath.Glob(filepath.Join(s.inputDir, "*.puml"))
-	if err != nil {
-		return false, err
-	}
-	return len(files) > 0, nil
-}
-
-func (s *SVGStacker) generateSVGsFromPuml() error {
-	found, err := discover_levels(s.inputDir, ".puml")
-	if err != nil {
-		return err
-	}
-	var pumlFiles []string
-	for _, f := range found {
-		pumlFiles = append(pumlFiles, f.path)
-	}
-
-	// Create temp directory
-	tempDir, err := os.MkdirTemp("", "svg-stacker-*")
-	if err != nil {
-		return err
-	}
-	s.tempDir = tempDir
-
-	// Run plantuml to generate SVG files
-	plantumlPath, err := exec.LookPath("plantuml")
-	if err != nil {
-		return fmt.Errorf("plantuml not found in PATH: %w", err)
-	}
-
-	args := []string{"-tsvg", "-o", tempDir, "-nbthread", "auto"}
-	args = append(args, pumlFiles...)
-
-	cmd := exec.Command(plantumlPath, args...)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "PlantUML output: %s\n", string(output))
-		return fmt.Errorf("plantuml failed: %w", err)
-	}
-
-	// Update inputDir to point to temp directory
-	s.inputDir = tempDir
-	return nil
-}
-
-func (s *SVGStacker) loadDiagrams() error {
-	found, err := discover_levels(s.inputDir, ".svg")
-	if err != nil {
-		return err
-	}
-
-	for _, f := range found {
-		content, err := os.ReadFile(f.path)
-		if err != nil {
-			return err
-		}
-
-		info, err := parse_diagram(content)
-		if err != nil {
-			return fmt.Errorf("%s: %w", f.path, err)
-		}
-
-		s.diagrams[f.level.name] = info
-	}
-
-	return nil
+// one parsed input diagram: its level, the dimensions the viewer needs, and the rewritten body
+type Diagram struct {
+	level   level
+	viewBox string
+	width   float64
+	height  float64
+	body    string
 }
 
 // the SVG namespace; elements in it are emitted without a namespace so they inherit the outer document's
@@ -561,12 +330,12 @@ func encode_tokens(tokens []xml.Token) (string, error) {
 	return strings.TrimSpace(buf.String()), nil
 }
 
-// parses one SVG document into its dimensions and a rewritten body ready for embedding
-func parse_diagram(src []byte) (DiagramInfo, error) {
-	var info DiagramInfo
+// parses one SVG document for `lvl` into its dimensions and a rewritten body ready for embedding
+func parse_diagram(lvl level, src []byte) (Diagram, error) {
+	diagram := Diagram{level: lvl}
 	tokens, err := decode_tokens(src)
 	if err != nil {
-		return info, err
+		return diagram, err
 	}
 	start := next_significant(tokens, 0)
 	for start < len(tokens) {
@@ -576,218 +345,277 @@ func parse_diagram(src []byte) (DiagramInfo, error) {
 		start = next_significant(tokens, start+1)
 	}
 	if start >= len(tokens) {
-		return info, fmt.Errorf("no root <svg> element")
+		return diagram, fmt.Errorf("no root <svg> element")
 	}
 	root := tokens[start].(xml.StartElement)
 	if root.Name.Local != "svg" {
-		return info, fmt.Errorf("root element is <%s>, not <svg>", root.Name.Local)
+		return diagram, fmt.Errorf("root element is <%s>, not <svg>", root.Name.Local)
 	}
 	end := subtree_end(tokens, start)
 
-	info.viewBox = attr(root, "viewBox")
-	if info.viewBox == "" {
-		info.viewBox = "0 0 400 300"
+	diagram.viewBox = attr(root, "viewBox")
+	if diagram.viewBox == "" {
+		diagram.viewBox = "0 0 400 300"
 	}
-	info.width = parse_length(attr(root, "width"), 400)
-	info.height = parse_length(attr(root, "height"), 300)
-	info.aspectRatio = info.width / info.height
+	diagram.width = parse_length(attr(root, "width"), 400)
+	diagram.height = parse_length(attr(root, "height"), 300)
 
 	body := tag_notes(rewrite_links(strip_tokens(tokens[start+1 : end])))
-	info.content, err = encode_tokens(body)
-	return info, err
+	diagram.body, err = encode_tokens(body)
+	return diagram, err
 }
 
-func (s *SVGStacker) buildStackedSVG() string {
-	// Use embedded JavaScript for interactive mode
-	jsContent := []byte(navigationJS)
-
-	var sb strings.Builder
-
-	// SVG Header - JavaScript will set explicit dimensions
-	sb.WriteString(`<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="1920"
-     height="1080"
-     style="background: #f8f9fa; display: block;">
-
-  <title>Stacked C4 Architecture Diagrams</title>
-
-  <!-- Generator Metadata (invisible) -->
-  <metadata>
-    <generator>stacked-c4-svg</generator>
-    <version>` + version + `</version>
-    <timestamp>` + s.now.UTC().Format(time.RFC3339) + `</timestamp>
-  </metadata>
-
-  <!-- CSS Styles for Progressive Enhancement -->
-  <style>
-    /* Path highlighting - works without JavaScript */
-    .link path,
-    .link polygon {
-      pointer-events: stroke; /* Only capture events on the stroke itself */
-    }
-
-    /* Highlight when JavaScript adds highlighted class (triggered by text hover) */
-    .link.highlighted path,
-    .link.highlighted polygon {
-      stroke: #e74c3c !important;
-      stroke-width: 3 !important;
-      filter: drop-shadow(0 0 3px rgba(231, 76, 60, 0.5));
-    }
-
-    /* Make link text labels hoverable and disable tooltips */
-    .link text {
-      cursor: pointer;
-      user-select: none;
-      pointer-events: all;
-    }
-
-    /* Make text white when link is highlighted so it shows on red background */
-    .link.highlighted text {
-      fill: white !important;
-    }
-
-    /* Hide any title elements that might trigger tooltips */
-    .link title {
-      display: none;
-    }
-
-    /* Dimmed state (applied by JavaScript) */
-    .link.dimmed path,
-    .link.dimmed polygon {
-      opacity: 0.3;
-    }
-  </style>`)
-
-	sb.WriteString(fmt.Sprintf(`
-
-  <!-- Navigation Header -->
-  <rect x="0" y="0" width="100%%" height="80" fill="#2c3e50"/>
-  <text x="26" y="50" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="white">
-    %s
-  </text>
-
-  <!-- Navigation Buttons -->
-`, s.title))
-
-	// Generate navigation buttons (only for levels that exist)
-	buttonIndex := 0
-	for _, lvl := range levels {
-		level := lvl.name
-		if _, exists := s.diagrams[level]; !exists {
-			continue // Skip button if diagram doesn't exist
+// reads and parses the numbered SVG files in `dir`, in level order
+func load(dir string) ([]Diagram, error) {
+	found, err := discover_levels(dir, ".svg")
+	if err != nil {
+		return nil, err
+	}
+	var diagrams []Diagram
+	for _, f := range found {
+		src, err := os.ReadFile(f.path)
+		if err != nil {
+			return nil, err
 		}
-
-		x := 26 + buttonIndex*117
-		buttonIndex++
-
-		sb.WriteString(fmt.Sprintf(`  <rect x="%d" y="91" width="104" height="33" rx="4"
-        fill="#3498db" stroke="#2980b9" stroke-width="1"
-        style="cursor:pointer" onclick="showLevel('%s')"
-        id="nav-%s"/>
-  <text x="%d" y="113" font-family="Arial, sans-serif" font-size="14"
-        fill="white" style="cursor:pointer; user-select: none"
-        onclick="showLevel('%s')">
-    %s
-  </text>
-`, x, level, level, x+13, level, titleCase(level)))
-	}
-
-	// Add toggle buttons (positioned via JavaScript on load/resize)
-	sb.WriteString(`
-  <!-- Notes Toggle (right-aligned via JavaScript) -->
-  <rect x="364" y="91" width="130" height="33" rx="4"
-        fill="#3498db" stroke="#2980b9" stroke-width="1"
-        style="cursor:pointer" onclick="toggleNotes()"
-        id="notes-toggle"/>
-  <text x="377" y="113" font-family="Arial, sans-serif" font-size="14"
-        fill="white" style="cursor:pointer; user-select: none"
-        onclick="toggleNotes()" id="notes-text">
-    Hide Notes
-  </text>
-
-  <!-- Fit to Width Toggle (right-aligned via JavaScript) -->
-  <rect x="520" y="91" width="130" height="33" rx="4"
-        fill="#3498db" stroke="#2980b9" stroke-width="1"
-        style="cursor:pointer" onclick="toggleFitMode()"
-        id="fit-toggle"/>
-  <text x="533" y="113" font-family="Arial, sans-serif" font-size="14"
-        fill="white" style="cursor:pointer; user-select: none"
-        onclick="toggleFitMode()" id="fit-text">
-    Native Size
-  </text>
-`)
-
-	sb.WriteString(`
-
-  <!-- Diagram Layers (positioned below header at y=140) -->
-`)
-
-	// Generate diagram layers
-	for _, lvl := range levels {
-		sb.WriteString(s.createDiagramLayer(lvl.name))
-	}
-
-	// Add JavaScript
-	sb.WriteString(`
-  <!-- Navigation Script -->
-  <script type="text/ecmascript"><![CDATA[
-    `)
-	// Inject actual diagram dimensions
-	sb.WriteString("const diagramData = {\n")
-	diagramCount := 0
-	for _, lvl := range levels {
-		level := lvl.name
-		if diagram, exists := s.diagrams[level]; exists {
-			if diagramCount > 0 {
-				sb.WriteString(",\n")
-			}
-			sb.WriteString(fmt.Sprintf("  '%s': { width: %.0f, height: %.0f, ratio: %.2f }",
-				level, diagram.width, diagram.height, diagram.aspectRatio))
-			diagramCount++
+		diagram, err := parse_diagram(f.level, src)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", f.path, err)
 		}
+		diagrams = append(diagrams, diagram)
 	}
-	sb.WriteString("\n};\n\n")
-
-	// Inject available levels list
-	sb.WriteString("const availableLevels = [")
-	levelCount := 0
-	for _, lvl := range levels {
-		level := lvl.name
-		if _, exists := s.diagrams[level]; exists {
-			if levelCount > 0 {
-				sb.WriteString(", ")
-			}
-			sb.WriteString(fmt.Sprintf("'%s'", level))
-			levelCount++
-		}
-	}
-	sb.WriteString("];\n\n")
-
-	sb.Write(jsContent)
-	sb.WriteString(`
-  ]]></script>
-
-</svg>`)
-
-	return sb.String()
+	return diagrams, nil
 }
 
-func (s *SVGStacker) createDiagramLayer(level string) string {
-	diagram, exists := s.diagrams[level]
-	if !exists {
-		return ""
+// renders the numbered `.puml` files in `dir` to SVG in a temporary directory. The caller
+// runs `cleanup` to remove it.
+func render(dir string) (svg_dir string, cleanup func(), err error) {
+	found, err := discover_levels(dir, ".puml")
+	if err != nil {
+		return "", nil, err
+	}
+	plantuml, err := exec.LookPath("plantuml")
+	if err != nil {
+		return "", nil, fmt.Errorf("plantuml not found in PATH: %w", err)
+	}
+	svg_dir, err = os.MkdirTemp("", "svg-stacker-*")
+	if err != nil {
+		return "", nil, err
+	}
+	cleanup = func() { os.RemoveAll(svg_dir) }
+
+	args := []string{"-tsvg", "-o", svg_dir, "-nbthread", "auto"}
+	for _, f := range found {
+		args = append(args, f.path)
+	}
+	output, err := exec.Command(plantuml, args...).CombinedOutput()
+	if err != nil {
+		cleanup()
+		return "", nil, fmt.Errorf("plantuml failed: %w\n%s", err, output)
+	}
+	return svg_dir, cleanup, nil
+}
+
+// the document template. Everything static about the output lives in the template file; Go
+// supplies only the per-level values and the two JSON blocks the viewer reads.
+var document_template = template.Must(template.New("stacked").Parse(document_template_source))
+
+// one level as the template renders it
+type layer_view struct {
+	Name    string
+	Label   string
+	ViewBox string
+	Body    string
+	ButtonX int
+	TextX   int
+}
+
+type document_view struct {
+	Title           string
+	Version         string
+	Timestamp       string
+	Layers          []layer_view
+	DiagramData     string
+	AvailableLevels string
+	Script          string
+}
+
+// the per-level dimensions the viewer reads from `diagramData`
+type diagram_dimensions struct {
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
+	Ratio  float64 `json:"ratio"`
+}
+
+// renders the stacked document for `diagrams`, which must be in level order
+func stack(title string, at time.Time, diagrams []Diagram) (string, error) {
+	view := document_view{
+		Title:     title,
+		Version:   version,
+		Timestamp: at.UTC().Format(time.RFC3339),
+		Script:    navigationJS,
+	}
+	dimensions := map[string]diagram_dimensions{}
+	names := []string{}
+	for i, d := range diagrams {
+		x := 26 + i*117
+		view.Layers = append(view.Layers, layer_view{
+			Name: d.level.name, Label: titleCase(d.level.name), ViewBox: d.viewBox, Body: d.body,
+			ButtonX: x, TextX: x + 13,
+		})
+		dimensions[d.level.name] = diagram_dimensions{
+			Width: math.Round(d.width), Height: math.Round(d.height), Ratio: math.Round(d.width/d.height*100) / 100,
+		}
+		names = append(names, d.level.name)
+	}
+	dimensions_json, err := json.MarshalIndent(dimensions, "    ", "  ")
+	if err != nil {
+		return "", err
+	}
+	names_json, err := json.Marshal(names)
+	if err != nil {
+		return "", err
+	}
+	view.DiagramData = string(dimensions_json)
+	view.AvailableLevels = string(names_json)
+
+	var buf bytes.Buffer
+	if err := document_template.Execute(&buf, view); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+// converts the diagrams in `input_dir` and writes the document to `output_file`, or to
+// standard output when it is empty
+func run(input_dir, output_file, title string) error {
+	if title == "" {
+		title = "🏗️ Stacked C4 Architecture"
+	}
+	dir := input_dir
+	if pumls, _ := filepath.Glob(filepath.Join(input_dir, "*.puml")); len(pumls) > 0 {
+		svg_dir, cleanup, err := render(input_dir)
+		if err != nil {
+			return err
+		}
+		defer cleanup()
+		dir = svg_dir
+	}
+	diagrams, err := load(dir)
+	if err != nil {
+		return err
+	}
+	document, err := stack(title, time.Now(), diagrams)
+	if err != nil {
+		return err
+	}
+	if output_file == "" {
+		_, err = fmt.Print(document)
+		return err
+	}
+	return os.WriteFile(output_file, []byte(document), 0644)
+}
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, `Usage: svg-stacker <directory> [OPTIONS]
+
+Combines the numbered SVG or PlantUML files in <directory> into one stacked SVG.
+
+OPTIONS:
+  -h, --help          Show this help message and exit
+  -v, --version       Show version information and exit
+  --output FILE       Output file path (default: stdout)
+  --title TITLE       Title for the diagram (default: "🏗️ Stacked C4 Architecture")
+
+EXAMPLES:
+  svg-stacker ./examples
+  svg-stacker ./examples --output output.svg
+  svg-stacker ./examples --title "My Architecture"
+`)
+}
+
+func printVersion() {
+	fmt.Printf("svg-stacker version %s\n", version)
+}
+
+func parseArgsSlice(args []string) (inputDir, outputFile, title string, err error) {
+	if len(args) < 1 {
+		return "", "", "", fmt.Errorf("directory argument required")
 	}
 
-	return fmt.Sprintf(`
-  <!-- %s layer -->
-  <g id="layer-%s" style="display:none">
-    <rect x="5" y="145" width="99999" height="99999" fill="white" stroke="#ddd" stroke-width="1" rx="5" id="container-%s"/>
-    <g id="diagram-%s">
-      <svg viewBox="%s" x="10" y="150" width="99999" height="99999" preserveAspectRatio="xMidYMin meet">
-        %s
-      </svg>
-    </g>
-  </g>`, level, level, level, level, diagram.viewBox, diagram.content)
+	// Check for help/version flags first
+	for _, arg := range args {
+		if arg == "-h" || arg == "--help" {
+			return "", "", "", fmt.Errorf("help")
+		}
+		if arg == "-v" || arg == "--version" {
+			return "", "", "", fmt.Errorf("version")
+		}
+	}
+
+	inputDir = args[0]
+	outputFile = ""
+	title = ""
+
+	for i := 1; i < len(args); i++ {
+		switch args[i] {
+		case "--output":
+			if i+1 < len(args) {
+				outputFile = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--output requires an argument")
+			}
+		case "--title":
+			if i+1 < len(args) {
+				title = args[i+1]
+				i++
+			} else {
+				return "", "", "", fmt.Errorf("--title requires an argument")
+			}
+		case "-h", "--help", "-v", "--version":
+			// Already handled above
+		default:
+			// Unknown flag
+			return "", "", "", fmt.Errorf("unknown flag: %s", args[i])
+		}
+	}
+
+	return inputDir, outputFile, title, nil
+}
+
+func parseArgs() (inputDir, outputFile, title string, shouldExit bool, exitCode int) {
+	if len(os.Args) < 2 {
+		printUsage()
+		return "", "", "", true, 1
+	}
+
+	inputDir, outputFile, title, err := parseArgsSlice(os.Args[1:])
+	if err == nil {
+		return inputDir, outputFile, title, false, 0
+	}
+
+	// Handle special cases
+	switch err.Error() {
+	case "help":
+		printUsage()
+		return "", "", "", true, 0
+	case "version":
+		printVersion()
+		return "", "", "", true, 0
+	default:
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Use 'svg-stacker --help' for usage information\n")
+		return "", "", "", true, 1
+	}
+}
+
+func main() {
+	inputDir, outputFile, title, shouldExit, exitCode := parseArgs()
+	if shouldExit {
+		os.Exit(exitCode)
+	}
+	if err := run(inputDir, outputFile, title); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
 }

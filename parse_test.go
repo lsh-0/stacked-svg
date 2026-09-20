@@ -38,7 +38,7 @@ func TestParseDiagramDimensions(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual, err := parse_diagram([]byte(tt.given))
+			actual, err := parse_diagram(levels[0], []byte(tt.given))
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -61,7 +61,7 @@ func TestParseDiagramRejectsBadInput(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := parse_diagram([]byte(tt.given))
+			_, err := parse_diagram(levels[0], []byte(tt.given))
 			if err == nil || !strings.Contains(err.Error(), tt.expected_err) {
 				t.Errorf("expected error containing %q, got %v", tt.expected_err, err)
 			}
@@ -83,7 +83,7 @@ func TestMalformedInputFileIsNamed(t *testing.T) {
 		}
 	}
 	output := filepath.Join(dir, "out.svg")
-	err := NewSVGStacker(dir, output, "").CreateStackedSVG()
+	err := run(dir, output, "")
 	if err == nil || !strings.Contains(err.Error(), "02-container.svg") {
 		t.Fatalf("expected error naming 02-container.svg, got %v", err)
 	}
@@ -94,14 +94,14 @@ func TestMalformedInputFileIsNamed(t *testing.T) {
 
 func body_of(t *testing.T, given string) string {
 	t.Helper()
-	actual, err := parse_diagram([]byte(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">` + given + `</svg>`))
+	actual, err := parse_diagram(levels[0], []byte(`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">`+given+`</svg>`))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	if _, err := decode_tokens([]byte("<r xmlns:xlink=\"x\">" + actual.content + "</r>")); err != nil {
-		t.Fatalf("body is not well-formed: %v\n%s", err, actual.content)
+	if _, err := decode_tokens([]byte("<r xmlns:xlink=\"x\">" + actual.body + "</r>")); err != nil {
+		t.Fatalf("body is not well-formed: %v\n%s", err, actual.body)
 	}
-	return actual.content
+	return actual.body
 }
 
 func TestParseDiagramRewritesContent(t *testing.T) {
