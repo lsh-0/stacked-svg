@@ -146,3 +146,176 @@ func TestViewerEnhancesEachLayerOnce(t *testing.T) {
 		}
 	}
 }
+
+// JavaScript helpers shared by the interaction tests: element lookup and event dispatch
+const interaction_js = `
+  var hitboxes = function (level) {
+    return Array.from(document.querySelectorAll('#layer-' + level + ' .label-hitbox'));
+  };
+  var pinned = function () {
+    return Array.from(document.querySelectorAll('g.link.highlighted')).map(function (g) { return g.id; }).sort();
+  };
+  var mouse = function (el, type, opts) {
+    el.dispatchEvent(new MouseEvent(type, Object.assign({ bubbles: true, cancelable: true }, opts || {})));
+  };
+  var key = function (name) {
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: name }));
+  };`
+
+func as_json(t *testing.T, value any) string {
+	t.Helper()
+	encoded, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(encoded)
+}
+
+func expect_json(t *testing.T, results map[string]any, key string, expected string) {
+	t.Helper()
+	if actual := as_json(t, results[key]); actual != expected {
+		t.Errorf("%s: got %s, want %s", key, actual, expected)
+	}
+}
+
+func TestViewerDrillDown(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), visible_levels_js+interaction_js+`
+  mouse(document.querySelector('#layer-context [onclick="navigateDown()"]'), 'click');
+  r.afterClick = visible();
+  showLevel('code');
+  navigateDown();
+  r.afterLastLevel = visible();`)
+
+	expect_json(t, actual, "afterClick", `["container"]`)
+	expect_json(t, actual, "afterLastLevel", `["code"]`)
+}
+
+func TestViewerSizingModes(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), `
+  var diagramWidth = function (level) {
+    return Number(document.querySelector('#diagram-' + level + ' svg').getAttribute('width'));
+  };
+  r.nativeWidth = diagramWidth('context');
+  r.recordedWidth = diagramData.context.width;
+  toggleFitMode();
+  r.fitText = document.getElementById('fit-text').textContent.trim();
+  r.fitWidth = diagramWidth('context');
+  r.fitsViewport = diagramWidth('context') <= window.innerWidth;
+  showLevel('container');
+  resizeContainers();
+  r.stillFit = fitToWidth && diagramWidth('container') <= window.innerWidth;
+  toggleFitMode();
+  r.backText = document.getElementById('fit-text').textContent.trim();
+  r.backWidth = diagramWidth('container');
+  r.recordedContainerWidth = diagramData.container.width;`)
+
+	if actual["nativeWidth"] != actual["recordedWidth"] {
+		t.Errorf("native mode: diagram width %v, recorded %v", actual["nativeWidth"], actual["recordedWidth"])
+	}
+	expect_json(t, actual, "fitText", `"Auto Scale"`)
+	expect_json(t, actual, "fitsViewport", `true`)
+	expect_json(t, actual, "stillFit", `true`)
+	expect_json(t, actual, "backText", `"Native Size"`)
+	if actual["backWidth"] != actual["recordedContainerWidth"] {
+		t.Errorf("back in native mode: diagram width %v, recorded %v", actual["backWidth"], actual["recordedContainerWidth"])
+	}
+}
+
+func TestViewerNoteToggling(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), `
+  var hidden = function (sel) {
+    return Array.from(document.querySelectorAll(sel)).filter(function (e) { return e.style.display === 'none'; }).length;
+  };
+  r.notes = document.querySelectorAll('g.note').length;
+  r.noteLinks = document.querySelectorAll('g.note-link').length;
+  r.layersWithNotes = new Set(Array.from(document.querySelectorAll('g.note')).map(function (n) { return n.closest('g[id^="layer-"]').id; })).size;
+  document.getElementById('notes-toggle').dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  r.hiddenNotes = hidden('g.note');
+  r.hiddenNoteLinks = hidden('g.note-link');
+  r.text = document.getElementById('notes-text').textContent.trim();
+  toggleNotes();
+  r.hiddenAfterShow = hidden('g.note') + hidden('g.note-link');
+  r.textAfterShow = document.getElementById('notes-text').textContent.trim();`)
+
+	expect_json(t, actual, "notes", `2`)
+	expect_json(t, actual, "noteLinks", `2`)
+	expect_json(t, actual, "layersWithNotes", `2`)
+	expect_json(t, actual, "hiddenNotes", `2`)
+	expect_json(t, actual, "hiddenNoteLinks", `2`)
+	expect_json(t, actual, "text", `"Show Notes"`)
+	expect_json(t, actual, "hiddenAfterShow", `0`)
+	expect_json(t, actual, "textAfterShow", `"Hide Notes"`)
+}
+
+func TestViewerPathHighlighting(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), interaction_js+`
+  var hitbox = hitboxes('context')[0];
+  var link = hitbox.closest('g.link');
+  var bg = link.querySelector('.text-bg');
+  r.titles = document.querySelectorAll('#layer-context title').length;
+  mouse(hitbox, 'mouseenter');
+  r.hoverHighlighted = link.classList.contains('highlighted');
+  r.hoverOpacity = bg.getAttribute('fill-opacity');
+  r.hoverOnTop = link.parentNode.lastElementChild === link;
+  mouse(hitbox, 'mouseleave');
+  r.leaveHighlighted = link.classList.contains('highlighted');
+  r.leaveOpacity = bg.getAttribute('fill-opacity');`)
+
+	expect_json(t, actual, "titles", `0`)
+	expect_json(t, actual, "hoverHighlighted", `true`)
+	expect_json(t, actual, "hoverOpacity", `"0.9"`)
+	expect_json(t, actual, "hoverOnTop", `true`)
+	expect_json(t, actual, "leaveHighlighted", `false`)
+	expect_json(t, actual, "leaveOpacity", `"0"`)
+}
+
+func TestViewerPinnedSelection(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), interaction_js+`
+  showLevel('component');
+  var boxes = hitboxes('component');
+  r.labelledLinks = boxes.length;
+  var a = boxes[0], b = boxes[1];
+  mouse(a, 'click');
+  r.afterPinA = pinned();
+  mouse(a, 'mouseleave');
+  r.staysPinnedAfterLeave = pinned();
+  mouse(b, 'click');
+  r.afterPinB = pinned();
+  mouse(a, 'click', { ctrlKey: true });
+  r.afterCtrlA = pinned();
+  mouse(a, 'click', { ctrlKey: true });
+  r.afterCtrlAAgain = pinned();
+  mouse(b, 'click');
+  r.afterClickPinnedB = pinned();
+  mouse(a, 'click');
+  mouse(b, 'click', { metaKey: true });
+  key('Escape');
+  r.afterEscape = pinned();`)
+
+	expect_json(t, actual, "labelledLinks", `2`)
+	expect_json(t, actual, "afterPinA", `["lnk1"]`)
+	expect_json(t, actual, "staysPinnedAfterLeave", `["lnk1"]`)
+	expect_json(t, actual, "afterPinB", `["lnk2"]`)
+	expect_json(t, actual, "afterCtrlA", `["lnk1","lnk2"]`)
+	expect_json(t, actual, "afterCtrlAAgain", `["lnk2"]`)
+	expect_json(t, actual, "afterClickPinnedB", `[]`)
+	expect_json(t, actual, "afterEscape", `[]`)
+}
+
+// Escape clears pins on every layer after any number of level switches
+func TestViewerEscapeClearsAcrossLayers(t *testing.T) {
+	actual := run_viewer(t, filepath.Join("testdata", "notes-and-images"), interaction_js+`
+  for (var i = 0; i < 6; i++) {
+    showLevel(availableLevels[i % availableLevels.length]);
+  }
+  showLevel('context');
+  mouse(hitboxes('context')[0], 'click', { ctrlKey: true });
+  showLevel('container');
+  mouse(hitboxes('container')[0], 'click', { ctrlKey: true });
+  r.beforeEscape = pinned();
+  key('Escape');
+  r.afterEscape = pinned();`)
+
+	expect_json(t, actual, "beforeEscape", `["link_web_app_database","lnk5"]`)
+	expect_json(t, actual, "afterEscape", `[]`)
+}

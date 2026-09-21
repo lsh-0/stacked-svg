@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -83,7 +84,7 @@ func TestMalformedInputFileIsNamed(t *testing.T) {
 		}
 	}
 	output := filepath.Join(dir, "out.svg")
-	err := run(dir, output, "")
+	err := run(dir, output, "", io.Discard)
 	if err == nil || !strings.Contains(err.Error(), "02-container.svg") {
 		t.Fatalf("expected error naming 02-container.svg, got %v", err)
 	}

@@ -21,7 +21,7 @@ import (
 )
 
 //go:embed navigation.js
-var navigationJS string
+var navigation_js string
 
 //go:embed stacked.svg.tmpl
 var document_template_source string
@@ -29,7 +29,7 @@ var document_template_source string
 var version = "unreleased"
 
 // converts a string to title case (first letter uppercase, rest as-is).
-func titleCase(s string) string {
+func title_case(s string) string {
 	if s == "" {
 		return s
 	}
@@ -453,14 +453,14 @@ func stack(title string, at time.Time, diagrams []Diagram) (string, error) {
 		Title:     title,
 		Version:   version,
 		Timestamp: at.UTC().Format(time.RFC3339),
-		Script:    navigationJS,
+		Script:    navigation_js,
 	}
 	dimensions := map[string]diagram_dimensions{}
 	names := []string{}
 	for i, d := range diagrams {
 		x := 26 + i*117
 		view.Layers = append(view.Layers, layer_view{
-			Name: d.level.name, Label: titleCase(d.level.name), ViewBox: d.viewBox, Body: d.body,
+			Name: d.level.name, Label: title_case(d.level.name), ViewBox: d.viewBox, Body: d.body,
 			ButtonX: x, TextX: x + 13,
 		})
 		dimensions[d.level.name] = diagram_dimensions{
@@ -487,8 +487,8 @@ func stack(title string, at time.Time, diagrams []Diagram) (string, error) {
 }
 
 // converts the diagrams in `input_dir` and writes the document to `output_file`, or to
-// standard output when it is empty
-func run(input_dir, output_file, title string) error {
+// `stdout` when the file name is empty
+func run(input_dir, output_file, title string, stdout io.Writer) error {
 	dir := input_dir
 	if pumls, _ := filepath.Glob(filepath.Join(input_dir, "*.puml")); len(pumls) > 0 {
 		svg_dir, cleanup, err := render(input_dir)
@@ -507,7 +507,7 @@ func run(input_dir, output_file, title string) error {
 		return err
 	}
 	if output_file == "" {
-		_, err = fmt.Print(document)
+		_, err = io.WriteString(stdout, document)
 		return err
 	}
 	return os.WriteFile(output_file, []byte(document), 0644)
@@ -587,7 +587,7 @@ func main() {
 		fmt.Printf("svg-stacker version %s\n", version)
 		return
 	}
-	if err := run(opts.input_dir, opts.output_file, opts.title); err != nil {
+	if err := run(opts.input_dir, opts.output_file, opts.title, os.Stdout); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}

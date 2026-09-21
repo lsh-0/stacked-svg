@@ -240,7 +240,7 @@ func TestDiscoverLevels(t *testing.T) {
 	}
 }
 
-// TestTitleCase tests the titleCase function
+// TestTitleCase tests the title_case function
 func TestTitleCase(t *testing.T) {
 	tests := []struct {
 		input    string
@@ -258,7 +258,7 @@ func TestTitleCase(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
-			result := titleCase(tt.input)
+			result := title_case(tt.input)
 			if result != tt.expected {
 				t.Errorf("got %q, want %q", result, tt.expected)
 			}

@@ -11,7 +11,7 @@
   <metadata>
     <generator>stacked-c4-svg</generator>
     <version>unreleased</version>
-    <timestamp>2026-09-20T04:25:12Z</timestamp>
+    <timestamp>2026-09-21T15:20:52Z</timestamp>
   </metadata>
 
   <!-- CSS Styles for Progressive Enhancement -->
@@ -40,11 +40,6 @@
     /* Make text white when link is highlighted so it shows on red background */
     .link.highlighted text {
       fill: white !important;
-    }
-
-    /* Hide any title elements that might trigger tooltips */
-    .link title {
-      display: none;
     }
 
     /* Dimmed state (applied by JavaScript) */
